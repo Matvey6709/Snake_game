@@ -14,7 +14,7 @@ import java.util.Random;
 
 import datamanager.ServerUpdate;
 
-public class MainMenuScreen implements Screen {
+public class Game1_Screen implements Screen {
 
     final game game;
     OrthographicCamera camera;
@@ -36,7 +36,7 @@ public class MainMenuScreen implements Screen {
     PointUi pointUi;
     boolean create = false;
 
-    public MainMenuScreen(final game gam, String namePlayer) {
+    public Game1_Screen(final game gam, String namePlayer) {
         game = gam;
 
         camera = new OrthographicCamera();
