@@ -3,8 +3,10 @@ package com.example.share2dlibgdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -17,7 +19,8 @@ import datamanager.ServerUpdate;
 public class Game1_Screen implements Screen {
 
     final game game;
-    OrthographicCamera camera;
+    //    OrthographicCamera camera;
+    Camera camera;
 
 
     public Snake snake;
@@ -35,12 +38,14 @@ public class Game1_Screen implements Screen {
     boolean f = false;
     PointUi pointUi;
     boolean create = false;
+    Texture grass;
 
     public Game1_Screen(final game gam, String namePlayer) {
         game = gam;
 
+
         camera = new OrthographicCamera();
-//        camera.setToOrtho(false, 800, 480);
+//        camera.setToOrtho(true, 800, 480);
         pointUi = new PointUi();
         game.fitViewport = new FitViewport(1280, 720, camera);
 //        game.fitViewport = new StretchViewport(1280, 720, camera);
@@ -62,6 +67,7 @@ public class Game1_Screen implements Screen {
         Gdx.input.setInputProcessor(game.stage);
 
         game.fitViewport.apply();
+//        System.out.println(camera.viewportWidth);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
         size = new DeterminantSize();
@@ -72,6 +78,7 @@ public class Game1_Screen implements Screen {
         touch = new Touch(snake, bread);
         serverUpdate = new ServerUpdate();
         serverUpdate.test(game.batch);
+        grass = new Texture(Gdx.files.internal("grass.png"));
     }
 
     @Override
@@ -81,6 +88,7 @@ public class Game1_Screen implements Screen {
 
     @Override
     public void render(float delta) {
+//        camera.rotate(delta*10);
         Gdx.gl.glClearColor(0, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -89,12 +97,20 @@ public class Game1_Screen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
+
         if (startPlay) {
             try {
 //               Сделать проверку на всякий случай подключились ли они(Можно поросить подвигать джостиком каждого игрока,
 //               если все подключились, то данные джостика отоброзятся в FireBase => будут готовы, проверить можно будет путём провекри игроками чужих координат)
 
 //               Цыфры 3... 2... 1... GO..
+
+                for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
+                    for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
+                        game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
+                    }
+                }
+
                 bread.render();
                 snake.render(Gdx.graphics.getDeltaTime());
                 if (timeSet > .50) {
@@ -167,17 +183,19 @@ public class Game1_Screen implements Screen {
                     pointUi.end.setSize(400, 120);
                     pointUi.end.setPosition(640, Gdx.graphics.getHeight() / 2 - 350);
                 }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (game.loaded.checkStartPlay() != null && !t) {
             snake.NameGame = game.loaded.checkStartPlay();
             startPlay = true;
-            System.out.println("Выполнено2");
+            System.out.println("Идёт поиск подходящей комнаты");
         }
         else if (game.loaded.checkStartPlay() == null) {
             nulls++;
-            System.out.println("Выполнено3");
+            System.out.println("Ждёт");
         }
         if (nulls == 200) {
             if (!t) {
@@ -188,15 +206,15 @@ public class Game1_Screen implements Screen {
                 create = true;
                 game.loaded.put(snake.NameGame, snake.NamePlayer, snake.vector2, snake.level + "");
                 t = true;
-                System.out.println("Выполнено4");
+                System.out.println("Комната не найдена, создаём собственную комнату");
             }
             if (game.loaded.countPlayersGames(snake.NameGame) == 2 && !startPlay) {
                 startPlay = true;
-                System.out.println("Выполнено");
+                System.out.println("Игрок подключился к вашей комнате");
             }
         }
-
         game.batch.end();
+        camera.update();
         game.stage.act(Gdx.graphics.getDeltaTime());
         game.stage.draw();
     }
@@ -229,6 +247,7 @@ public class Game1_Screen implements Screen {
         game.stage.dispose();
         bread.dispose();
         game.joystick.dispose();
+        grass.dispose();
 
     }
 

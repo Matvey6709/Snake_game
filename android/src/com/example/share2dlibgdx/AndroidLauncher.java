@@ -13,6 +13,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     FireBaseDataBase base;
     InterfaceDataLoaded loaded;
+    AndroidLauncher context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,4 +57,7 @@ public class AndroidLauncher extends AndroidApplication {
         Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
         initialize(new game(loaded), config);
     }
+
+
 }
+
