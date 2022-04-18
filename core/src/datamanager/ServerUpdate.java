@@ -25,7 +25,7 @@ public class ServerUpdate {
         cells.add(new Cell(0, 0, size.getWidthGame(100), size.getHeightGame(100)));
 
         texture = new Texture("BlueS2.png");
-        //dd
+        //dded
     }
 
     public void render(Player players, Snake share) {
