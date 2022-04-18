@@ -27,7 +27,7 @@ public class Snake {
         this.sizeY = sizeY;
         increase(level);
         transfer = new Transfer(cells, joystick3);
-        texture = new Texture("badlogic.jpg");
+        texture = new Texture("redS.png");
     }
 
     public void render(float delta) {

@@ -142,7 +142,7 @@ public class Lobby implements Screen {
         label.setY(350);
 
 
-        TextButton startGame1 = new TextButton("Game1", skin);
+        TextButton startGame1 = new TextButton("TestButton", skin);
         startGame1.setPosition(250, 60);
         startGame1.setSize(100, 60);
 
@@ -181,23 +181,22 @@ public class Lobby implements Screen {
         startGame1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Нажата кнопка игры");
+                game.setScreen(new Game1_Screen(game, namePlayer));
             }
         });
 
-        TextButton button1 = new TextButton("TestScreen", skin);
+        TextButton button1 = new TextButton("Game1", skin);
         button1.setPosition(150, 200);
         button1.setSize(100, 60);
         button1.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
-
-                game.setScreen(new Game1_Screen(game, namePlayer));
+                System.out.println("Нажата кнопка игры");
                 return true;
             }
         });
 
-        game.stage.addActor(button1);
+//        game.stage.addActor(button1);
         game.stage.addActor(startGame1);
         game.stage.addActor(label);
         game.stage.addActor(table);

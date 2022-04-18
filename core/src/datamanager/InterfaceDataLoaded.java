@@ -15,4 +15,5 @@ public interface InterfaceDataLoaded {
     public abstract int countPlayersGames(String nameGame);
 
     public String getFirstPlayer(String nameGame);
+
 }
