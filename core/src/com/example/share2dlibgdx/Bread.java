@@ -27,9 +27,9 @@ public class Bread {
     public void spawn() {
         x = 100 + random.nextInt(1180 - 100 + 1);
 //        int number = 30 + random.nextInt(1280 - 30 + 1);
-        y = 100 + random.nextInt(760 - 100 + 1);
-        System.out.println(x);
-        System.out.println(y);
+        y = 100 + random.nextInt(620 - 100 + 1);
+//        System.out.println(x);
+//        System.out.println(y);
     }
 
 

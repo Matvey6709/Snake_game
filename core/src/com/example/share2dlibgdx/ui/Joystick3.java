@@ -13,7 +13,7 @@ public class Joystick3 extends Actor {
     private Texture circle;
     private Texture curJoystick;
     private boolean isJoystickDown = false;
-//    DeterminantSize size = new DeterminantSize();
+    DeterminantSize size = new DeterminantSize();
     private float rad = 160;
     private float inverseRad = 0;
     int CUR_RADIUS = 40;
@@ -78,8 +78,8 @@ public class Joystick3 extends Actor {
         this.curJoystick = curJoystick;
 //        setDefaultWH();
         setDefaultXY();
-        setHeight(250);
-        setWidth(250);
+        setHeight(size.getHeightGame(250));
+        setWidth(size.getWidthGame(250));
         addListener(new JoystickInputListener(this));
     }
 
