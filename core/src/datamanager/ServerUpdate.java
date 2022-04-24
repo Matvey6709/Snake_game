@@ -29,6 +29,7 @@ public class ServerUpdate {
 
         texture = new Texture("BlueS2.png");
         //
+        blueApple = new Texture("appleBlue.png");
     }
 
     public void render(Player players, Snake share) {
