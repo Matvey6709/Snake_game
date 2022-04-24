@@ -29,7 +29,6 @@ public class ServerUpdate {
 
         texture = new Texture("BlueS2.png");
         blueApple = new Texture("appleBlue.png");
-        //
     }
 
     public void render(Player players, Snake share) {
@@ -81,7 +80,7 @@ public class ServerUpdate {
     }
 
     public String getNamePlayer() {
-        if(players != null){
+        if (players != null) {
             return players.getName();
         }
         return null;
