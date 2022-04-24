@@ -28,33 +28,33 @@ public class Touch {
 
     public int touchScreen(){
         if(share.cells.get(0).x > widthScreen && share.cells.get(0).y < heightScreen){
-            System.out.println("1");
+//            System.out.println("1");
 //            Правая граница
             return 1;
         }
         if(share.cells.get(0).x < -50 && share.cells.get(0).y > 0){
-            System.out.println("4");
+//            System.out.println("4");
 //            Левая граница
             return 4;
         }
         if(share.cells.get(0).x > 0 && share.cells.get(0).y < -50){
-            System.out.println("5");
+//            System.out.println("5");
 //            Нижняя граница
             return 5;
         }
         if(share.cells.get(0).x < widthScreen-50 && share.cells.get(0).y > heightScreen){
-            System.out.println(2);
+//            System.out.println(2);
 //            Вверхняя граница
             return 2;
         }
 
         if(share.cells.get(0).x > widthScreen && share.cells.get(0).y > heightScreen){
-            System.out.println("3");
+//            System.out.println("3");
 //            Вверхний правый угол
             return 3;
         }
         if(share.cells.get(0).x < 0 && share.cells.get(0).y < 0){
-            System.out.println("6");
+//            System.out.println("6");
 //            нижний левый угол
             return 6;
         }
