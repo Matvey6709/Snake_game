@@ -16,6 +16,9 @@ public class ServerUpdate {
     public String namePlayer = "";
     SpriteBatch batch;
     Texture texture;
+    Texture blueApple;
+    int appleX;
+    int appleY;
 
     public void test(SpriteBatch batch) {
         this.batch = batch;
@@ -25,6 +28,7 @@ public class ServerUpdate {
         cells.add(new Cell(0, 0, size.getWidthGame(100), size.getHeightGame(100)));
 
         texture = new Texture("BlueS2.png");
+        blueApple = new Texture("appleBlue.png");
         //dded
     }
 
@@ -32,7 +36,7 @@ public class ServerUpdate {
         this.players = players;
         try {
             if (players != null) {
-                String[] corXY = players.getStr().split(" ");
+                String[] corXY = players.getCords().split("h");
                 for (int i = cells.size() - 1; i > 0; i--) {
                     Cell nextBody = cells.get(i - 1);
                     Cell body = cells.get(i);
@@ -42,13 +46,15 @@ public class ServerUpdate {
                 cells.get(0).x = Float.parseFloat(corXY[0]);
                 cells.get(0).y = Float.parseFloat(corXY[1]);
 
-                if (cells.size()-1 < players.getLevel() && players != null) {
+                appleX = players.getAppleX();
+                appleY = players.getAppleY();
+
+                if (cells.size() - 1 < Integer.parseInt(players.getLevel()) && players != null) {
                     addLevel();
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Ошибка в ServerUpdate");
+//            e.printStackTrace();
         }
 
     }
@@ -57,7 +63,7 @@ public class ServerUpdate {
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
-//        batch.draw(texture, cells.get(0).x, cells.get(0).y, cells.get(0).sizeX, cells.get(0).sizeY);
+        batch.draw(blueApple, appleX, appleY, 100, 100);
     }
 
     public void addLevel() {
@@ -67,6 +73,7 @@ public class ServerUpdate {
     public void dispose() {
         texture.dispose();
         batch.dispose();
+        blueApple.dispose();
     }
 
     public int getLevel() {
