@@ -18,6 +18,7 @@ public class Snake {
     int sizeX;
     int sizeY;
     Texture texture;
+    public boolean youFirst = false;
 
 
     public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY) {
@@ -40,7 +41,7 @@ public class Snake {
 
     public void ShareInit() {
 //        transfer.trInit();
-        if (timeSet > .50 && joystick3.isJoystickDown()) {
+        if (timeSet > .50) {
             transfer.trBody2();//передвижение
             timeSet = 0;
         }
@@ -74,7 +75,7 @@ public class Snake {
 //        for (int i = 0; i < cells.size() - 1; i++) {
 //            vector2 += cells.get(i).x + " " + cells.get(i).y + " ";
 //        }
-        vector2 = cells.get(0).x + " " + cells.get(0).y;
+        vector2 = cells.get(0).x + "h" + cells.get(0).y;
     }
 
 }

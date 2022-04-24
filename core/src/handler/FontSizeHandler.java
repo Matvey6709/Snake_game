@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,6 @@ public class FontSizeHandler {
         font.setColor(color);
 
         this.fonts.put(size, font);
-
         return font;
     }
 }

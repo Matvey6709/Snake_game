@@ -1,26 +1,26 @@
 package datamanager;
 
 public class Player {
-    String str;
-    int level;
+    String cords;
+    String level;
     String name;
-    int applesX;
-    int applesY;
+    int appleX;
+    int appleY;
 
-    public int getApplesX() {
-        return applesX;
+    public String getCords() {
+        return cords;
     }
 
-    public void setApplesX(int applesX) {
-        this.applesX = applesX;
+    public void setCords(String cords) {
+        this.cords = cords;
     }
 
-    public int getApplesY() {
-        return applesY;
+    public String getLevel() {
+        return level;
     }
 
-    public void setApplesY(int applesY) {
-        this.applesY = applesY;
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public String getName() {
@@ -31,28 +31,25 @@ public class Player {
         this.name = name;
     }
 
-    public int getLevel() {
-        return level;
+    public int getAppleX() {
+        return appleX;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setAppleX(int appleX) {
+        this.appleX = appleX;
     }
 
-    public void setStr(String str) {
-        this.str = str;
+    public int getAppleY() {
+        return appleY;
     }
+
+    public void setAppleY(int appleY) {
+        this.appleY = appleY;
+    }
+
 
     public Player() {
 
     }
-
-    public String getStr() {
-        return str;
-    }
-
-
-    public Player(String str) {
-        this.str = str;
-    }
 }
+

@@ -27,11 +27,11 @@ public class PointUi {
     Label label;
     Label label2;
     Label WinLabel;
+    Label timer;
     ArrayList<ImageButton> imageButtonsApples;
     Group group;
     Group group2;
     TextButton end;
-    Texture textureApple = new Texture("apple.png");
     int testLevel2;
     int testLevel1;
     String testNamePlayer2;
@@ -45,11 +45,17 @@ public class PointUi {
 
     int f = 7;
 
+    public Label Timer() {
+        timer = LabelHandler.INSTANCE.createLabel("00:00", 60, Color.BLACK);
+        timer.setX((float) (Gdx.graphics.getWidth() / 1.5));
+        timer.setY(Gdx.graphics.getHeight() - 100);
+        return timer;
+    }
 
-    public Label WinPlay(){
+    public Label WinPlay() {
         WinLabel = LabelHandler.INSTANCE.createLabel("", 200, Color.BLACK);
         WinLabel.setX(300);
-        WinLabel.setY(Gdx.graphics.getHeight()/2);
+        WinLabel.setY(Gdx.graphics.getHeight() / 2);
         return WinLabel;
     }
 
@@ -79,6 +85,7 @@ public class PointUi {
             imageButton.setWidth(56);
             imageButton.setHeight(56);
             group.addActor(imageButton);
+//            myTexture.dispose();
         }
         return group;
     }
@@ -96,6 +103,7 @@ public class PointUi {
             imageButton.setHeight(56);
             imageButtonsApples.add(imageButton);
             group2.addActor(imageButton);
+//            myTexture.dispose();
         }
         return group2;
     }
@@ -145,4 +153,6 @@ public class PointUi {
     public void WhoWin(String namePlayer){
         WinLabel.setText("Win: "+ namePlayer);
     }
+
+
 }

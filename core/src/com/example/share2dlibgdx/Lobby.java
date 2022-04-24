@@ -46,22 +46,26 @@ public class Lobby implements Screen {
     BitmapFont font;
 
     game game;
+    Stage stage;
+    Texture t;
+
 
     public Lobby(final game gam) {
         game = gam;
-        backgroundTexture = new TextureRegion(new Texture("bac2.jpg"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        t = new Texture("bac2.jpg");
+        backgroundTexture = new TextureRegion(t, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera = new OrthographicCamera();
 //        camera.setToOrtho(false, 600, 400);
         fitViewport = new FitViewport(600, 400, camera);
 //        fitViewport = new ScreenViewport(camera);
 
-        game.loaded.create();
+//        game.loaded.create();
 
-        game.stage = new Stage();
-        game.stage.getViewport().setCamera(camera);
+        stage = new Stage();
+        stage.getViewport().setCamera(camera);
         Screen();
 
-        Gdx.input.setInputProcessor(game.stage);
+        Gdx.input.setInputProcessor(stage);
 
         fitViewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
@@ -79,8 +83,8 @@ public class Lobby implements Screen {
         game.batch.draw(backgroundTexture, 0, 0, 1280, 720);
         game.batch.end();
 
-        game.stage.act(Gdx.graphics.getDeltaTime());
-        game.stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override
@@ -111,8 +115,8 @@ public class Lobby implements Screen {
 
     @Override
     public void dispose() {
-//        skin.dispose();
-//        game.stage.dispose();
+        stage.dispose();
+        t.dispose();
 //        game.batch.dispose();
     }
 
@@ -181,7 +185,9 @@ public class Lobby implements Screen {
         startGame1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new Game1_Screen(game, namePlayer));
+                Lobby.this.dispose();
+//                game.setScreen(new Game1_Screen(game, namePlayer));
+                game.setScreen(new Leaderboard(game, namePlayer));
             }
         });
 
@@ -197,16 +203,18 @@ public class Lobby implements Screen {
         });
 
 //        game.stage.addActor(button1);
-        game.stage.addActor(startGame1);
-        game.stage.addActor(label);
-        game.stage.addActor(table);
-        game.stage.addActor(button);
+        stage.addActor(startGame1);
+        stage.addActor(label);
+        stage.addActor(table);
+        stage.addActor(button);
 
 //        skin.dispose();
+
+
     }
 
     public void settings(Drawable drawable) {
-        System.out.println("GGHHH");
+//        System.out.println("GGHHH");
         if (show == true) {
             table.clear();
             table.setBackground((Drawable) null);
@@ -240,7 +248,9 @@ public class Lobby implements Screen {
     public void ResetName() {
         final Table resetNameTable = new Table();
         resetNameTable.setBounds(0, 0, 600, 400);
-        Drawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture("resetname.jpg")));
+        Texture tex = new Texture("resetname.jpg");
+        TextureRegion t = new TextureRegion(tex);
+        Drawable drawable = new TextureRegionDrawable(t);
         resetNameTable.setBackground(drawable);
         final TextField textField = new TextField("New Name", skin);
         TextButton button = new TextButton("Ok", skin);
@@ -255,6 +265,7 @@ public class Lobby implements Screen {
         });
         resetNameTable.add(textField).padBottom(40f).row();
         resetNameTable.add(button).row();
-        game.stage.addActor(resetNameTable);
+        stage.addActor(resetNameTable);
+        tex.dispose();
     }
 }

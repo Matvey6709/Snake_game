@@ -2,58 +2,22 @@ package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.example.share2dlibgdx.ui.Joystick3;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import datamanager.InterfaceDataLoaded;
-import handler.LabelHandler;
 
 
 public class game extends Game {
 
     SpriteBatch batch;
     InterfaceDataLoaded loaded;
-    Joystick3 joystick;
     Stage stage;
 
-    Table table;
-    OrthographicCamera camera;
-    boolean show = false;
-    TextureRegion backgroundTexture;
-    Skin skin;
+    StretchViewport fitViewport;
 
-    String namePlayer = "Matmeyker";
-    Label label;
-
-    FitViewport fitViewport;
-
-    int numGame = 0;
-
-    BitmapFont font;
-
-    Group group;
-
-
-    Texture cur;
 
     public game(InterfaceDataLoaded loaded) {
         this.loaded = loaded;
@@ -67,9 +31,7 @@ public class game extends Game {
 //        fitViewport = new FitViewport(600, 400, camera);
 //
         batch = new SpriteBatch();
-        loaded.create();
-        cur = new Texture("pole3.png");
-        joystick = new Joystick3(cur, cur);
+
 //        game1 = new Game1(batch, joystick, loaded);
 //
 //        stage = new Stage(fitViewport);
@@ -80,6 +42,7 @@ public class game extends Game {
 //
 //        fitViewport.apply();
 //        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
         setScreen(new Lobby(this));
     }
 
@@ -115,8 +78,7 @@ public class game extends Game {
     public void dispose() {
         batch.dispose();
         stage.dispose();
-        joystick.dispose();
-        cur.dispose();
+
     }
 
 //    public void Screen() {
