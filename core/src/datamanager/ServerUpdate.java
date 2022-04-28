@@ -24,8 +24,8 @@ public class ServerUpdate {
         this.batch = batch;
         cells = new ArrayList<>();
         size = new DeterminantSize();
-        cells.add(new Cell(0, 0, size.getWidthGame(100), size.getHeightGame(100)));
-        cells.add(new Cell(0, 0, size.getWidthGame(100), size.getHeightGame(100)));
+        cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+        cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
 
         texture = new Texture("BlueS2.png");
         //
@@ -51,6 +51,9 @@ public class ServerUpdate {
 
                 if (cells.size() - 1 < Integer.parseInt(players.getLevel()) && players != null) {
                     addLevel();
+                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
                 }
             }
         } catch (Exception e) {
@@ -63,11 +66,11 @@ public class ServerUpdate {
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
-        batch.draw(blueApple, appleX, appleY, 100, 100);
+        batch.draw(blueApple, appleX, appleY, 100 / 2, 100 / 2);
     }
 
     public void addLevel() {
-        cells.add(new Cell(0, 0, size.getWidthGame(100), size.getHeightGame(100)));
+        cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
     }
 
     public void dispose() {

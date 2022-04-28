@@ -5,8 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -14,15 +18,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Random;
 
+import handler.FontSizeHandler;
 import handler.LabelHandler;
 
 public class Leaderboard implements Screen {
     private Stage stage;
-    FitViewport fitViewport;
+
+    Viewport fitViewport;
     OrthographicCamera camera;
 
     float gameWidth, gameHeight;
@@ -39,19 +47,26 @@ public class Leaderboard implements Screen {
 
     game game;
 
+    Table scrollTable;
+
+    String namePlayer;
+
+    int helpVariable;
+
     public Leaderboard(final game gam, final String namePlayer) {
         this.game = gam;
+        this.namePlayer = namePlayer;
 
         gameWidth = Gdx.graphics.getWidth();
         gameHeight = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
-        fitViewport = new FitViewport(600, 400, camera);
+        fitViewport = new FitViewport(1280, 720, camera);
+//        fitViewport = new ExtendViewport(1280, 720, 1280, 720, camera);
 
         this.stage = new Stage(fitViewport);
-        Gdx.input.setInputProcessor(this.stage);
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        final Table scrollTable = new Table();
 
 //
 //
@@ -75,46 +90,29 @@ public class Leaderboard implements Screen {
 //        scroller.setSmoothScrolling(true);
 //        scroller.setPosition(500, 0);
 
-        game.loaded.create();
-        game.loaded.checkStartPlay();
+        Label text = LabelHandler.INSTANCE.createLabel("choose a room \nor \ncreate your own ", 50, Color.WHITE);
+        text.setPosition(30, 570);
 
-        Label text = LabelHandler.INSTANCE.createLabel("choose a room", 30, Color.WHITE);
-        text.setPosition(30, 300);
-
-        TextButton reset = new TextButton("reboot", skin);
-        reset.setSize(80, 80);
-        reset.setPosition(350, 30);
-        reset.addListener(new ChangeListener() {
+        Texture myTexture = new Texture(Gdx.files.internal("7.png"));
+        TextureRegion myTextureRegion = new TextureRegion(myTexture);
+        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+        ImageButton back = new ImageButton(myTexRegionDrawable);
+        back.setPosition(1090, 600);
+        back.setSize(120, 120);
+        back.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                try {
-                    roms = game.loaded.checkStartPlay2().replace("null", "").split(" ");
-                    System.out.println(roms.length);
-                    System.out.println(game.loaded.checkStartPlay2());
-
-                    scrollTable.clear();
-                    for (int i = 0; i < roms.length; i++) {
-                        TextButton button = new TextButton(roms[i], skin);
-                        final int finalI = i;
-                        button.addListener(new ChangeListener() {
-                            @Override
-                            public void changed(ChangeEvent event, Actor actor) {
-                                game.loaded.dispose();
-                                game.setScreen(new Game1_Screen(game, namePlayer, roms[finalI], false));
-                            }
-                        });
-                        scrollTable.add(button).size(400, 120);
-                        scrollTable.row();
-                    }
-                } catch (Exception e) {
-
-                }
+                game.loaded.dispose();
+                game.setScreen(new Lobby(game));
             }
         });
 
-        TextButton newGame = new TextButton("New game", skin);
-        newGame.setSize(100, 80);
-        newGame.setPosition(450, 30);
+        game.loaded.create();
+        game.loaded.checkStartPlay();
+
+        ImageTextButton newGame = new ImageTextButton("New Game", imageTextButton("BlakButton.png", 45));
+        newGame.setSize(237, 100);
+        newGame.setPosition(800, 160);
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -123,22 +121,31 @@ public class Leaderboard implements Screen {
             }
         });
 
-
+        scrollTable = new Table();
         final ScrollPane scroller = new ScrollPane(scrollTable);
-        scroller.setSmoothScrolling(true);
-        scroller.setTransform(true);
-        scroller.setScale(0.6f);
-
+//        scroller.setSmoothScrolling(true);
+//        scroller.setTransform(true);
+        scroller.setScale(1f);
+        scroller.setBounds(0, 0, 450, 450);
 
         final Table table = new Table();
-        table.setFillParent(true);
+//        table.setFillParent(true);
         table.add(scroller).fill().expand();
+        table.setBounds(0, 50, 450, 400);
 
 
         this.stage.addActor(table);
-        this.stage.addActor(reset);
         this.stage.addActor(text);
         this.stage.addActor(newGame);
+        this.stage.addActor(back);
+
+//        fitViewport.apply();
+
+        Gdx.input.setInputProcessor(this.stage);
+//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        this.stage.getViewport().setCamera(camera);
+
+
     }
 
     @Override
@@ -148,17 +155,44 @@ public class Leaderboard implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.3f, 0, 1, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        camera.update();
+        fitViewport.apply();
+        try {
+            roms = game.loaded.checkStartPlay2().replace("null", "").split(" ");
+            if (roms.length > helpVariable) {
+                scrollTable.clear();
+                for (int i = 0; i < roms.length; i++) {
+                    ImageTextButton button = new ImageTextButton(roms[i], imageTextButton("buttonBer.png", 25));
+                    final int finalI = i;
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            game.loaded.dispose();
+                            game.setScreen(new Game1_Screen(game, namePlayer, roms[finalI], false));
+                        }
+                    });
+                    scrollTable.add(button).size(420, 100).padBottom(20);
+                    scrollTable.row();
+                }
+                helpVariable = roms.length;
+            }
+
+
+        } catch (Exception e) {
+
+        }
+
         this.stage.act();
         this.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        fitViewport.update(width, height, true);
     }
 
     @Override
@@ -177,6 +211,28 @@ public class Leaderboard implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+    }
+
+    public ImageTextButton.ImageTextButtonStyle imageTextButton(String way, int size) {
+        Texture myTexture = new Texture(Gdx.files.internal(way));//buttonBer
+        TextureRegion myTextureRegion = new TextureRegion(myTexture);
+        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+        ImageTextButton.ImageTextButtonStyle style = new ImageTextButton.ImageTextButtonStyle();
+        style.up = myTexRegionDrawable;
+        style.down = myTexRegionDrawable;
+        style.checked = myTexRegionDrawable;
+        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
+        return style;
+    }
+
+    public TextButton.TextButtonStyle setStyle(TextButton end, int size) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
+        style.checked = end.getStyle().checked;
+        style.up = end.getStyle().up;
+        style.down = end.getStyle().down;
+
+        return style;
     }
 }
  

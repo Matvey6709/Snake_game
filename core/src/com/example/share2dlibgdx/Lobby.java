@@ -22,13 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
+import handler.FontSizeHandler;
 import handler.LabelHandler;
 
 public class Lobby implements Screen {
-
-
-
     Table table;
     OrthographicCamera camera;
     boolean show = false;
@@ -38,7 +37,7 @@ public class Lobby implements Screen {
     String namePlayer = "Matmeyker";
     Label label;
 
-    FitViewport fitViewport;
+    Viewport fitViewport;
 //    ScreenViewport fitViewport;
 
     int numGame = 0;
@@ -56,27 +55,28 @@ public class Lobby implements Screen {
         backgroundTexture = new TextureRegion(t, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera = new OrthographicCamera();
 //        camera.setToOrtho(false, 600, 400);
-        fitViewport = new FitViewport(600, 400, camera);
+        fitViewport = new FitViewport(1280, 720, camera);
 //        fitViewport = new ScreenViewport(camera);
 
 //        game.loaded.create();
 
-        stage = new Stage();
+        stage = new Stage(fitViewport);
         stage.getViewport().setCamera(camera);
         Screen();
 
         Gdx.input.setInputProcessor(stage);
 
-        fitViewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+//        fitViewport.apply();
+//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 1, 1, 1);//Цвет экрана
+        ScreenUtils.clear(0, 0, 0, 1);//Цвет экрана
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        camera.update();
+//        camera.update();
+        fitViewport.apply();
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -95,7 +95,7 @@ public class Lobby implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        fitViewport.update(width, height, true);
     }
 
     @Override
@@ -124,15 +124,16 @@ public class Lobby implements Screen {
 
     public void Screen() {
         table = new Table();
-        table.setBounds(400, 0, 200, 400);
+        table.setBounds(880, 0, 400, 720);
         final Drawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture("bac.jpg")));
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
 
 //        font = new BitmapFont();
-        TextButton button = new TextButton("Settings", skin);
-        button.setPosition(450, 320);
-        button.setSize(100, 60);
+        TextButton button = new TextButton("", skin);
+        button = new TextButton("Settings", setStyle(skin, button, 40));
+        button.setPosition(990, 576);
+        button.setSize(200, 100);
 //        table.add(button);
         button.addListener(new ChangeListener() {
             @Override
@@ -141,14 +142,15 @@ public class Lobby implements Screen {
             }
         });
 
-        label = LabelHandler.INSTANCE.createLabel(namePlayer, 30, Color.BLACK);
-        label.setX(70);
-        label.setY(350);
+        label = LabelHandler.INSTANCE.createLabel(namePlayer, 87, Color.BLACK);
+        label.setX(140);
+        label.setY(600);
 
 
         TextButton startGame1 = new TextButton("TestButton", skin);
-        startGame1.setPosition(250, 60);
-        startGame1.setSize(100, 60);
+        startGame1 = new TextButton("TestButton", setStyle(skin, startGame1, 40));
+        startGame1.setPosition(454, 108);
+        startGame1.setSize(300, 120);
 
 //        startGame1.addListener(new ChangeListener() {
 //            @Override
@@ -192,8 +194,8 @@ public class Lobby implements Screen {
         });
 
         TextButton button1 = new TextButton("Game1", skin);
-        button1.setPosition(150, 200);
-        button1.setSize(100, 60);
+        button1.setPosition(320, 360);
+        button1.setSize(200, 120);
         button1.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -223,6 +225,7 @@ public class Lobby implements Screen {
             table.clear();
             table.setBackground(drawable);
             TextButton button = new TextButton("Reset Name", skin);
+            button = new TextButton("Reset Name", setStyle(skin, button, 35));
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -231,6 +234,7 @@ public class Lobby implements Screen {
             });
 
             TextButton button2 = new TextButton("Reset Color", skin);
+            button2 = new TextButton("Reset Color", setStyle(skin, button2, 35));
             button2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -238,8 +242,8 @@ public class Lobby implements Screen {
                 }
             });
 
-            table.add(button).size(130, 40).padBottom(10f).row();
-            table.add(button2).size(130, 40).row();
+            table.add(button).size(260, 80).padBottom(20f).row();
+            table.add(button2).size(260, 80).row();
             this.show = true;
 
         }
@@ -247,7 +251,7 @@ public class Lobby implements Screen {
 
     public void ResetName() {
         final Table resetNameTable = new Table();
-        resetNameTable.setBounds(0, 0, 600, 400);
+        resetNameTable.setBounds(0, 0, 1200, 800);
         Texture tex = new Texture("resetname.jpg");
         TextureRegion t = new TextureRegion(tex);
         Drawable drawable = new TextureRegionDrawable(t);
@@ -263,9 +267,19 @@ public class Lobby implements Screen {
                 namePlayer = textField.getText();
             }
         });
-        resetNameTable.add(textField).padBottom(40f).row();
+        resetNameTable.add(textField).padBottom(50f).row();
         resetNameTable.add(button).row();
         stage.addActor(resetNameTable);
         tex.dispose();
+    }
+
+    public TextButton.TextButtonStyle setStyle(Skin skin, TextButton end, int size) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
+        style.checked = end.getStyle().checked;
+        style.up = end.getStyle().up;
+        style.down = end.getStyle().down;
+
+        return style;
     }
 }

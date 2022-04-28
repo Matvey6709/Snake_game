@@ -2,7 +2,6 @@ package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.example.share2dlibgdx.ui.Joystick3;
 
 import java.util.ArrayList;
@@ -79,14 +78,24 @@ public class Transfer {
         }
     }
 
-    public void trBody2(){
+    float timeSet;
+
+    public void trBody2(float delta) {
         for (int i = cells.size() - 1; i > 0; i--) {
             Cell nextBody = cells.get(i - 1);
             Cell body = cells.get(i);
             body.x = nextBody.getX();
             body.y = nextBody.getY();
         }
-        cells.get(0).x += joystick3.getValueX()*90*size.getKX();
-        cells.get(0).y += joystick3.getValueY()*90*size.getKY();
+        timeSet += delta;
+        float getValueX = 0;
+        float getValueY = 0;
+        if (timeSet > .10) {
+            getValueX = joystick3.getValueX();
+            getValueY = joystick3.getValueY();
+//            timeSet = 0;
+        }
+        cells.get(0).x += getValueX * 10 * size.getKX();
+        cells.get(0).y += getValueY * 10 * size.getKY();
     }
 }

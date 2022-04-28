@@ -71,6 +71,11 @@ public class AndroidLauncher extends AndroidApplication {
             public void dispose() {
                 base.dispose();
             }
+
+            @Override
+            public void dispose2() {
+                base.dispose2();
+            }
         };
         Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
         initialize(new game(loaded), config);

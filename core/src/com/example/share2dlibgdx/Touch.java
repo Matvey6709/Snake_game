@@ -12,7 +12,7 @@ public class Touch {
     }
 
     public boolean touchPlays(Snake share, float share2X, float share2Y){
-        if(share.cells.get(0).x+100 > share2X && share.cells.get(0).x < share2X+100 && share.cells.get(0).y+100 >share2Y && share.cells.get(0).y < share2Y+100){
+        if (share.cells.get(0).x + share.sizeX > share2X && share.cells.get(0).x < share2X + share.sizeX && share.cells.get(0).y + share.sizeY > share2Y && share.cells.get(0).y < share2Y + share.sizeY) {
             return true;
         }
         return false;
@@ -20,7 +20,7 @@ public class Touch {
 
 
     public boolean touchBred(){
-        if(share.cells.get(0).x+100 > bread.x && share.cells.get(0).x < bread.x+100 && share.cells.get(0).y+100 > bread.y && share.cells.get(0).y < bread.y+100){
+        if (share.cells.get(0).x + share.sizeX > bread.x && share.cells.get(0).x < bread.x + share.sizeY && share.cells.get(0).y + share.sizeY > bread.y && share.cells.get(0).y < bread.y + share.sizeY) {
             return true;
         }
         return false;
