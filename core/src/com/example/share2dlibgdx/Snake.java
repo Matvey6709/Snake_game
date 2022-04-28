@@ -1,9 +1,7 @@
 package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.example.share2dlibgdx.ui.Joystick3;
 
 import java.util.ArrayList;
@@ -24,25 +22,25 @@ public class Snake {
     public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY) {
         this.batch = batch;
         this.joystick3 = joystick3;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.sizeX = sizeX / 3;
+        this.sizeY = sizeY / 3;
         increase(level);
         transfer = new Transfer(cells, joystick3);
         texture = new Texture("redS.png");
     }
 
     public void render(float delta) {
-        ShareInit();
+        ShareInit(delta);
         timeSet += delta;
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
     }
 
-    public void ShareInit() {
+    public void ShareInit(float delta) {
 //        transfer.trInit();
-        if (timeSet > .50) {
-            transfer.trBody2();//передвижение
+        if (timeSet > .10) {
+            transfer.trBody2(delta);//передвижение
             timeSet = 0;
         }
     }
@@ -60,6 +58,8 @@ public class Snake {
 
     public void addLevel() {
         level++;
+        cells.add(new Cell(0, 0, sizeX, sizeY));
+        cells.add(new Cell(0, 0, sizeX, sizeY));
         cells.add(new Cell(0, 0, sizeX, sizeY));
     }
 

@@ -24,4 +24,6 @@ public interface InterfaceDataLoaded {
 
     public void dispose();
 
+    public void dispose2();
+
 }

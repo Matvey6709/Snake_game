@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.example.share2dlibgdx.ui.Joystick3;
 
 import java.util.Locale;
@@ -40,8 +41,10 @@ public class Game1_Screen implements Screen {
     boolean wait;
     Texture grass;
     Texture cur;
+    Viewport fitViewport;
 
     public Game1_Screen(final game gam, String namePlayer, String nameGame, boolean wait) {
+
         game = gam;
         this.wait = wait;
 
@@ -51,11 +54,14 @@ public class Game1_Screen implements Screen {
 //        game.fitViewport = new FitViewport(1280, 720, camera);
         cur = new Texture("pole3.png");
         joystick = new Joystick3(cur, cur);
+        camera.position.set(400, 100, 0);
+        fitViewport = new FitViewport(1280, 720, camera);
+//        fitViewport.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        game.fitViewport = new StretchViewport(1280, 720, camera);
-        stage = new Stage();
-        stage.addActor(joystick);
+        stage = new Stage(fitViewport);
         stage.addActor(pointUi.FirstPointUi());//Поинт игрока 1
+        stage.addActor(joystick);
+
         stage.addActor(pointUi.SecondPointUi());//Поинт игрока 2
         stage.addActor(pointUi.apples());
         stage.addActor(pointUi.apples2());
@@ -72,13 +78,12 @@ public class Game1_Screen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
-        game.fitViewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
         size = new DeterminantSize();
         snake = new Snake(game.batch, joystick, size.getWidthGame(100), size.getHeightGame(100));
         snake.NamePlayer = namePlayer;
         snake.NameGame = nameGame;
-        bread = new Bread(game.batch, size.getWidthGame(100));
+        bread = new Bread(game.batch, size.getWidthGame(100) / 2);
         bread.spawn();
         touch = new Touch(snake, bread);
         serverUpdate = new ServerUpdate();
@@ -102,12 +107,19 @@ public class Game1_Screen implements Screen {
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glClearColor(0, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.update();
 
-        game.batch.setProjectionMatrix(camera.combined);
+//        fitViewport.apply();
+
+
+//        camera.position.set(400, 100, 0);
+//        camera.update();
+        fitViewport.apply();
+
+
+//        game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
         try {
@@ -190,8 +202,9 @@ public class Game1_Screen implements Screen {
                 } else if (serverUpdate.getLevel() >= 9 && serverUpdate.getNamePlayer() != null) {
                     pointUi.WhoWin(serverUpdate.getNamePlayer());
                     end = true;
-                    pointUi.end.setSize(400, 120);
-                    pointUi.end.setPosition(640, Gdx.graphics.getHeight() / 2 - 350);
+                    pointUi.end.setSize(200, 120);
+                    pointUi.end.setPosition(360 - 360 / snake.NamePlayer.length(), 240);
+
                 }
             } else {
                 if (game.loaded.countPlayersGames2() == 2) {
@@ -201,7 +214,6 @@ public class Game1_Screen implements Screen {
 
 
         } catch (Exception e) {
-
         }
 //            if (startPlay) {
 //                try {
@@ -325,15 +337,14 @@ public class Game1_Screen implements Screen {
 //            }
 
         game.batch.end();
-        camera.update();
-        stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
 
     }
 
     @Override
     public void resize(int width, int height) {
-
+        fitViewport.update(width, height, true);
     }
 
     @Override
@@ -370,6 +381,7 @@ public class Game1_Screen implements Screen {
 
     public void end() {
         game.loaded.dispose();
+        game.loaded.dispose2();
         end = true;
 //        this.dispose();
     }
@@ -392,4 +404,5 @@ public class Game1_Screen implements Screen {
         String time2 = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
         pointUi.timer.setText(time2);
     }
+
 }

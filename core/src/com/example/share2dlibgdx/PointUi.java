@@ -3,23 +3,18 @@ package com.example.share2dlibgdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.ArrayList;
 
+import handler.FontSizeHandler;
 import handler.LabelHandler;
 
 
@@ -47,29 +42,29 @@ public class PointUi {
 
     public Label Timer() {
         timer = LabelHandler.INSTANCE.createLabel("00:00", 60, Color.BLACK);
-        timer.setX((float) (Gdx.graphics.getWidth() / 1.5));
-        timer.setY(Gdx.graphics.getHeight() - 100);
+        timer.setX((float) (1280 / 1.5));
+        timer.setY(720 - 100);
         return timer;
     }
 
     public Label WinPlay() {
-        WinLabel = LabelHandler.INSTANCE.createLabel("", 200, Color.BLACK);
-        WinLabel.setX(300);
-        WinLabel.setY(Gdx.graphics.getHeight() / 2);
+        WinLabel = LabelHandler.INSTANCE.createLabel("", 100, Color.BLACK);
+        WinLabel.setX(350);
+        WinLabel.setY(1280 / 2);
         return WinLabel;
     }
 
     public Label FirstPointUi() {
         label = LabelHandler.INSTANCE.createLabel("namePlayer", 60, Color.BLACK);
         label.setX(0);
-        label.setY(Gdx.graphics.getHeight() - 100);
+        label.setY(720 - 100);
         return label;
     }
 
     public Label SecondPointUi() {
         label2 = LabelHandler.INSTANCE.createLabel("namePlayersss", 60, Color.BLACK);
         label2.setX(0);
-        label2.setY(Gdx.graphics.getHeight() - 200);
+        label2.setY(720 - 200);
         return label2;
     }
 
@@ -81,7 +76,7 @@ public class PointUi {
             TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
             ImageButton imageButton = new ImageButton(myTexRegionDrawable);
             imageButton.setX(350 + (i * 60));
-            imageButton.setY(Gdx.graphics.getHeight() - 200);
+            imageButton.setY(720 - 200);
             imageButton.setWidth(56);
             imageButton.setHeight(56);
             group.addActor(imageButton);
@@ -98,7 +93,7 @@ public class PointUi {
             TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
             ImageButton imageButton = new ImageButton(myTexRegionDrawable);
             imageButton.setX(350 + (i * 60));
-            imageButton.setY(Gdx.graphics.getHeight() - 100);
+            imageButton.setY(720 - 100);
             imageButton.setWidth(56);
             imageButton.setHeight(56);
             imageButtonsApples.add(imageButton);
@@ -108,11 +103,18 @@ public class PointUi {
         return group2;
     }
 
-    public TextButton endButton(){
+    public TextButton endButton() {
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         end = new TextButton("End", skin);
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = FontSizeHandler.INSTANCE.getFont(40, Color.WHITE);
+        ;
+        style.checked = end.getStyle().checked;
+        style.up = end.getStyle().up;
+        style.down = end.getStyle().down;
+        end.setStyle(style);
         end.setSize(-400, -120);
-        end.setPosition(-640, -Gdx.graphics.getHeight()/2-350);
+        end.setPosition(-640, -720 / 2 - 350);
         return end;
     }
 
@@ -143,15 +145,18 @@ public class PointUi {
             f--;
         }
 
-        if(testLevel1 < level1){
+        if (testLevel1 < level1) {
             testLevel1 = level1;
-            group2.getChild(8-level1).clear();
+            group2.getChild(8 - level1).clear();
 
         }
     }
 
-    public void WhoWin(String namePlayer){
-        WinLabel.setText("Win: "+ namePlayer);
+    public void WhoWin(String namePlayer) {
+
+        WinLabel.setX(360 - 360 / namePlayer.length());
+        WinLabel.setY(440);
+        WinLabel.setText("Win: " + namePlayer);
     }
 
 

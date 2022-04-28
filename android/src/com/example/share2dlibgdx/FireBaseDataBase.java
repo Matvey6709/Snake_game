@@ -379,6 +379,9 @@ public class FireBaseDataBase {
 
     public void dispose() {
         ref.removeEventListener(v);
-//        ref2.removeEventListener(v);
+    }
+
+    public void dispose2() {
+        ref2.removeEventListener(v);
     }
 }

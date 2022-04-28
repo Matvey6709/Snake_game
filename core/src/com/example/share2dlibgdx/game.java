@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import datamanager.InterfaceDataLoaded;
 
@@ -16,9 +16,9 @@ public class game extends Game {
     InterfaceDataLoaded loaded;
     Stage stage;
 
-    StretchViewport fitViewport;
+    Viewport fitViewport;
 
-
+    Lobby lobby;
     public game(InterfaceDataLoaded loaded) {
         this.loaded = loaded;
     }
@@ -42,7 +42,8 @@ public class game extends Game {
 //
 //        fitViewport.apply();
 //        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-
+        lobby = new Lobby(this);
+//        setScreen(new Game1_Screen(this, "Mat", "2535381650890042343", false));
         setScreen(new Lobby(this));
     }
 
