@@ -22,6 +22,7 @@ public class FireBaseDataBase {
     ValueEventListener v;
     String nGame;
     int cPg = -1;
+    boolean isOnline = false;
 
     public void Create() {
         //        firebaseDatabase = FirebaseDatabase.getInstance("https://share-3c976-default-rtdb.firebaseio.com/");
@@ -30,6 +31,7 @@ public class FireBaseDataBase {
         players = new Player();
 
         ref = firebaseDatabase.getReference("Games");
+
 
     }
 
@@ -343,36 +345,6 @@ public class FireBaseDataBase {
         return cPg;
     }
 
-    public String getFirstPlayer(String nameGame) {
-//        player.clear();
-//        ref = firebaseDatabase.getReference("Games").child(nameGame);
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                String f = snapshot.getValue().toString();
-//                f = f.substring(1, f.indexOf("="));
-//                player.add(f);
-//                gg = player.get(0);
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        if (player.size() > 0) {
-//            System.out.println(player.get(0));
-//            nameFirstPlayer = player.get(0);
-//        }
-//        System.out.println(gg);
-////        assert nameFirstPlayer != null;
-//        nameFirstPlayer = gg;
-        return null;
-    }
-
     public Player test() {
         return players;
     }
@@ -383,5 +355,78 @@ public class FireBaseDataBase {
 
     public void dispose2() {
         ref2.removeEventListener(v);
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void isOnline2(String nameGame, String namePlayer) {
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+
+        v = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    System.out.println("connected");
+                    isOnline = true;
+//                    System.out.println(nameGame);
+                } else {
+                    System.out.println("not connected");
+                    isOnline = false;
+                }
+
+                ref.child(nameGame).onDisconnect().setValue(null);
+                System.out.println(namePlayer);
+                presenceRef.onDisconnect().setValue("I disconnected!");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Listener was cancelled");
+            }
+        };
+        connectedRef.addValueEventListener(v);
+    }
+
+    public void delete(String nameGame) {
+//        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+//        // Write a string when this client loses connection
+//        System.out.println(nameGame);
+//        presenceRef.onDisconnect().setValue("I disconnected!");
+//        ref.child(nameGame).onDisconnect().setValue(null);
+        ref.child(nameGame).setValue(null);
+
+    }
+
+    boolean isExistsGame = true;
+
+    public void isExistsGame(String nGame, String namePlayer2) {
+        v = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isExistsGame = snapshot.child(nGame).exists();
+//                System.out.println(snapshot.child(nGame).getChildrenCount());
+                if (snapshot.child(nGame).getChildrenCount() != 2) {
+                    isExistsGame = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        ref.addValueEventListener(v);
+    }
+
+    public boolean isExistsGame2() {
+        return isExistsGame;
+    }
+
+    public void isNamePlayer(String namePlayer) {
+
     }
 }

@@ -10,12 +10,16 @@ public class Transfer {
     int tr = 0;
     ArrayList<Cell> cells = new ArrayList<>();
     DeterminantSize size = new DeterminantSize();
-    int speed = size.getWidthGame(100);
+    int speed = size.getWidthGame(33);
     Joystick3 joystick3;
 
     public Transfer(ArrayList<Cell> cells, Joystick3 joystick3) {
         this.cells = cells;
         this.joystick3 = joystick3;
+    }
+
+    public Transfer(ArrayList<Cell> cells) {
+        this.cells = cells;
     }
 
     public void trInit() {
@@ -33,13 +37,6 @@ public class Transfer {
     public void trBody() {
         switch (tr) {
             case 1:
-//                for (int i = 1; i < cells.size() - 1; i++) {
-//                    System.out.println(cells.get(3).x+" "+i);
-//                    System.out.println(cells.get(4).x+" "+i);
-//                    cells.get(i).x = cells.get(i - 1).x;
-//                    cells.get(i).y = cells.get(i - 1).y;
-//
-//                }
                 for (int i = cells.size() - 1; i > 0; i--) {
                     Cell nextBody = cells.get(i - 1);
                     Cell body = cells.get(i);

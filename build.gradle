@@ -88,6 +88,10 @@ project(":android") {
         implementation 'com.google.firebase:firebase-analytics'
         implementation 'com.google.firebase:firebase-database'
 
+        implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+
+
+
     }
 }
 
@@ -135,5 +139,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+
+        implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
     }
 }

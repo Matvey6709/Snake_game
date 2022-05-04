@@ -4,26 +4,39 @@ import com.example.share2dlibgdx.Snake;
 
 public interface InterfaceDataLoaded {
 
-    public abstract Player requestData(String nameGame, String namePlayer, Snake share);
+    Player requestData(String nameGame, String namePlayer, Snake share);
 
-    public abstract Player requestData2();
+    Player requestData2();
 
-    public abstract void create();
+    void create();
 
-    public abstract void put(String nameGame, String namePlayer, String vector2, String level, int appleX, int appleY);
+    void put(String nameGame, String namePlayer, String vector2, String level, int appleX, int appleY);
 
-    public abstract String checkStartPlay();
+    String checkStartPlay();
 
-    public abstract String checkStartPlay2();
+    String checkStartPlay2();
 
-    public abstract int countPlayersGames(String nameGame);
+    int countPlayersGames(String nameGame);
 
-    public abstract int countPlayersGames2();
+    int countPlayersGames2();
 
-    public String getFirstPlayer(String nameGame);
+    void dispose();
 
-    public void dispose();
+    void dispose2();
 
-    public void dispose2();
+    boolean isOnline();
 
+    void isOnline2(String nameGame, String namePlayer);
+
+    void toast(String text);
+
+    void delete(String nameGame);
+
+    void isExistsGame(String nGame, String namePlayer2);
+
+    boolean isExistsGame2();
+
+    boolean isNamePlayer(String namePlayer);
+
+    void putNamePlayer(String namePlayer);
 }

@@ -9,16 +9,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -34,14 +35,8 @@ public class Leaderboard implements Screen {
     OrthographicCamera camera;
 
     float gameWidth, gameHeight;
-    List<String> list;
 
     Skin skin;
-
-    private static final String reallyLongString = "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n";
-
 
     String roms[];
 
@@ -52,6 +47,8 @@ public class Leaderboard implements Screen {
     String namePlayer;
 
     int helpVariable;
+    CheckBox checkBox;
+    boolean check;
 
     public Leaderboard(final game gam, final String namePlayer) {
         this.game = gam;
@@ -103,7 +100,7 @@ public class Leaderboard implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.loaded.dispose();
-                game.setScreen(new Lobby(game));
+                game.setScreen(game.lobby);
             }
         });
 
@@ -117,7 +114,7 @@ public class Leaderboard implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.loaded.dispose();
-                game.setScreen(new Game1_Screen(game, namePlayer, new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis(), true));
+                game.setScreen(new Game1_Screen(game, namePlayer, new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis(), true, check));
             }
         });
 
@@ -133,16 +130,34 @@ public class Leaderboard implements Screen {
         table.add(scroller).fill().expand();
         table.setBounds(0, 50, 450, 400);
 
+        checkBox = new CheckBox("Other mode", skin);
+        checkBox.setPosition(1100, 100);
+        checkBox.setTransform(true);
+        checkBox.getImage().setScaling(Scaling.fill);
+        checkBox.setSize(50, 50);
+        checkBox.getImageCell().size(50, 50);
+        checkBox.getImage().setSize(50, 50);
+        checkBox.getLabel().setFontScale(3f, 3f);
+        checkBox.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!check) {
+                    check = true;
+                } else {
+                    check = false;
+                }
+            }
+        });
 
         this.stage.addActor(table);
         this.stage.addActor(text);
         this.stage.addActor(newGame);
         this.stage.addActor(back);
+        this.stage.addActor(checkBox);
 
-//        fitViewport.apply();
 
         Gdx.input.setInputProcessor(this.stage);
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
         this.stage.getViewport().setCamera(camera);
 
 
@@ -160,6 +175,9 @@ public class Leaderboard implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        camera.update();
+        if (!game.loaded.isOnline()) {
+
+        }
         fitViewport.apply();
         try {
             roms = game.loaded.checkStartPlay2().replace("null", "").split(" ");
@@ -172,7 +190,7 @@ public class Leaderboard implements Screen {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             game.loaded.dispose();
-                            game.setScreen(new Game1_Screen(game, namePlayer, roms[finalI], false));
+                            game.setScreen(new Game1_Screen(game, namePlayer, roms[finalI], false, check));
                         }
                     });
                     scrollTable.add(button).size(420, 100).padBottom(20);

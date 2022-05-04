@@ -11,7 +11,14 @@ public class Touch {
         this.bread = bread;
     }
 
-    public boolean touchPlays(Snake share, float share2X, float share2Y){
+    public boolean touchPlays(Snake share, float share2X, float share2Y) {
+        if (share.cells.get(0).x + share.sizeX > share2X && share.cells.get(0).x < share2X + share.sizeX && share.cells.get(0).y + share.sizeY > share2Y && share.cells.get(0).y < share2Y + share.sizeY) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean touchPlayer(Snake share, float share2X, float share2Y) {
         if (share.cells.get(0).x + share.sizeX > share2X && share.cells.get(0).x < share2X + share.sizeX && share.cells.get(0).y + share.sizeY > share2Y && share.cells.get(0).y < share2Y + share.sizeY) {
             return true;
         }
@@ -19,14 +26,14 @@ public class Touch {
     }
 
 
-    public boolean touchBred(){
+    public boolean touchBred() {
         if (share.cells.get(0).x + share.sizeX > bread.x && share.cells.get(0).x < bread.x + share.sizeY && share.cells.get(0).y + share.sizeY > bread.y && share.cells.get(0).y < bread.y + share.sizeY) {
             return true;
         }
         return false;
     }
 
-    public int touchScreen(){
+    public int touchScreen() {
         if(share.cells.get(0).x > widthScreen && share.cells.get(0).y < heightScreen){
 //            System.out.println("1");
 //            Правая граница

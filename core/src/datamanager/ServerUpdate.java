@@ -12,7 +12,7 @@ public class ServerUpdate {
     public ArrayList<Cell> cells;
     Player players;
     DeterminantSize size;
-    public int level;
+    public int level = 1;
     public String namePlayer = "";
     SpriteBatch batch;
     Texture texture;
@@ -49,9 +49,8 @@ public class ServerUpdate {
                 appleX = players.getAppleX();
                 appleY = players.getAppleY();
 
-                if (cells.size() - 1 < Integer.parseInt(players.getLevel()) && players != null) {
+                if (level < Integer.parseInt(players.getLevel()) && players != null) {
                     addLevel();
-                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
                     cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
                     cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
                 }
@@ -66,11 +65,13 @@ public class ServerUpdate {
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
+//        System.out.println(cells.size());
         batch.draw(blueApple, appleX, appleY, 100 / 2, 100 / 2);
     }
 
     public void addLevel() {
         cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+        level++;
     }
 
     public void dispose() {
@@ -80,7 +81,7 @@ public class ServerUpdate {
     }
 
     public int getLevel() {
-        return cells.size();
+        return level;
     }
 
     public String getNamePlayer() {
