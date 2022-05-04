@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -24,6 +22,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Random;
+
 import handler.FontSizeHandler;
 import handler.LabelHandler;
 
@@ -34,7 +34,7 @@ public class Lobby implements Screen {
     TextureRegion backgroundTexture;
     Skin skin;
 
-    String namePlayer = "Matmeyker";
+    String namePlayer = "Default";
     Label label;
 
     Viewport fitViewport;
@@ -54,30 +54,25 @@ public class Lobby implements Screen {
         t = new Texture("bac2.jpg");
         backgroundTexture = new TextureRegion(t, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera = new OrthographicCamera();
-//        camera.setToOrtho(false, 600, 400);
         fitViewport = new FitViewport(1280, 720, camera);
-//        fitViewport = new ScreenViewport(camera);
-
-//        game.loaded.create();
 
         stage = new Stage(fitViewport);
         stage.getViewport().setCamera(camera);
         Screen();
 
         Gdx.input.setInputProcessor(stage);
-
-//        fitViewport.apply();
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
     }
 
+    float f;
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);//Цвет экрана
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
 //        camera.update();
         fitViewport.apply();
-
+        f += delta;
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, 1280, 720);
@@ -89,7 +84,16 @@ public class Lobby implements Screen {
 
     @Override
     public void show() {
+        t = new Texture("bac2.jpg");
+        backgroundTexture = new TextureRegion(t, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new OrthographicCamera();
+        fitViewport = new FitViewport(1280, 720, camera);
 
+        stage = new Stage(fitViewport);
+        stage.getViewport().setCamera(camera);
+        Screen();
+
+        Gdx.input.setInputProcessor(stage);
     }
 
 
@@ -100,27 +104,21 @@ public class Lobby implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
         stage.dispose();
         t.dispose();
-//        game.batch.dispose();
     }
-
-    int y = 0;
 
     public void Screen() {
         table = new Table();
@@ -146,77 +144,44 @@ public class Lobby implements Screen {
         label.setX(140);
         label.setY(600);
 
-
-        TextButton startGame1 = new TextButton("TestButton", skin);
+        TextButton startGame1 = new TextButton("StartOnlineGame", skin);
         startGame1 = new TextButton("TestButton", setStyle(skin, startGame1, 40));
         startGame1.setPosition(454, 108);
         startGame1.setSize(300, 120);
 
-//        startGame1.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                numGame = 1;
-////                fitViewport = new FitViewport(1280, 720, camera);
-////                stage = new Stage();
-////                stage.addActor(joystick);
-//////                stage.addActor(game1.pointUi);
-////                stage.addActor(game1.pointUi.FirstPointUi());//Поинт игрока 1
-////                stage.addActor(game1.pointUi.SecondPointUi());//Поинт игрока 2
-////                stage.addActor(game1.pointUi.apples());
-////                stage.addActor(game1.pointUi.apples2());
-////                stage.addActor(game1.pointUi.WinPlay());
-////                game1.pointUi.WinLabel.addListener(new ChangeListener() {
-////                    @Override
-////                    public void changed(ChangeEvent event, Actor actor) {
-////                        fitViewport = new FitViewport(600, 400, camera);
-////                        stage = new Stage(fitViewport);
-////                        stage.getViewport().setCamera(camera);
-////                        Screen();
-////                        fitViewport.apply();
-////                        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-////                    }
-////                });
-////                Gdx.input.setInputProcessor(stage);
-//
-////                fitViewport.update(1280, 720);
-////
-////                fitViewport.apply();
-////                camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//            }
-//        });
         startGame1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Lobby.this.dispose();
-//                game.setScreen(new Game1_Screen(game, namePlayer));
-                game.setScreen(new Leaderboard(game, namePlayer));
+                if (game.loaded.isOnline()) {
+                    if (namePlayer.equals("Default")) {
+                        namePlayer = new Random().nextInt(900) + 100 + "" + System.currentTimeMillis();
+                    }
+                    game.setScreen(new Leaderboard(game, namePlayer));
+                } else {
+                    game.loaded.toast("Включите интернет");
+                }
             }
         });
 
-        TextButton button1 = new TextButton("Game1", skin);
-        button1.setPosition(320, 360);
-        button1.setSize(200, 120);
-        button1.addListener(new EventListener() {
+        TextButton startGame2 = new TextButton("StartGame", skin);
+        startGame2 = new TextButton("StartGame", setStyle(skin, startGame2, 40));
+        startGame2.setPosition(54, 108);
+        startGame2.setSize(300, 120);
+        startGame2.addListener(new ChangeListener() {
             @Override
-            public boolean handle(Event event) {
-                System.out.println("Нажата кнопка игры");
-                return true;
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new Game2_Screen(game));
             }
         });
 
-//        game.stage.addActor(button1);
         stage.addActor(startGame1);
+        stage.addActor(startGame2);
         stage.addActor(label);
         stage.addActor(table);
         stage.addActor(button);
-
-//        skin.dispose();
-
-
     }
 
     public void settings(Drawable drawable) {
-//        System.out.println("GGHHH");
         if (show == true) {
             table.clear();
             table.setBackground((Drawable) null);
@@ -251,13 +216,21 @@ public class Lobby implements Screen {
 
     public void ResetName() {
         final Table resetNameTable = new Table();
-        resetNameTable.setBounds(0, 0, 1200, 800);
+        resetNameTable.setBounds(0, 0, 1280, 720);
         Texture tex = new Texture("resetname.jpg");
         TextureRegion t = new TextureRegion(tex);
         Drawable drawable = new TextureRegionDrawable(t);
         resetNameTable.setBackground(drawable);
         final TextField textField = new TextField("New Name", skin);
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
+        style = textField.getStyle();
+        style.font = FontSizeHandler.INSTANCE.getFont(40, Color.WHITE);
+        style.cursor = new TextureRegionDrawable();
+
+
         TextButton button = new TextButton("Ok", skin);
+        button = new TextButton("Ok", setStyle(skin, button, 60));
+        button.setSize(100, 100);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -267,7 +240,7 @@ public class Lobby implements Screen {
                 namePlayer = textField.getText();
             }
         });
-        resetNameTable.add(textField).padBottom(50f).row();
+        resetNameTable.add(textField).size(300, 65).padBottom(50f).row();
         resetNameTable.add(button).row();
         stage.addActor(resetNameTable);
         tex.dispose();
@@ -282,4 +255,6 @@ public class Lobby implements Screen {
 
         return style;
     }
+
+
 }

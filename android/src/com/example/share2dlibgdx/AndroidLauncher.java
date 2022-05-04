@@ -1,5 +1,8 @@
 package com.example.share2dlibgdx;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -13,6 +16,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     FireBaseDataBase base;
     InterfaceDataLoaded loaded;
+    final AndroidLauncher context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,6 @@ public class AndroidLauncher extends AndroidApplication {
             @Override
             public Player requestData(String nameGame, String namePlayer, Snake share) {
                 return base.requestData(nameGame, namePlayer, share);
-//                return base.test();
             }
 
             @Override
@@ -63,11 +66,6 @@ public class AndroidLauncher extends AndroidApplication {
             }
 
             @Override
-            public String getFirstPlayer(String nameGame) {
-                return base.getFirstPlayer(nameGame);
-            }
-
-            @Override
             public void dispose() {
                 base.dispose();
             }
@@ -76,12 +74,63 @@ public class AndroidLauncher extends AndroidApplication {
             public void dispose2() {
                 base.dispose2();
             }
+
+            @Override
+            public boolean isOnline() {
+                return isNetworkConnected();
+            }
+
+            @Override
+            public void isOnline2(String nameGame, String namePlayer) {
+                base.isOnline2(nameGame, namePlayer);
+            }
+
+            @Override
+            public void toast(String text) {
+                handler.post(() -> Toast.makeText(context, text, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void delete(String nameGame) {
+                base.delete(nameGame);
+            }
+
+            @Override
+            public void isExistsGame(String nGame, String namePlayer2) {
+                base.isExistsGame(nGame, namePlayer2);
+            }
+
+            @Override
+            public boolean isExistsGame2() {
+                return base.isExistsGame2();
+            }
+
+            @Override
+            public boolean isNamePlayer(String namePlayer) {
+                return false;
+            }
+
+            @Override
+            public void putNamePlayer(String namePlayer) {
+
+            }
+
         };
+//        Toast.makeText(this, "Включите Интернет", Toast.LENGTH_LONG).show();
         Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
+
+
         initialize(new game(loaded), config);
-//        initialize(new ScrollTest(), config);
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            return false;
+        } else
+            return true;
+    }
 
 }
 

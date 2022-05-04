@@ -4,8 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import datamanager.InterfaceDataLoaded;
 
@@ -14,59 +12,45 @@ public class game extends Game {
 
     SpriteBatch batch;
     InterfaceDataLoaded loaded;
-    Stage stage;
-
-    Viewport fitViewport;
 
     Lobby lobby;
+
+    Game1_Screen game1_screen;
+
+
     public game(InterfaceDataLoaded loaded) {
         this.loaded = loaded;
     }
 
     @Override
     public void create() {
-//        backgroundTexture = new TextureRegion(new Texture("bac2.jpg"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//
-//        camera = new OrthographicCamera();
-//        fitViewport = new FitViewport(600, 400, camera);
-//
+        Asset.instance().loadAsset();
         batch = new SpriteBatch();
-
-//        game1 = new Game1(batch, joystick, loaded);
-//
-//        stage = new Stage(fitViewport);
-//        stage.getViewport().setCamera(camera);
-//        Screen();
-//
-//        Gdx.input.setInputProcessor(stage);
-//
-//        fitViewport.apply();
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        loaded.create();
+        loaded.put("testGame1", "testName", "1200.0h360.0", "1", 100, 400);
         lobby = new Lobby(this);
-//        setScreen(new Game1_Screen(this, "Mat", "2535381650890042343", false));
-        setScreen(new Lobby(this));
+        setScreen(lobby);
     }
+
+    boolean f = false;
 
     @Override
     public void render() {
-//        camera.update();
-//        clearScreen();
-//        ScreenUtils.clear(0, 1, 1, 1);//Цвет экрана
-//        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-//
-//
-//        batch.setProjectionMatrix(camera.combined);
-//        batch.begin();
-//        batch.draw(backgroundTexture, 0, 0, 1280, 720);
-//
-//        switchGameRender(numGame);
-//
-//        batch.end();
-//
-//        stage.act(Gdx.graphics.getDeltaTime());
-//        stage.draw();
         super.render();
+        if (!loaded.isOnline() && !f) {
+            f = true;
+            loaded.toast("Нет подключения к интрнету");
+            setScreen(new Lobby(this));
+            try {
+                loaded.dispose();
+                loaded.dispose2();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (loaded.isOnline() && f) {
+            f = false;
+        }
     }
 
 
@@ -78,8 +62,9 @@ public class game extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-        stage.dispose();
 
+        super.dispose();
+        Asset.instance().dispose();
     }
 
 //    public void Screen() {

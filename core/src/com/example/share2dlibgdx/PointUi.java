@@ -39,6 +39,7 @@ public class PointUi {
     DeterminantSize size;
 
     int f = 7;
+    int f2 = 7;
 
     public Label Timer() {
         timer = LabelHandler.INSTANCE.createLabel("00:00", 60, Color.BLACK);
@@ -96,7 +97,6 @@ public class PointUi {
             imageButton.setY(720 - 100);
             imageButton.setWidth(56);
             imageButton.setHeight(56);
-            imageButtonsApples.add(imageButton);
             group2.addActor(imageButton);
 //            myTexture.dispose();
         }
@@ -138,11 +138,10 @@ public class PointUi {
                 g = true;
             }
         }
-
-        if(testLevel2 < level2){
+        if (testLevel2 < level2) {
             testLevel2 = level2;
-            group.getChild(f).clear();
-            f--;
+            group.getChild(8 - level2).clear();
+
         }
 
         if (testLevel1 < level1) {
