@@ -155,6 +155,7 @@ public class Joystick3 extends Actor {
 
     }
 
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(circle, this.getX(), this.getY(), this.getWidth(), this.getHeight());

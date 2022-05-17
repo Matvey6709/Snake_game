@@ -1,18 +1,25 @@
 package com.example.share2dlibgdx;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 public class Cell {
     public float x;
     public float y;
     public float sizeX;
     public float sizeY;
-//    public Texture texture;
+
+
+    //    public Texture texture;
     public float rotate;
 
 
     public Cell(float x, float y, float sizeX, float sizeY) {
+        this.x = x;
+        this.y = y;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+//        texture = new Texture("badlogic.jpg");
+    }
+
+    public Cell(float x, float y, float sizeX, float sizeY, int rotate) {
         this.x = x;
         this.y = y;
         this.sizeX = sizeX;
@@ -34,6 +41,14 @@ public class Cell {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public float getRotate() {
+        return rotate;
+    }
+
+    public void setRotate(float rotate) {
+        this.rotate = rotate;
     }
 
 }

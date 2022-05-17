@@ -3,7 +3,9 @@ package com.example.share2dlibgdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import datamanager.InterfaceDataLoaded;
 
@@ -17,6 +19,9 @@ public class game extends Game {
 
     Game1_Screen game1_screen;
 
+    Image image;
+    Texture texture;
+
 
     public game(InterfaceDataLoaded loaded) {
         this.loaded = loaded;
@@ -26,17 +31,19 @@ public class game extends Game {
     public void create() {
         Asset.instance().loadAsset();
         batch = new SpriteBatch();
-        loaded.create();
-        loaded.put("testGame1", "testName", "1200.0h360.0", "1", 100, 400);
+//        loaded.put("testGame1", "testName", "1200.0h360.0", "1", 100, 400);
         lobby = new Lobby(this);
+        loaded.create();
         setScreen(lobby);
     }
+
 
     boolean f = false;
 
     @Override
     public void render() {
         super.render();
+
         if (!loaded.isOnline() && !f) {
             f = true;
             loaded.toast("Нет подключения к интрнету");

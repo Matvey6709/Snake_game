@@ -7,19 +7,23 @@ import com.example.share2dlibgdx.ui.Joystick3;
 import java.util.ArrayList;
 
 public class Transfer {
-    int tr = 0;
+    public int tr = 0;
     ArrayList<Cell> cells = new ArrayList<>();
     DeterminantSize size = new DeterminantSize();
-    int speed = size.getWidthGame(33);
+    int speed = 33;
     Joystick3 joystick3;
+    Snake snake;
 
     public Transfer(ArrayList<Cell> cells, Joystick3 joystick3) {
         this.cells = cells;
         this.joystick3 = joystick3;
+        speed = 33;
     }
 
-    public Transfer(ArrayList<Cell> cells) {
+    public Transfer(ArrayList<Cell> cells, Snake snake) {
         this.cells = cells;
+        this.snake = snake;
+        speed = snake.sizeX;
     }
 
     public void trInit() {
@@ -42,8 +46,10 @@ public class Transfer {
                     Cell body = cells.get(i);
                     body.x = nextBody.getX();
                     body.y = nextBody.getY();
+                    body.rotate = nextBody.rotate;
                 }
                 cells.get(0).x += speed;
+                cells.get(0).rotate = 0;
                 break;
             case 0:
                 for (int i = cells.size() - 1; i > 0; i--) {
@@ -51,7 +57,9 @@ public class Transfer {
                     Cell body = cells.get(i);
                     body.x = nextBody.getX();
                     body.y = nextBody.getY();
+                    body.rotate = nextBody.rotate;
                 }
+                cells.get(0).rotate = 90;
                 cells.get(0).y += speed;
                 break;
             case 3:
@@ -60,8 +68,10 @@ public class Transfer {
                     Cell body = cells.get(i);
                     body.x = nextBody.getX();
                     body.y = nextBody.getY();
+                    body.rotate = nextBody.rotate;
                 }
                 cells.get(0).y -= speed;
+                cells.get(0).rotate = 270;
                 break;
             case 2:
                 for (int i = cells.size() - 1; i > 0; i--) {
@@ -69,8 +79,10 @@ public class Transfer {
                     Cell body = cells.get(i);
                     body.x = nextBody.getX();
                     body.y = nextBody.getY();
+                    body.rotate = nextBody.rotate;
                 }
                 cells.get(0).x -= speed;
+                cells.get(0).rotate = 180;
                 break;
         }
     }

@@ -14,4 +14,11 @@ public class LabelHandler {
         style.fontColor = color;
         return new Label(text, style);
     }
+
+    public Label.LabelStyle getStyleLabel(final String text, final int size, final Color color) {
+        Label.LabelStyle style = new Label.LabelStyle();
+        style.font = FontSizeHandler.INSTANCE.getFont(size, color);
+        style.fontColor = color;
+        return style;
+    }
 }

@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
+import java.util.Random;
 
 import datamanager.Player;
 
@@ -23,6 +24,7 @@ public class FireBaseDataBase {
     String nGame;
     int cPg = -1;
     boolean isOnline = false;
+    String uniqueKey;
 
     public void Create() {
         //        firebaseDatabase = FirebaseDatabase.getInstance("https://share-3c976-default-rtdb.firebaseio.com/");
@@ -32,7 +34,8 @@ public class FireBaseDataBase {
 
         ref = firebaseDatabase.getReference("Games");
 
-
+        uniqueKey = new Random().nextInt(90000) + 10000 + "" + System.currentTimeMillis();
+        System.out.println(uniqueKey);
     }
 
     public Player requestData(String nameGame, String namePlayer, Snake share) {
@@ -233,12 +236,13 @@ public class FireBaseDataBase {
 //
 ////                    System.out.println(value3);
 //                }
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    player = dataSnapshot.getValue(Player.class);
-                    if (share.NamePlayer.equals(player.getName())) {
-                        continue;
-                    }
-                    players = player;
+                try {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        player = dataSnapshot.getValue(Player.class);
+                        if ((uniqueKey).equals(dataSnapshot.getKey())) {
+                            continue;
+                        }
+                        players = player;
 //                    if(!share.youFirst && i == 2){
 //                        player = dataSnapshot.getValue(Player.class);
 //                        players = player;
@@ -251,7 +255,11 @@ public class FireBaseDataBase {
 //                        break;
 //                    }
 //                    i++;
+                    }
+                } catch (Exception e) {
+
                 }
+
             }
 
             @Override
@@ -275,11 +283,11 @@ public class FireBaseDataBase {
     }
 
     public void putData(String nameGame, String namePlayer, String vector2, String level, int x, int y) {
-        ref.child(nameGame).child(namePlayer).child("cords").setValue(vector2);
-        ref.child(nameGame).child(namePlayer).child("level").setValue(level);
-        ref.child(nameGame).child(namePlayer).child("appleX").setValue(x);
-        ref.child(nameGame).child(namePlayer).child("appleY").setValue(y);
-        ref.child(nameGame).child(namePlayer).child("name").setValue(namePlayer);
+        ref.child(nameGame).child(uniqueKey).child("cords").setValue(vector2);
+        ref.child(nameGame).child(uniqueKey).child("level").setValue(level);
+        ref.child(nameGame).child(uniqueKey).child("appleX").setValue(x);
+        ref.child(nameGame).child(uniqueKey).child("appleY").setValue(y);
+        ref.child(nameGame).child(uniqueKey).child("name").setValue(namePlayer);
     }
 
     public String checkStartPlay() {
@@ -379,7 +387,6 @@ public class FireBaseDataBase {
                 }
 
                 ref.child(nameGame).onDisconnect().setValue(null);
-                System.out.println(namePlayer);
                 presenceRef.onDisconnect().setValue("I disconnected!");
             }
 
@@ -401,17 +408,25 @@ public class FireBaseDataBase {
 
     }
 
+
     boolean isExistsGame = true;
+
+    public void setExistsGame(boolean existsGame) {
+        isExistsGame = existsGame;
+    }
 
     public void isExistsGame(String nGame, String namePlayer2) {
         v = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 isExistsGame = snapshot.child(nGame).exists();
+//                System.out.println(isExistsGame);
+//                System.out.println(nGame);
 //                System.out.println(snapshot.child(nGame).getChildrenCount());
-                if (snapshot.child(nGame).getChildrenCount() != 2) {
+                if (snapshot.child(nGame).getChildrenCount() < 2) {
                     isExistsGame = false;
                 }
+                System.out.println(isExistsGame);
             }
 
             @Override
