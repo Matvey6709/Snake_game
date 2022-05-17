@@ -27,7 +27,7 @@ public class SoundPlayer {
 
     public static Sound playSound(String name, boolean looping) {
         Sound sound = sounds.get(name);
-        sound.setLooping(sound.play(.5f), looping);
+        sound.setLooping(sound.play(1), looping);
 
         return sound;
     }

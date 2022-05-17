@@ -25,7 +25,7 @@ public class Asset {
 
     public static final String SNAKE_PACK = "snake.pack";
     public static final String PIXEL_FONT = "pixel.ttf";
-    public static final String MEMO_SOUND = "8bit_bg.mp3";
+    public static final String MEMO_SOUND = "8bit_bg2.ogg";
     public static final String GAME_OVER_SOUND = "gameover.mp3";
     //    public static final String EAT_FOOD_SOUND = "eat_food.mp3";
     public static final String EAT_FOOD_SOUND = "est.mp3";

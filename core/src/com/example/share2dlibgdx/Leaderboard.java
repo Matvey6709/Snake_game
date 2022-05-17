@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Random;
 
+import handler.CheckBoxHandler;
 import handler.FontSizeHandler;
 import handler.LabelHandler;
 
@@ -44,15 +45,18 @@ public class Leaderboard implements Screen {
 
     Table scrollTable;
 
-    String namePlayer;
+    String namePlayerUn;
+    String namePlayer = "";
 
     int helpVariable;
     CheckBox checkBox;
     boolean check;
+    String mod = "";
 
-    public Leaderboard(final game gam, final String namePlayer) {
+    public Leaderboard(final game gam, final String namePlayerUn, final String namePlayer) {
         this.game = gam;
         this.namePlayer = namePlayer;
+        this.namePlayerUn = namePlayerUn;
 
         gameWidth = Gdx.graphics.getWidth();
         gameHeight = Gdx.graphics.getHeight();
@@ -87,8 +91,8 @@ public class Leaderboard implements Screen {
 //        scroller.setSmoothScrolling(true);
 //        scroller.setPosition(500, 0);
 
-        Label text = LabelHandler.INSTANCE.createLabel("choose a room \nor \ncreate your own ", 50, Color.WHITE);
-        text.setPosition(30, 570);
+        Label text = LabelHandler.INSTANCE.createLabel("Выберите комнату \nили \nсоздайте свою ", 50, Color.WHITE);
+        text.setPosition(30, 540);
 
         Texture myTexture = new Texture(Gdx.files.internal("7.png"));
         TextureRegion myTextureRegion = new TextureRegion(myTexture);
@@ -104,17 +108,20 @@ public class Leaderboard implements Screen {
             }
         });
 
-        game.loaded.create();
         game.loaded.checkStartPlay();
 
-        ImageTextButton newGame = new ImageTextButton("New Game", imageTextButton("BlakButton.png", 45));
-        newGame.setSize(237, 100);
+        ImageTextButton newGame = new ImageTextButton("Создать новую игру", imageTextButton("BlakButton.png", 35));
+        newGame.setSize(400, 100);
         newGame.setPosition(800, 160);
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.loaded.dispose();
-                game.setScreen(new Game1_Screen(game, namePlayer, new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis(), true, check));
+                if (check) {
+                    mod = "!!";
+                }
+                game.setScreen(new Game1_Screen(game, namePlayer, namePlayerUn, mod + (new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis()), true, check));
+                mod = "";
             }
         });
 
@@ -130,7 +137,7 @@ public class Leaderboard implements Screen {
         table.add(scroller).fill().expand();
         table.setBounds(0, 50, 450, 400);
 
-        checkBox = new CheckBox("Other mode", skin);
+        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("Другой мод", skin, 8, Color.BLACK);
         checkBox.setPosition(1100, 100);
         checkBox.setTransform(true);
         checkBox.getImage().setScaling(Scaling.fill);
@@ -190,7 +197,10 @@ public class Leaderboard implements Screen {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             game.loaded.dispose();
-                            game.setScreen(new Game1_Screen(game, namePlayer, roms[finalI], false, check));
+                            if (roms[finalI].contains("!!")) {
+                                check = true;
+                            }
+                            game.setScreen(new Game1_Screen(game, namePlayer, namePlayerUn, roms[finalI], false, check));
                         }
                     });
                     scrollTable.add(button).size(420, 100).padBottom(20);

@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class FontSizeHandler {
 
+    final String FONT_CHARS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>";
+
     public static FontSizeHandler INSTANCE = new FontSizeHandler("LRpixel.ttf");
 
     private final Map<Integer, BitmapFont> fonts = new HashMap<>();
@@ -22,11 +24,20 @@ public class FontSizeHandler {
     }
 
     public BitmapFont getFont(final int size, Color color) {
-        if(this.fonts.containsKey(size)) return this.fonts.get(size);
+        if (this.fonts.containsKey(size)) return this.fonts.get(size);
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(this.fontPath));
+//        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Black.ttf"));
+//        FreeTypeFontGenerator.FreeTypeFontParameter parameter2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+//        parameter2.characters = FONT_CHARS;
+//        parameter2.size = 60; // font size
+//        BitmapFont font12 = generator2.generateFont(parameter2);
+//        generator2.dispose();
+
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Black.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = size;
+        parameter.characters = FONT_CHARS;
 
         BitmapFont font = generator.generateFont(parameter);
 

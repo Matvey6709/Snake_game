@@ -1,5 +1,6 @@
 package datamanager;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.example.share2dlibgdx.Snake;
 
 public interface InterfaceDataLoaded {
@@ -39,4 +40,12 @@ public interface InterfaceDataLoaded {
     boolean isNamePlayer(String namePlayer);
 
     void putNamePlayer(String namePlayer);
+
+    void setExistsGame(boolean existsGame);
+
+    void Photo();
+
+    Texture getPhoto();
+
+    void setPhoto();
 }

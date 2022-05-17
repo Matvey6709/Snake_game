@@ -1,13 +1,26 @@
 package com.example.share2dlibgdx;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import datamanager.InterfaceDataLoaded;
 import datamanager.Player;
@@ -17,6 +30,8 @@ public class AndroidLauncher extends AndroidApplication {
     FireBaseDataBase base;
     InterfaceDataLoaded loaded;
     final AndroidLauncher context = this;
+    public static final int GET_FROM_GALLERY = 3;
+    Texture tex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +130,28 @@ public class AndroidLauncher extends AndroidApplication {
 
             }
 
+            @Override
+            public void setExistsGame(boolean existsGame) {
+                base.setExistsGame(existsGame);
+            }
+
+            @Override
+            public void Photo() {
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+
+            @Override
+            public Texture getPhoto() {
+                return tex;
+            }
+
+            @Override
+            public void setPhoto() {
+                tex = null;
+            }
+
         };
-//        Toast.makeText(this, "Включите Интернет", Toast.LENGTH_LONG).show();
-        Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
-
-
+//        Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
         initialize(new game(loaded), config);
     }
 
@@ -131,6 +163,46 @@ public class AndroidLauncher extends AndroidApplication {
         } else
             return true;
     }
+
+    Bitmap bitmap;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        System.out.println(1);
+        //Detects request codes
+        if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println(bitmap.getWidth());
+            if (bitmap.getWidth() > 1600 || bitmap.getHeight() > 1600) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 1600,
+                        1600, false);
+            }
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Pixmap.Format.RGBA8888);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+                    bitmap.recycle();
+                }
+            });
+
+        }
+    }
+
 
 }
 
