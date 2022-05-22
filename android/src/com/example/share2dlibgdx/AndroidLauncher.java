@@ -1,7 +1,10 @@
 package com.example.share2dlibgdx;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -21,7 +24,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import datamanager.InterfaceBluetoothLoaded;
 import datamanager.InterfaceDataLoaded;
 import datamanager.Player;
 
@@ -31,12 +36,18 @@ public class AndroidLauncher extends AndroidApplication {
     InterfaceDataLoaded loaded;
     final AndroidLauncher context = this;
     public static final int GET_FROM_GALLERY = 3;
+    public static final int ENABLE_REQUEST = 1;
     Texture tex;
+    InterfaceBluetoothLoaded bluetoothLoaded;
+    BluetoothService bluetoothService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+
         loaded = new InterfaceDataLoaded() {
             @Override
             public void create() {
@@ -56,8 +67,8 @@ public class AndroidLauncher extends AndroidApplication {
 
 
             @Override
-            public void put(String nameGame, String namePlayer, String vector2, String level, int appleX, int appleY) {
-                base.putData(nameGame, namePlayer, vector2, level, appleX, appleY);
+            public void put(String nameGame, String vector2) {
+                base.putData(nameGame, vector2);
             }
 
             @Override
@@ -102,7 +113,7 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public void toast(String text) {
-                handler.post(() -> Toast.makeText(context, text, Toast.LENGTH_SHORT).show());
+                handler.post(() -> Toast.makeText(context, text, Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -126,8 +137,8 @@ public class AndroidLauncher extends AndroidApplication {
             }
 
             @Override
-            public void putNamePlayer(String namePlayer) {
-
+            public void putMeal(String nameGame, String namePlayer, String level, int appleX, int appleY) {
+                base.putData(nameGame, namePlayer, level, appleX, appleY);
             }
 
             @Override
@@ -150,9 +161,94 @@ public class AndroidLauncher extends AndroidApplication {
                 tex = null;
             }
 
+            @Override
+            public void dialog(String title, String message, String textPositiveButton) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        new AlertDialog.Builder(context)
+                                .setTitle(title)
+                                .setMessage(message)
+                                .setPositiveButton(textPositiveButton, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_email)
+                                .show();
+                    }
+                });
+
+            }
+
+            @Override
+            public void resetApp() {
+
+            }
         };
-//        Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
-        initialize(new game(loaded), config);
+
+        bluetoothLoaded = new InterfaceBluetoothLoaded() {
+            @Override
+            public void BluetoothService() {
+                bluetoothService = new BluetoothService();
+            }
+
+            @Override
+            public ArrayList<String> getListDevice() {
+                return bluetoothService.getListDevice();
+            }
+
+            @Override
+            public void listen() {
+                bluetoothService.listen();
+            }
+
+            @Override
+            public void itemB(int i) {
+                bluetoothService.itemB(i);
+            }
+
+            @Override
+            public void send(String msg) {
+                bluetoothService.send(msg);
+            }
+
+            @Override
+            public String getMs() {
+                return bluetoothService.getMs();
+            }
+
+            @Override
+            public boolean getS() {
+                return bluetoothService.getS();
+            }
+
+            @Override
+            public void stopBl() {
+                bluetoothService.stopBl();
+            }
+
+            @Override
+            public void enableBl() {
+                startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), ENABLE_REQUEST);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return bluetoothService.isEnabled();
+            }
+
+            @Override
+            public boolean enable() {
+                return enable;
+            }
+
+            @Override
+            public void stopT() {
+                bluetoothService.stopT();
+            }
+        };
+
+        initialize(new game(loaded, bluetoothLoaded), config);
     }
 
     private boolean isNetworkConnected() {
@@ -165,15 +261,16 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
     Bitmap bitmap;
+    boolean enable = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        System.out.println(1);
         //Detects request codes
         if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
+            String d = data.getData().toString();
+            Uri selectedImage = Uri.parse(d);
             bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
@@ -201,8 +298,55 @@ public class AndroidLauncher extends AndroidApplication {
             });
 
         }
+        if (requestCode == ENABLE_REQUEST && resultCode == Activity.RESULT_OK) {
+            enable = true;
+        }
     }
 
+//        Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
+//        btAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (btAdapter == null) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Not compatible")
+//                    .setMessage("Your phone does not support Bluetooth")
+//                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+////                            System.exit(0);
+//                        }
+//                    })
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .show();
+//        }
 
+
+//        deviceItemList = new ArrayList<DeviceItem>();
+//
+//        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+//        System.out.println(pairedDevices.size());
+//        if (pairedDevices.size() > 0) {
+//            for (BluetoothDevice device : pairedDevices) {
+//                DeviceItem newDevice= new DeviceItem(device.getName(), device.getAddress(),"false");
+//                deviceItemList.add(newDevice);
+//
+//            }
+//        }
+//        System.out.println(deviceItemList.get(1).getDeviceName());
+//        device = btAdapter.getRemoteDevice(deviceItemList.get(1).getAddress());
+//        try {
+//            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+//            Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+//            tmp = (BluetoothSocket) m.invoke(device, 1);
+//        } catch (IOException e) {
+////            Log.e(TAG, "create() failed", e);
+//            System.out.println("НЕЕЕЕЕЕТ");
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        mmSocket = tmp;
+//        System.out.println(mmSocket.isConnected());
 }
 
