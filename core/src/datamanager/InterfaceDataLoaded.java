@@ -11,7 +11,7 @@ public interface InterfaceDataLoaded {
 
     void create();
 
-    void put(String nameGame, String namePlayer, String vector2, String level, int appleX, int appleY);
+    void put(String nameGame, String vector2);
 
     String checkStartPlay();
 
@@ -39,7 +39,7 @@ public interface InterfaceDataLoaded {
 
     boolean isNamePlayer(String namePlayer);
 
-    void putNamePlayer(String namePlayer);
+    void putMeal(String nameGame, String namePlayer, String level, int appleX, int appleY);
 
     void setExistsGame(boolean existsGame);
 
@@ -48,4 +48,9 @@ public interface InterfaceDataLoaded {
     Texture getPhoto();
 
     void setPhoto();
+
+    void dialog(String title, String message, String textPositiveButton);
+
+    void resetApp();
+
 }

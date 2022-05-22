@@ -12,7 +12,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -52,6 +55,7 @@ public class Game1_Screen implements Screen {
     Texture cur;
     Viewport fitViewport;
     Label label;
+    TextButton speedButton;
 
     private static final int FRAME_COLS = 6, FRAME_ROWS = 5;
 
@@ -96,6 +100,8 @@ public class Game1_Screen implements Screen {
         snake = new Snake(game.batch, joystick, size.getWidthGame(33), size.getHeightGame(33));
         snake.NamePlayer = namePlayer;
         snake.NameGame = nameGame;
+        snake.speed = .40f;
+        System.out.println(snake.speed);
         bread = new Bread(game.batch, size.getWidthGame(100) / 2);
         bread.spawn();
         touch = new Touch(snake, bread);
@@ -107,7 +113,8 @@ public class Game1_Screen implements Screen {
 //        game.loaded.isExistsGame(nameGame);
         if (wait) {
             game.loaded.countPlayersGames(snake.NameGame);
-            game.loaded.put(snake.NameGame, snake.NamePlayer, snake.vector2, snake.level + "", bread.x, bread.y);
+            game.loaded.put(snake.NameGame, snake.vector2);
+            game.loaded.putMeal(snake.NameGame, snake.NamePlayer, snake.level + "", bread.x, bread.y);
             create = true;
             walkSheet = new Texture(Gdx.files.internal("animation_sheet.png"));
             TextureRegion[][] tmp = TextureRegion.split(walkSheet,
@@ -126,7 +133,19 @@ public class Game1_Screen implements Screen {
         }
         serverUpdate.test(game.batch, create);
         joystickArrows = new JoystickArrows(100, 100, 10);
-
+        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+        speedButton = new TextButton("run", game.lobby.setStyle(skin, 60));
+        speedButton.setPosition(1000, 100);
+        speedButton.setSize(200, 120);
+        speedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stopSpeed = 0;
+                snake.speed = .15f;
+                speedButton.setTouchable(Touchable.disabled);
+                speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 0.5f);
+            }
+        });
     }
 
 
@@ -135,6 +154,8 @@ public class Game1_Screen implements Screen {
 
     }
 
+    boolean y = false;
+    float stopSpeed = 5;
 
     @Override
     public void render(float delta) {
@@ -142,7 +163,20 @@ public class Game1_Screen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-
+        if (!game.loaded.isOnline() && !y) {
+            y = true;
+            game.loaded.toast("Нет подключения к интрнету");
+            game.setScreen(new Lobby(game));
+            try {
+                game.loaded.dispose();
+                game.loaded.dispose2();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (game.loaded.isOnline() && y) {
+            y = false;
+        }
         stateTime += Gdx.graphics.getDeltaTime();
 
         fitViewport.apply();
@@ -184,22 +218,27 @@ public class Game1_Screen implements Screen {
                         game.setScreen(game.lobby);
                     }
                     seconder(1);
+
                     for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
                         for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
                             game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
                         }
                     }
+
                     bread.render();
                     snake.render(Gdx.graphics.getDeltaTime());
                     if (timeSet > .40) {
                         timeSet = 0;
-                        snake.PlayerClient();
-                        game.loaded.put(snake.NameGame, snake.NamePlayer, snake.vector2, snake.level + "", bread.x, bread.y);
-                        serverUpdate.render(game.loaded.requestData2(), snake);
                         if (!f2) {
                             f2 = true;
                             game.loaded.isExistsGame(snake.NameGame, serverUpdate.getNamePlayer());
+                            game.loaded.put(snake.NameGame, snake.vector2);
+                            game.loaded.putMeal(snake.NameGame, snake.NamePlayer, snake.level + "", bread.x, bread.y);
                         }
+                        snake.PlayerClient();
+                        game.loaded.put(snake.NameGame, snake.vector2);
+                        serverUpdate.render(game.loaded.requestData2(), snake);
+
                     }
 
                     timeSet += Gdx.graphics.getDeltaTime();
@@ -229,6 +268,7 @@ public class Game1_Screen implements Screen {
                             break;
                         }
                     }
+
                     switch (touch.touchScreen()) {
                         case 1:
                             snake.cells.get(0).x = 0;
@@ -285,6 +325,8 @@ public class Game1_Screen implements Screen {
                         stage.addActor(pointUi.WinPlay());
                         stage.addActor(pointUi.endButton());
                         stage.addActor(pointUi.Timer());
+                        stage.addActor(speedButton);
+
                         pointUi.end.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
@@ -298,32 +340,41 @@ public class Game1_Screen implements Screen {
                         joystickArrows.UP.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-                                if (snake.transfer.tr != 3) {
-                                    snake.transfer.tr = 0;
+                                if (!end) {
+                                    if (snake.transfer.tr != 3) {
+                                        snake.transfer.tr = 0;
+                                    }
                                 }
+
                             }
                         });
                         joystickArrows.DOWN.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-                                if (snake.transfer.tr != 0) {
-                                    snake.transfer.tr = 3;
+                                if (!end) {
+                                    if (snake.transfer.tr != 0) {
+                                        snake.transfer.tr = 3;
+                                    }
                                 }
                             }
                         });
                         joystickArrows.LEFT.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-                                if (snake.transfer.tr != 1) {
-                                    snake.transfer.tr = 2;
+                                if (!end) {
+                                    if (snake.transfer.tr != 1) {
+                                        snake.transfer.tr = 2;
+                                    }
                                 }
                             }
                         });
                         joystickArrows.RIGHT.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-                                if (snake.transfer.tr != 2) {
-                                    snake.transfer.tr = 1;
+                                if (!end) {
+                                    if (snake.transfer.tr != 2) {
+                                        snake.transfer.tr = 1;
+                                    }
                                 }
                             }
                         });
@@ -378,16 +429,20 @@ public class Game1_Screen implements Screen {
                         game.loaded.toast("Ваш противник вышел из игры");
                         game.setScreen(game.lobby);
                     }
-                    if (timeSet > .40) {
+
+                    if (timeSet > snake.speed) {
                         timeSet = 0;
-                        snake.PlayerClient();
-                        game.loaded.put(snake.NameGame, snake.NamePlayer, snake.vector2, snake.level + "", bread.x, bread.y);
-                        serverUpdate.render(game.loaded.requestData2(), snake);
-                        pointUi.render(game.batch, snake.level, serverUpdate.getLevel(), snake.NamePlayer, serverUpdate.getNamePlayer());
                         if (!f2) {
                             f2 = true;
                             game.loaded.isExistsGame(snake.NameGame, serverUpdate.getNamePlayer());
+                            game.loaded.put(snake.NameGame, snake.vector2);
+                            game.loaded.putMeal(snake.NameGame, snake.NamePlayer, snake.level + "", bread.x, bread.y);
                         }
+                        snake.PlayerClient();
+                        game.loaded.put(snake.NameGame, snake.vector2);
+                        serverUpdate.render(game.loaded.requestData2(), snake);
+                        pointUi.render(game.batch, snake.level, serverUpdate.getLevel(), snake.NamePlayer, serverUpdate.getNamePlayer());
+
                     }
 
                     timeSet += Gdx.graphics.getDeltaTime();
@@ -462,11 +517,22 @@ public class Game1_Screen implements Screen {
                 }
 
             }
-
+            if (end) {
+                snake.transfer.tr = -1;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        stopSpeed += delta;
+        if (stopSpeed > 30) {
+            speedButton.setTouchable(Touchable.enabled);
+            speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 1f);
+        }
+        if (stopSpeed > 4) {
+            snake.speed = .4f;
+        }
+
 
         game.batch.end();
         stage.draw();
@@ -527,6 +593,8 @@ public class Game1_Screen implements Screen {
         if (touch.touchBred()) {
             bread.spawn();
             snake.addLevel();
+            game.loaded.put(snake.NameGame, snake.vector2);
+            game.loaded.putMeal(snake.NameGame, snake.NamePlayer, snake.level + "", bread.x, bread.y);
         }
     }
 

@@ -6,6 +6,7 @@ import com.example.share2dlibgdx.Asset;
 import com.example.share2dlibgdx.Cell;
 import com.example.share2dlibgdx.DeterminantSize;
 import com.example.share2dlibgdx.Snake;
+import com.example.share2dlibgdx.game;
 
 import java.util.LinkedList;
 
@@ -22,6 +23,7 @@ public class ServerUpdate {
     int appleY;
     float x2;
     float y2;
+    int keyEnemy = -1;
 
 
     public void test(SpriteBatch batch, boolean create) {
@@ -37,6 +39,23 @@ public class ServerUpdate {
         //
         blueApple = new Texture("appleBlue.png");
 
+    }
+
+    game game;
+
+    public void testBl(SpriteBatch batch, boolean create, game game) {
+        this.batch = batch;
+        this.game = game;
+        cells = new LinkedList<>();
+        size = new DeterminantSize();
+        for (int i = 0; i < 4; i++) {
+            cells.add(new Cell(-100, -100, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+        }
+
+
+        texture = new Texture("BlueS2.png");
+        //
+        blueApple = new Texture("appleBlue.png");
 
     }
 
@@ -52,6 +71,68 @@ public class ServerUpdate {
                 for (int i = 0; i < corXY.length; i += 2) {
                     cells.get(i).x = Float.parseFloat(corXY[i]);
                     cells.get(i).y = Float.parseFloat(corXY[i + 1]);
+                }
+//                if (cells.get(0).x != Float.parseFloat(corXY[0]) || cells.get(0).y != Float.parseFloat(corXY[1])) {
+////                    for (int i = cells.size() - 1; i > 0; i--) {
+////                        Cell nextBody = cells.get(i - 1);
+////                        Cell body = cells.get(i);
+////                        body.x = nextBody.getX();
+////                        body.y = nextBody.getY();
+////                    }
+//                } else {
+////                    for (int i = cells.size() - 1; i > 0; i--) {
+////                        cells.get(i).x = -50;
+////                        cells.get(i).y = -50;
+////                    }
+//                }
+
+//                cells.get(0).x = Float.parseFloat(corXY[0]);
+//                cells.get(0).y = Float.parseFloat(corXY[1]);
+
+
+//                if (level < Integer.parseInt(players.getLevel()) && players != null) {
+//                    addLevel();
+//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+//                }
+            }
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+    }
+
+
+    public void renderBl(Player players, Snake share) {
+        this.players = players;
+        try {
+            if (players != null) {
+                String[] corXY = players.getCords().split(" ");
+                for (int i = cells.size() - 1; i > 0; i--) {
+                    Cell nextBody = cells.get(i - 1);
+                    Cell body = cells.get(i);
+                    body.x = nextBody.getX();
+                    body.y = nextBody.getY();
+                }
+                cells.get(0).x = Float.parseFloat(corXY[0]);
+                cells.get(0).y = Float.parseFloat(corXY[1]);
+
+                appleX = Integer.parseInt(corXY[3]);
+                appleY = Integer.parseInt(corXY[4]);
+
+                keyEnemy = Integer.parseInt(corXY[5]);
+
+                namePlayer = corXY[6];
+
+                if (level < Integer.parseInt(corXY[2]) && players != null) {
+                    addLevel();
+                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
+                }
+                if (level > Integer.parseInt(corXY[2]) && players != null) {
+                    level--;
+                    cells.remove(cells.size() - 1);
+                    cells.remove(cells.size() - 1);
+                    cells.remove(cells.size() - 1);
                 }
 //                if (cells.get(0).x != Float.parseFloat(corXY[0]) || cells.get(0).y != Float.parseFloat(corXY[1])) {
 ////                    for (int i = cells.size() - 1; i > 0; i--) {
@@ -127,9 +208,20 @@ public class ServerUpdate {
         return null;
     }
 
+    public String getNamePlayer2() {
+        if (players != null) {
+            return namePlayer;
+        }
+        return null;
+    }
+
     private String getBodyType(int index) {
         if (index == cells.size()) return "snake_body";
         if (index == 0) return "snake_head";
         else return "snake_tail";
+    }
+
+    public int getKeyEnemy() {
+        return keyEnemy;
     }
 }

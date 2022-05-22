@@ -35,7 +35,7 @@ public class SoundPlayer {
     public static Music playMusic(String name, boolean looping) {
         Music music = musics.get(name);
         music.setLooping(looping);
-        if (!music.isPlaying() && !music.isLooping()) music.play();
+        if (!music.isPlaying()) music.play();
         return music;
     }
 

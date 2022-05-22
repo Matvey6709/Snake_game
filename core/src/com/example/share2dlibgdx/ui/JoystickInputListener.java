@@ -17,7 +17,6 @@ public class JoystickInputListener extends InputListener {
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         joystick.setTouched();
         joystick.changeCursor(x, y);
-        System.out.println("FFF");
         return true;
     }
 

@@ -24,7 +24,7 @@ public class Snake {
     Texture snakebodyMy;
     Texture snaketailMy;
     game game;
-    float speed = 0.1f;
+    float speed = .40f;
 
 
     public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY) {
@@ -126,9 +126,7 @@ public class Snake {
 
         for (int i = 0; i < cells.size() - 1; i++) {
             Sprite sprite = getBodyType4(i);
-//            if (game.lobby.chekPhoto) {
-//                sprite = getBodyType4(i);
-//            }
+
 
             sprite.setOrigin(cells.get(i).sizeX / 2, cells.get(i).sizeY / 2);
             sprite.rotate(cells.get(i).rotate);
@@ -154,7 +152,7 @@ public class Snake {
 
     public void ShareInit2(float delta) {
         transfer.trInit();
-        if (timeSet > .40) {//40
+        if (timeSet > speed) {//40
             transfer.trBody();//передвижение
             timeSet = 0;
         }
@@ -162,7 +160,7 @@ public class Snake {
 
     public void ShareInit3(float delta) {
         transfer.trInit();
-        if (timeSet > speed) {//40
+        if (timeSet > .25) {//40
             transfer.trBody();//передвижение
             timeSet = 0;
         }
@@ -195,7 +193,7 @@ public class Snake {
 
 
     String NameGame = "1";
-    public String NamePlayer = "test2";//Matvey-Pixel24 gg-my phone
+    public String NamePlayer = "Игрок";//Matvey-Pixel24 gg-my phone
     String vector2 = "";
 
     public void PlayerClient() {

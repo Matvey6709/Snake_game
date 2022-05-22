@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import handler.FontSizeHandler;
@@ -43,7 +44,7 @@ public class Lobby implements Screen {
     boolean show = false;
     TextureRegion backgroundTexture;
     Skin skin;
-    String namePlayer = "Default";
+    String namePlayer = "Игрок";
     Label label;
 
     Viewport fitViewport;
@@ -72,13 +73,15 @@ public class Lobby implements Screen {
 
     ImageTextButton setting;
     Label settingLabel;
-
+    Texture head;
+    Texture body;
+    Color GREY = new Color(217f, 217f, 217f, 1);
 
     public Lobby(final game gam) {
         game = gam;
         level = new Texture("options.png");
-        t = new Texture("bac2.jpg");
-        backgroundTexture = new TextureRegion(t, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        t = new Texture("bacLo.png");
+        backgroundTexture = new TextureRegion(t, 0, 0, 1280, 720);
         camera = new OrthographicCamera();
         fitViewport = new FitViewport(1280, 720, camera);
 
@@ -93,11 +96,13 @@ public class Lobby implements Screen {
         m2 = new SnakeSkin(buttonM2, Asset.instance().getSprite("snake_body"));
         m1 = new SnakeSkin(buttonM1, Asset.instance().getSprite("snake_tail"));
         Screen();
-//        TestG g = new TestG();
-//        stage.addActor(g);
         Gdx.input.setInputProcessor(stage);
         game.loaded.create();
 
+        head = new Texture("head.png");
+        body = new Texture("body.png");
+
+        game.bluetoothLoaded.BluetoothService();
     }
 
 
@@ -105,6 +110,7 @@ public class Lobby implements Screen {
     boolean photo = false;
 
     int l;
+
 
     @Override
     public void render(float delta) {
@@ -117,13 +123,6 @@ public class Lobby implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, 1280, 720);
-//        if(Gdx.input.isTouched()){
-//            RotateToAction rotate = new RotateToAction();
-//            rotate.setRotation(90f);
-//            rotate.setDuration(0.2f);
-//            setting.addAction(rotate);
-//        }
-
         game.batch.end();
 
         if (photo && game.loaded.getPhoto() != null) {
@@ -147,7 +146,6 @@ public class Lobby implements Screen {
                     selectSkin.remove();
                     selectSkin.textButton.setVisible(false);
                     selectSkin.tableScrollSkin.setVisible(false);
-                    System.out.println(l);
 
                     selectSkin.b.button.setStyle(imageTextButtonStyle(new Sprite(skins.get(index.index)), 60));
                     selectSkin.b.sprite = new Sprite(skins.get(index.index));
@@ -156,18 +154,17 @@ public class Lobby implements Screen {
             l++;
             game.loaded.setPhoto();
         }
-
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
-        game.batch.begin();
-        game.batch.end();
+
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-//        game.loaded.setExistsGame(true);
+        game.loaded.create();
+        game.loaded.setExistsGame(true);
     }
 
 
@@ -193,37 +190,38 @@ public class Lobby implements Screen {
         stage.dispose();
         t.dispose();
         level.dispose();
+        head.dispose();
+        body.dispose();
     }
 
     public void Screen() {
         table = new Table();
-        table.setBounds(1760, 0, 400, 720);
-        final Drawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture("bac.jpg")));
+        table.setBounds(1810, 0, 550, 720);
+        final Drawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture("w.png")));
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-//        font = new BitmapFont();
-        setting = new ImageTextButton("", imageTextButtonStyle("setting.png", 40));
+        setting = new ImageTextButton("", imageTextButtonStyle("setLob.png", 40));
         setting.setTransform(true);
-        setting.setOrigin(setting.getWidth(), setting.getHeight());
-        setting.setPosition(1090, 576);
-        setting.setSize(100, 100);
-//        table.add(setting);
+        setting.setSize(60, 60);
+        setting.setOrigin(setting.getWidth() / 2, setting.getHeight() / 2);
+        setting.setPosition(1150, 600);
         setting.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settings(drawable);
             }
         });
-        settingLabel = LabelHandler.INSTANCE.createLabel("Настройки", 40, Color.BLACK);
+        settingLabel = LabelHandler.INSTANCE.createLabel("Настройки", 40, GREY);
         settingLabel.setPosition(1280, 600);
 
-        label = LabelHandler.INSTANCE.createLabel(namePlayer, 87, Color.BLACK);
-        label.setX(140);
-        label.setY(600);
+        label = LabelHandler.INSTANCE.createLabel(namePlayer, 40, GREY);
+        label.setPosition(140, 600);
 
-        TextButton startGame1 = new TextButton("Начать игру 1", setStyle(skin, 40));
-        startGame1.setPosition(454, 108);
-        startGame1.setSize(300, 120);
+
+//        TextButton startGame1 = new TextButton("Начать игру 1", setStyle(skin, 40));
+        ImageTextButton startGame1 = new ImageTextButton("Онлайн", imageTextButtonStyle("buton1.png", 40));
+//        startGame1.setPosition(454, 108);
+//        startGame1.setSize(300, 120);
 
         startGame1.addListener(new ChangeListener() {
             @Override
@@ -239,23 +237,31 @@ public class Lobby implements Screen {
             }
         });
 
-        TextButton startGame2 = new TextButton("Начать игру 2", setStyle(skin, 40));
-        startGame2.setPosition(54, 108);
-        startGame2.setSize(300, 120);
-        startGame2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new Game2_Screen(game));
-            }
-        });
-
-        TextButton startGame3 = new TextButton("Начать игру 3", setStyle(skin, 40));
-        startGame3.setPosition(854, 108);
-        startGame3.setSize(300, 120);
+        ImageTextButton startGame3 = new ImageTextButton("Уровни", imageTextButtonStyle("buton2.png", 40));
+//        startGame3.setPosition(854, 720/2-startGame3.getHeight()/2);
         startGame3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 selectLevel.show();
+            }
+        });
+//        TextButton startGame4 = new TextButton("Начать игру 4", setStyle(skin, 40));
+        ImageTextButton startGame4 = new ImageTextButton("Bluetooth", imageTextButtonStyle("buton3.png", 40));
+//        startGame4.setPosition(854, 108);
+        startGame4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                try {
+                    if (game.bluetoothLoaded.isEnabled()) {
+                        game.setScreen(new LeaderboardBluetooth(game));
+                    } else {
+                        game.bluetoothLoaded.enableBl();
+                    }
+                } catch (Exception e) {
+                    game.loaded.toast("У вашего устройство нет bluetooth");
+                }
+
+
             }
         });
 
@@ -263,10 +269,11 @@ public class Lobby implements Screen {
 
 
         final Table scrollTable = new Table();
-        scrollTable.add(startGame1).size(420, 100);
-        scrollTable.add(startGame2).size(420, 100).padLeft(20);
-        scrollTable.add(startGame3).size(420, 100).padLeft(20);
-        final ScrollPane scroller = new ScrollPane(scrollTable);
+        scrollTable.add(startGame1).size(420, 100).padBottom(20).row();
+        scrollTable.add(startGame3).size(420, 100).padBottom(20).row();
+        scrollTable.add(startGame4).size(420, 100).padBottom(20).row();
+        scrollTable.setPosition(1000, 720 / 2 - scrollTable.getHeight() / 2);
+//        final ScrollPane scroller = new ScrollPane(scrollTable);
 
 //        scroller.setScale(0.1f);
 //        scroller.setBounds(0, 0, 50, 450);
@@ -274,11 +281,12 @@ public class Lobby implements Screen {
         tableS.setFillParent(false);
         tableS.setTransform(true);
         tableS.setBounds(410, 100, 420, 100);
-        tableS.add(scroller);
+//        tableS.add(scroller);
 
 
         stage.addActor(tableS);
         stage.addActor(label);
+        stage.addActor(scrollTable);
         stage.addActor(table);
         stage.addActor(setting);
         stage.addActor(settingLabel);
@@ -292,44 +300,44 @@ public class Lobby implements Screen {
 
     public void settings(Drawable drawable) {
         table.setBackground(drawable);
-        if (show == true) {
+        if (show) {
             table.clear();
-            table.setBounds(1760, 0, 400, 720);
+            table.setBounds(1810, 0, 550, 720);
             table.setVisible(false);
             this.show = false;
             MoveByAction action = new MoveByAction();
-            action.setAmount(200, 0);
+            action.setAmount(350, 0);
             action.setDuration(0.2f);
             setting.addAction(action);
 
             RotateByAction rotate = new RotateByAction();
-            rotate.setAmount(-360);
-            rotate.setDuration(0.2f);
+            rotate.setAmount(-200);
+            rotate.setDuration(0.3f);
             setting.addAction(rotate);
 
             MoveByAction actionLabelSetting = new MoveByAction();
-            actionLabelSetting.setAmount(250, 0);
+            actionLabelSetting.setAmount(350, 0);
             actionLabelSetting.setDuration(0.05f);
             settingLabel.addAction(actionLabelSetting);
         } else {
             MoveByAction action = new MoveByAction();
-            action.setAmount(-200, 0);
+            action.setAmount(-350, 0);
             action.setDuration(0.2f);
             setting.addAction(action);
 
             RotateToAction rotate = new RotateToAction();
-            rotate.setRotation(360f);
-            rotate.setDuration(0.2f);
+            rotate.setRotation(200f);
+            rotate.setDuration(0.3f);
             setting.addAction(rotate);
 
             MoveByAction actionLabelSetting = new MoveByAction();
-            actionLabelSetting.setAmount(-250, 0);
+            actionLabelSetting.setAmount(-350, 0);
             actionLabelSetting.setDuration(0.2f);
             settingLabel.addAction(actionLabelSetting);
 
             table.clear();
             table.setVisible(true);
-            TextButton button = new TextButton("Поменять имя", setStyle(skin, 35));
+            ImageTextButton button = new ImageTextButton("Имя", imageTextButtonStyle("button1.png", 35));
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -337,7 +345,7 @@ public class Lobby implements Screen {
                 }
             });
 
-            TextButton button2 = new TextButton("Поменять скин", setStyle(skin, 30));
+            ImageTextButton button2 = new ImageTextButton("Скин", imageTextButtonStyle("button2.png", 35));
             button2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -345,11 +353,11 @@ public class Lobby implements Screen {
                 }
             });
 
-            table.add(button).size(260, 80).padBottom(20f).row();
-            table.add(button2).size(260, 80).row();
+            table.add(button).size(400, 100).padBottom(30f).row();
+            table.add(button2).size(400, 100).row();
 
             MoveByAction action2 = new MoveByAction();
-            action2.setAmount(-880, 0);
+            action2.setAmount(-1080, 0);
             action2.setDuration(0.2f);
             table.addAction(action2);
             this.show = true;
@@ -591,7 +599,17 @@ public class Lobby implements Screen {
 //        table.setFillParent(true);
             table2.add(scroller).fill().expand();
             table2.setBounds(380, 60, 500, 500);
-
+            ImageTextButton startGame2 = new ImageTextButton("Классичекая", imageTextButtonStyle("buton2.png", 40));
+            startGame2.setPosition(54, 108);
+            startGame2.setSize(300, 120);
+            startGame2.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    game.setScreen(new Game2_Screen(game));
+                }
+            });
+            scrollTable.add(startGame2).size(420, 100).padBottom(20);
+            scrollTable.row();
             for (int i = 0; i < 5; i++) {
                 TextButton button = new TextButton(i + 1 + " уровень", setStyle(skin, 40));
                 final int finalI = i;
@@ -659,6 +677,9 @@ public class Lobby implements Screen {
         ImageTextButton skins1S;
         ImageTextButton skins2S;
         ImageTextButton skins3S;
+        ImageTextButton skins1B;
+        ImageTextButton skins2B;
+        ImageTextButton skins3B;
 
         Table tableScrollSkin;
 
@@ -711,6 +732,12 @@ public class Lobby implements Screen {
             skins2G.setPosition(590, 320);
             skins3G.setSize(90, 90);
             skins3G.setPosition(460, 320);
+
+            skins1B = new ImageTextButton("", imageTextButtonStyle("headB.png", 60));
+            skins2B = new ImageTextButton("", imageTextButtonStyle("bodyB.png", 60));
+            skins3B = new ImageTextButton("", imageTextButtonStyle("bodyB.png", 60));
+
+
             textButton = new TextButton("Добавить свой", setStyle(skin, 40));
             textButton.setSize(350, 90);
             textButton.setPosition(460, 100);
@@ -732,6 +759,12 @@ public class Lobby implements Screen {
             scrollTable2.add(skins2G).size(100, 100).padBottom(20).padRight(10);
 
             scrollTable2.add(skins1G).size(100, 100).padBottom(20).row();
+
+            scrollTable2.add(skins3B).size(100, 100).padBottom(20).padRight(10);
+
+            scrollTable2.add(skins2B).size(100, 100).padBottom(20).padRight(10);
+
+            scrollTable2.add(skins1B).size(100, 100).padBottom(20).row();
 
             stage.addActor(tableScrollSkin);
             stage.addActor(textButton);
@@ -805,6 +838,36 @@ public class Lobby implements Screen {
                     tableScrollSkin.setVisible(false);
                     b.button.setStyle(imageTextButtonStyle("snakehead.png", 60));
                     b.sprite = new Sprite(new Texture("snakehead.png"));
+                }
+            });
+            skins3B.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(imageTextButtonStyle("bodyB.png", 60));
+                    b.sprite = new Sprite(new Texture("bodyB.png"));
+                }
+            });
+            skins2B.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(imageTextButtonStyle("bodyB.png", 60));
+                    b.sprite = new Sprite(new Texture("bodyB.png"));
+                }
+            });
+            skins1B.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(imageTextButtonStyle("headB.png", 60));
+                    b.sprite = new Sprite(new Texture("headB.png"));
                 }
             });
         }

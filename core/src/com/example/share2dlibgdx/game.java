@@ -7,13 +7,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+import datamanager.InterfaceBluetoothLoaded;
 import datamanager.InterfaceDataLoaded;
 
 
 public class game extends Game {
 
     SpriteBatch batch;
-    InterfaceDataLoaded loaded;
+    public InterfaceDataLoaded loaded;
+    InterfaceBluetoothLoaded bluetoothLoaded;
 
     Lobby lobby;
 
@@ -23,15 +25,15 @@ public class game extends Game {
     Texture texture;
 
 
-    public game(InterfaceDataLoaded loaded) {
+    public game(InterfaceDataLoaded loaded, InterfaceBluetoothLoaded bluetoothLoaded) {
         this.loaded = loaded;
+        this.bluetoothLoaded = bluetoothLoaded;
     }
 
     @Override
     public void create() {
         Asset.instance().loadAsset();
         batch = new SpriteBatch();
-//        loaded.put("testGame1", "testName", "1200.0h360.0", "1", 100, 400);
         lobby = new Lobby(this);
         loaded.create();
         setScreen(lobby);
@@ -43,21 +45,6 @@ public class game extends Game {
     @Override
     public void render() {
         super.render();
-
-        if (!loaded.isOnline() && !f) {
-            f = true;
-            loaded.toast("Нет подключения к интрнету");
-            setScreen(new Lobby(this));
-            try {
-                loaded.dispose();
-                loaded.dispose2();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (loaded.isOnline() && f) {
-            f = false;
-        }
     }
 
 

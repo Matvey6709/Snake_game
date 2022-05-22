@@ -29,8 +29,8 @@ public class Touch {
         return false;
     }
 
-    public boolean touchPlayer(Snake share, float share2X, float share2Y) {
-        if (share.cells.get(0).x + share.sizeX > share2X && share.cells.get(0).x < share2X + share.sizeX && share.cells.get(0).y + share.sizeY > share2Y && share.cells.get(0).y < share2Y + share.sizeY) {
+    public boolean touchPlayer(float shareX, float shareY, float share2X, float share2Y) {
+        if (shareX + snake.cells.get(0).sizeX > share2X && shareX < share2X + snake.cells.get(0).sizeX && shareY + snake.cells.get(0).sizeY > share2Y && shareY < share2Y + snake.cells.get(0).sizeY) {
             return true;
         }
         return false;

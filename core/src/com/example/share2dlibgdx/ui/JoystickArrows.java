@@ -55,7 +55,7 @@ public class JoystickArrows {
 
 
         group = new Group();
-        group.setPosition(-130, -50);
+        group.setPosition(-180, -60);
 
         group.addActor(RIGHT);
         group.addActor(LEFT);

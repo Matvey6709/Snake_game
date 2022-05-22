@@ -35,7 +35,7 @@ public class FireBaseDataBase {
         ref = firebaseDatabase.getReference("Games");
 
         uniqueKey = new Random().nextInt(90000) + 10000 + "" + System.currentTimeMillis();
-        System.out.println(uniqueKey);
+//        System.out.println(uniqueKey);
     }
 
     public Player requestData(String nameGame, String namePlayer, Snake share) {
@@ -282,8 +282,11 @@ public class FireBaseDataBase {
         return players;
     }
 
-    public void putData(String nameGame, String namePlayer, String vector2, String level, int x, int y) {
+    public void putData(String nameGame, String vector2) {
         ref.child(nameGame).child(uniqueKey).child("cords").setValue(vector2);
+    }
+
+    public void putData(String nameGame, String namePlayer, String level, int x, int y) {
         ref.child(nameGame).child(uniqueKey).child("level").setValue(level);
         ref.child(nameGame).child(uniqueKey).child("appleX").setValue(x);
         ref.child(nameGame).child(uniqueKey).child("appleY").setValue(y);
@@ -426,7 +429,6 @@ public class FireBaseDataBase {
                 if (snapshot.child(nGame).getChildrenCount() < 2) {
                     isExistsGame = false;
                 }
-                System.out.println(isExistsGame);
             }
 
             @Override

@@ -175,6 +175,8 @@ public class Leaderboard implements Screen {
 
     }
 
+    boolean y = false;
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.3f, 0, 1, 1);
@@ -182,8 +184,19 @@ public class Leaderboard implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        camera.update();
-        if (!game.loaded.isOnline()) {
-
+        if (!game.loaded.isOnline() && !y) {
+            y = true;
+            game.loaded.toast("Нет подключения к интрнету");
+            game.setScreen(new Lobby(game));
+            try {
+                game.loaded.dispose();
+                game.loaded.dispose2();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (game.loaded.isOnline() && y) {
+            y = false;
         }
         fitViewport.apply();
         try {

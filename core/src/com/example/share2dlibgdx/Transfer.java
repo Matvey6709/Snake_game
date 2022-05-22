@@ -7,7 +7,7 @@ import com.example.share2dlibgdx.ui.Joystick3;
 import java.util.ArrayList;
 
 public class Transfer {
-    public int tr = 0;
+    public int tr = -1;
     ArrayList<Cell> cells = new ArrayList<>();
     DeterminantSize size = new DeterminantSize();
     int speed = 33;
@@ -18,6 +18,7 @@ public class Transfer {
         this.cells = cells;
         this.joystick3 = joystick3;
         speed = 33;
+        tr = 0;
     }
 
     public Transfer(ArrayList<Cell> cells, Snake snake) {
@@ -87,24 +88,18 @@ public class Transfer {
         }
     }
 
-    float timeSet;
 
     public void trBody2(float delta) {
-        for (int i = cells.size() - 1; i > 0; i--) {
-            Cell nextBody = cells.get(i - 1);
-            Cell body = cells.get(i);
-            body.x = nextBody.getX();
-            body.y = nextBody.getY();
+        if (tr != -1) {
+            for (int i = cells.size() - 1; i > 0; i--) {
+                Cell nextBody = cells.get(i - 1);
+                Cell body = cells.get(i);
+                body.x = nextBody.getX();
+                body.y = nextBody.getY();
+            }
+
+            cells.get(0).x += joystick3.getValueX() * 10 * size.getKX();
+            cells.get(0).y += joystick3.getValueY() * 10 * size.getKY();
         }
-        timeSet += delta;
-        float getValueX = 0;
-        float getValueY = 0;
-        if (timeSet > .10) {
-            getValueX = joystick3.getValueX();
-            getValueY = joystick3.getValueY();
-//            timeSet = 0;
-        }
-        cells.get(0).x += getValueX * 10 * size.getKX();
-        cells.get(0).y += getValueY * 10 * size.getKY();
     }
 }

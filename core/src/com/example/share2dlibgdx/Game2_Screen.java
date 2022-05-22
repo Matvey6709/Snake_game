@@ -35,7 +35,13 @@ public class Game2_Screen implements Screen {
 
     private Cell[][] cells;
     int size = 33;
-    float speed = 0.1f;
+    float speed = 0.4f;
+    TextButton back;
+    Texture bacG;
+    boolean o = false;
+    int spawnX = 660;
+    int spawnY = 363;
+    TextButton v;
 
     public Game2_Screen(game game) {
         this.game = game;
@@ -50,7 +56,7 @@ public class Game2_Screen implements Screen {
         snake = new Snake(game.batch, size, size, game, speed);
 
         bread = new Bread(game.batch, size);
-        bread.spawn();
+        bread.spawn2();
 
         touch = new Touch(snake, bread);
         joystickArrows = new JoystickArrows(100, 100, 10);
@@ -58,15 +64,16 @@ public class Game2_Screen implements Screen {
         stage = new Stage(fitViewport);
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        TextButton v = new TextButton("", setStyle(skin, 60));
+        v = new TextButton("", setStyle(skin, 60));
         v.setSize(1280, 720);
         v.setPosition(0, 0);
         v.addListener(new ActivitySwipeDetector(snake));
         stage.addActor(v);
 
-        label = LabelHandler.INSTANCE.createLabel("Points: 0", 50, Color.BLACK);
+        label = LabelHandler.INSTANCE.createLabel("Points: 0", 50, Color.WHITE);
+        label.setPosition(10, 620);
 
-        TextButton back = new TextButton("", skin);
+        back = new TextButton("", skin);
         back = new TextButton("назад", setStyle(skin, back, 40));
         back.setPosition(1080, 620);
         back.setSize(180, 80);
@@ -75,12 +82,14 @@ public class Game2_Screen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.setScreen(game.lobby);
-
             }
         });
         stage.addActor(back);
         stage.addActor(joystickArrows.joystick());
-        stage.addActor(label);
+        if (!o) {
+            stage.addActor(label);
+        }
+
         Gdx.input.setInputProcessor(stage);
 
         joystickArrows.UP.addListener(new ChangeListener() {
@@ -116,6 +125,14 @@ public class Game2_Screen implements Screen {
             }
         });
         initMusic();
+        bacG = new Texture("bacG.png");
+        if (!o) {
+            for (int j = 0; j < snake.cells.size(); j++) {
+                snake.cells.get(j).x = spawnX;//660
+                snake.cells.get(j).y = spawnY;//363
+            }
+        }
+
     }
 
     public TextButton.TextButtonStyle setStyle(Skin skin, int size) {
@@ -128,7 +145,7 @@ public class Game2_Screen implements Screen {
 
     private void initMusic() {
         SoundPlayer.init();
-        SoundPlayer.playMusic(Asset.MEMO_SOUND, false);
+        SoundPlayer.playMusic(Asset.MEMO_SOUND, true);
     }
 
     @Override
@@ -139,49 +156,49 @@ public class Game2_Screen implements Screen {
         fitViewport.apply();
 
         game.batch.begin();
-//        for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
-//            for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
-//                game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
-//            }
-//        }
         cells = new Cell[Gdx.graphics.getWidth() / size][Gdx.graphics.getHeight() / size];
         for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
             for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
                 game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * size, colGrass * size, size, size);
             }
         }
-
-        if (touch.touchScreen() != 0) {
-            gameOver++;
-            snake.cells.clear();
-            snake.increase(3);
-            snake.level = 1;
-
-            label.setText("Points: 0");
-            for (int j = 0; j < snake.cells.size(); j++) {
-                snake.cells.get(j).x = 660;
-                snake.cells.get(j).y = 363;
-            }
-        }
+//        game.batch.draw(bacG, 0, 0);
 
 
         snake.render3(Gdx.graphics.getDeltaTime());
         initMeal();
 
-        for (int i = 1; i < snake.cells.size(); i++) {
-            boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
-            if (g) {
+        if (!o) {
+            if (touch.touchScreen() != 0) {
                 gameOver++;
-//                SoundPlayer.playSound(Asset.CRASH_SOUND, false);
                 snake.cells.clear();
                 snake.increase(3);
                 snake.level = 1;
+
                 label.setText("Points: 0");
                 for (int j = 0; j < snake.cells.size(); j++) {
-                    snake.cells.get(j).x = 660;//660
-                    snake.cells.get(j).y = 363;//363
+                    snake.cells.get(j).x = spawnX;
+                    snake.cells.get(j).y = spawnY;
                 }
-                break;
+            }
+            for (int i = 1; i < snake.cells.size(); i++) {
+                boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
+                boolean f = touch.touchPlayer(snake.cells.get(i).x, snake.cells.get(i).y, bread.x, bread.y);
+                if (f) {
+                    bread.spawn2();
+                }
+                if (g && snake.transfer.tr != -1) {
+                    SoundPlayer.playSound(Asset.CRASH_SOUND, false);
+                    snake.cells.clear();
+                    snake.increase(3);
+                    snake.level = 1;
+                    label.setText("Points: 0");
+                    for (int j = 0; j < snake.cells.size(); j++) {
+                        snake.cells.get(j).x = spawnX;//660
+                        snake.cells.get(j).y = spawnY;//363
+                    }
+                    break;
+                }
             }
         }
 
@@ -194,12 +211,6 @@ public class Game2_Screen implements Screen {
         game.batch.begin();
         bread.render2();
         game.batch.end();
-
-//        if (gameOver >= 10) {
-//            SoundPlayer.stopMusic(Asset.MEMO_SOUND);
-//            SoundPlayer.playMusic(Asset.MEMO_SOUND, false);
-//            gameOver = 0;
-//        }
     }
 
     @Override
@@ -226,6 +237,7 @@ public class Game2_Screen implements Screen {
     public void dispose() {
         grass.dispose();
         snake.dispose();
+        bacG.dispose();
     }
 
     public void initMeal() {
@@ -267,8 +279,8 @@ public class Game2_Screen implements Screen {
 
         label.setText("Points: 0");
         for (int j = 0; j < snake.cells.size(); j++) {
-            snake.cells.get(j).x = 660;//660
-            snake.cells.get(j).y = 363;//363
+            snake.cells.get(j).x = spawnX;//660
+            snake.cells.get(j).y = spawnY;//363
         }
     }
 }
