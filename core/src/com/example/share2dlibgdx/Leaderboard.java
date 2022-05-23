@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -27,6 +26,7 @@ import java.util.Random;
 
 import handler.CheckBoxHandler;
 import handler.FontSizeHandler;
+import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
 public class Leaderboard implements Screen {
@@ -52,6 +52,7 @@ public class Leaderboard implements Screen {
     CheckBox checkBox;
     boolean check;
     String mod = "";
+    Texture bacT;
 
     public Leaderboard(final game gam, final String namePlayerUn, final String namePlayer) {
         this.game = gam;
@@ -94,12 +95,12 @@ public class Leaderboard implements Screen {
         Label text = LabelHandler.INSTANCE.createLabel("Выберите комнату \nили \nсоздайте свою ", 50, Color.WHITE);
         text.setPosition(30, 540);
 
-        Texture myTexture = new Texture(Gdx.files.internal("7.png"));
-        TextureRegion myTextureRegion = new TextureRegion(myTexture);
-        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-        ImageButton back = new ImageButton(myTexRegionDrawable);
-        back.setPosition(1090, 600);
-        back.setSize(120, 120);
+//        Texture myTexture = new Texture(Gdx.files.internal("7.png"));
+//        TextureRegion myTextureRegion = new TextureRegion(myTexture);
+//        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+        ImageTextButton back = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
+        back.setPosition(1000, 600);
+        back.setSize(250, 100);
         back.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -110,7 +111,7 @@ public class Leaderboard implements Screen {
 
         game.loaded.checkStartPlay();
 
-        ImageTextButton newGame = new ImageTextButton("Создать новую игру", imageTextButton("BlakButton.png", 35));
+        ImageTextButton newGame = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (3).png", "Новая игра", 35, Color.WHITE, true);
         newGame.setSize(400, 100);
         newGame.setPosition(800, 160);
         newGame.addListener(new ChangeListener() {
@@ -120,7 +121,7 @@ public class Leaderboard implements Screen {
                 if (check) {
                     mod = "!!";
                 }
-                game.setScreen(new Game1_Screen(game, namePlayer, namePlayerUn, mod + (new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis()), true, check));
+                game.setScreen(new Online_Game_Screen(game, namePlayer, namePlayerUn, mod + (new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis()), true, check));
                 mod = "";
             }
         });
@@ -137,8 +138,8 @@ public class Leaderboard implements Screen {
         table.add(scroller).fill().expand();
         table.setBounds(0, 50, 450, 400);
 
-        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("Другой мод", skin, 8, Color.BLACK);
-        checkBox.setPosition(1100, 100);
+        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("", skin, 8, Color.WHITE);
+        checkBox.setPosition(1130, 180);
         checkBox.setTransform(true);
         checkBox.getImage().setScaling(Scaling.fill);
         checkBox.setSize(50, 50);
@@ -153,6 +154,7 @@ public class Leaderboard implements Screen {
                 } else {
                     check = false;
                 }
+                game.loaded.toast("Вы переключили режим Онлайн игры");
             }
         });
 
@@ -167,7 +169,7 @@ public class Leaderboard implements Screen {
 
         this.stage.getViewport().setCamera(camera);
 
-
+        bacT = new Texture("bacT.png");
     }
 
     @Override
@@ -184,6 +186,9 @@ public class Leaderboard implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        camera.update();
+        game.batch.begin();
+        game.batch.draw(bacT, 0, 0, 1280, 720);
+        game.batch.end();
         if (!game.loaded.isOnline() && !y) {
             y = true;
             game.loaded.toast("Нет подключения к интрнету");
@@ -213,7 +218,7 @@ public class Leaderboard implements Screen {
                             if (roms[finalI].contains("!!")) {
                                 check = true;
                             }
-                            game.setScreen(new Game1_Screen(game, namePlayer, namePlayerUn, roms[finalI], false, check));
+                            game.setScreen(new Online_Game_Screen(game, namePlayer, namePlayerUn, roms[finalI], false, check));
                         }
                     });
                     scrollTable.add(button).size(420, 100).padBottom(20);
@@ -252,6 +257,7 @@ public class Leaderboard implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        bacT.dispose();
     }
 
     public ImageTextButton.ImageTextButtonStyle imageTextButton(String way, int size) {

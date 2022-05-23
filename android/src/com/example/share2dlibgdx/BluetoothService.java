@@ -228,9 +228,6 @@ public class BluetoothService {
             inputStream = tempIn;
             outputStream = tempOut;
         }
-
-        boolean close = true;
-
         public void run() {
             if (!isInterrupted()) {
                 byte[] buffer = new byte[1024];
@@ -241,19 +238,14 @@ public class BluetoothService {
                         bytes = inputStream.read(buffer);
 //                    handler.obtainMessage(STATE_MESSAGE_RECEIVED,bytes,-1,buffer).sendToTarget();
 //                    System.out.println("SEND");
-                        String tempMsg = new String(buffer, 0, bytes);
-//                    msg_box.setText(tempMsg);
-                        ms = tempMsg;
-//                    System.out.println(tempMsg);
+                        ms = new String(buffer, 0, bytes);
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-
         }
-
         public void write(byte[] bytes) {
             if (!isInterrupted()) {
                 try {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,9 +19,10 @@ import com.example.share2dlibgdx.ui.ActivitySwipeDetector;
 import com.example.share2dlibgdx.ui.JoystickArrows;
 
 import handler.FontSizeHandler;
+import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
-public class Game2_Screen implements Screen {
+public class Сlassic_Game_Screen implements Screen {
     public Snake snake;
     Bread bread;
     Touch touch;
@@ -36,15 +38,16 @@ public class Game2_Screen implements Screen {
     private Cell[][] cells;
     int size = 33;
     float speed = 0.4f;
-    TextButton back;
+    ImageTextButton back;
     Texture bacG;
     boolean o = false;
     int spawnX = 660;
     int spawnY = 363;
     TextButton v;
 
-    public Game2_Screen(game game) {
+    public Сlassic_Game_Screen(game game) {
         this.game = game;
+
     }
 
     @Override
@@ -70,13 +73,12 @@ public class Game2_Screen implements Screen {
         v.addListener(new ActivitySwipeDetector(snake));
         stage.addActor(v);
 
-        label = LabelHandler.INSTANCE.createLabel("Points: 0", 50, Color.WHITE);
+        label = LabelHandler.INSTANCE.createLabel("Очки: 0", 50, Color.WHITE);
         label.setPosition(10, 620);
 
-        back = new TextButton("", skin);
-        back = new TextButton("назад", setStyle(skin, back, 40));
-        back.setPosition(1080, 620);
-        back.setSize(180, 80);
+        back = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
+        back.setPosition(980, 610);
+        back.setSize(250, 100);
         back.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -125,13 +127,14 @@ public class Game2_Screen implements Screen {
             }
         });
         initMusic();
-        bacG = new Texture("bacG.png");
+        bacG = new Texture("bacT.png");
         if (!o) {
             for (int j = 0; j < snake.cells.size(); j++) {
                 snake.cells.get(j).x = spawnX;//660
                 snake.cells.get(j).y = spawnY;//363
             }
         }
+        gameOver();
 
     }
 
@@ -156,13 +159,13 @@ public class Game2_Screen implements Screen {
         fitViewport.apply();
 
         game.batch.begin();
-        cells = new Cell[Gdx.graphics.getWidth() / size][Gdx.graphics.getHeight() / size];
-        for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
-            for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
-                game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * size, colGrass * size, size, size);
-            }
-        }
-//        game.batch.draw(bacG, 0, 0);
+//        cells = new Cell[Gdx.graphics.getWidth() / size][Gdx.graphics.getHeight() / size];
+//        for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
+//            for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
+//                game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * size, colGrass * size, size, size);
+//            }
+//        }
+        game.batch.draw(bacG, 0, 0);
 
 
         snake.render3(Gdx.graphics.getDeltaTime());
@@ -170,16 +173,7 @@ public class Game2_Screen implements Screen {
 
         if (!o) {
             if (touch.touchScreen() != 0) {
-                gameOver++;
-                snake.cells.clear();
-                snake.increase(3);
-                snake.level = 1;
-
-                label.setText("Points: 0");
-                for (int j = 0; j < snake.cells.size(); j++) {
-                    snake.cells.get(j).x = spawnX;
-                    snake.cells.get(j).y = spawnY;
-                }
+                gameOver();
             }
             for (int i = 1; i < snake.cells.size(); i++) {
                 boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
@@ -189,14 +183,7 @@ public class Game2_Screen implements Screen {
                 }
                 if (g && snake.transfer.tr != -1) {
                     SoundPlayer.playSound(Asset.CRASH_SOUND, false);
-                    snake.cells.clear();
-                    snake.increase(3);
-                    snake.level = 1;
-                    label.setText("Points: 0");
-                    for (int j = 0; j < snake.cells.size(); j++) {
-                        snake.cells.get(j).x = spawnX;//660
-                        snake.cells.get(j).y = spawnY;//363
-                    }
+                    gameOver();
                     break;
                 }
             }
@@ -230,7 +217,6 @@ public class Game2_Screen implements Screen {
 
     @Override
     public void hide() {
-
     }
 
     @Override
@@ -238,6 +224,7 @@ public class Game2_Screen implements Screen {
         grass.dispose();
         snake.dispose();
         bacG.dispose();
+        bread.dispose();
     }
 
     public void initMeal() {
@@ -272,12 +259,11 @@ public class Game2_Screen implements Screen {
     }
 
     public void gameOver() {
-        gameOver++;
         snake.cells.clear();
         snake.increase(3);
         snake.level = 1;
 
-        label.setText("Points: 0");
+        label.setText("Очки: 0");
         for (int j = 0; j < snake.cells.size(); j++) {
             snake.cells.get(j).x = spawnX;//660
             snake.cells.get(j).y = spawnY;//363

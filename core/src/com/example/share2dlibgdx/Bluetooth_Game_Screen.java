@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import datamanager.Player;
 import datamanager.ServerUpdate;
 
-public class Game4_Screen extends Game2_Screen {
+public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
     ServerUpdate update;
     String gg = "";
     float timeB;
@@ -16,7 +16,7 @@ public class Game4_Screen extends Game2_Screen {
     PointUi pointUi;
 
 
-    public Game4_Screen(final game game, boolean create) {
+    public Bluetooth_Game_Screen(final game game, boolean create) {
         super(game);
         this.create = create;
         update = new ServerUpdate();
@@ -66,7 +66,7 @@ public class Game4_Screen extends Game2_Screen {
                 Player player = new Player();
                 player.setCords(gg);
                 player.setLevel("3");
-                player.setName("GG");
+                player.setName("");
                 player.setAppleX(0);
                 player.setAppleY(0);
                 update.renderBl(player, snake);
@@ -188,6 +188,7 @@ public class Game4_Screen extends Game2_Screen {
         stage.addActor(pointUi.WinPlay());
         stage.addActor(v);
         snake.transfer.tr = 0;
+
     }
 
     @Override

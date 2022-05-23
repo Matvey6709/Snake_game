@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
@@ -27,15 +28,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
+import javax.swing.GroupLayout;
+
 import handler.FontSizeHandler;
+import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
 public class Lobby implements Screen {
@@ -76,6 +80,9 @@ public class Lobby implements Screen {
     Texture head;
     Texture body;
     Color GREY = new Color(217f, 217f, 217f, 1);
+    Table scrollTableGames;
+    ImageTextButton button;
+    ImageTextButton button2;
 
     public Lobby(final game gam) {
         game = gam;
@@ -89,9 +96,9 @@ public class Lobby implements Screen {
         stage.getViewport().setCamera(camera);
         imageTextButtons = new ArrayList<>();
         skins = new ArrayList();
-        buttonM3 = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_head"), 60));
-        buttonM2 = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_body"), 60));
-        buttonM1 = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_tail"), 60));
+        buttonM3 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_head"), "", 60, Color.WHITE);
+        buttonM2 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_body"), "", 60, Color.WHITE);
+        buttonM1 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_tail"), "", 60, Color.WHITE);
         m3 = new SnakeSkin(buttonM3, Asset.instance().getSprite("snake_head"));
         m2 = new SnakeSkin(buttonM2, Asset.instance().getSprite("snake_body"));
         m1 = new SnakeSkin(buttonM1, Asset.instance().getSprite("snake_tail"));
@@ -128,7 +135,7 @@ public class Lobby implements Screen {
         if (photo && game.loaded.getPhoto() != null) {
             photo = false;
             Texture s = game.loaded.getPhoto();
-            final BIndex index = new BIndex(new ImageTextButton("", imageTextButtonStyle(new Sprite(s), 60)), l);
+            final BIndex index = new BIndex(ImageTextButtonHandler.INSTANCE.createButtonSprite(new Sprite(s), "", 60, Color.WHITE), l);
             imageTextButtons.add(index);
 
             if (i <= 1) {
@@ -147,7 +154,7 @@ public class Lobby implements Screen {
                     selectSkin.textButton.setVisible(false);
                     selectSkin.tableScrollSkin.setVisible(false);
 
-                    selectSkin.b.button.setStyle(imageTextButtonStyle(new Sprite(skins.get(index.index)), 60));
+                    selectSkin.b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(new Sprite(skins.get(index.index)), 60));
                     selectSkin.b.sprite = new Sprite(skins.get(index.index));
                 }
             });
@@ -200,7 +207,7 @@ public class Lobby implements Screen {
         final Drawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture("w.png")));
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        setting = new ImageTextButton("", imageTextButtonStyle("setLob.png", 40));
+        setting = ImageTextButtonHandler.INSTANCE.createButtonWay("setLob.png", "", 40, Color.WHITE, false);
         setting.setTransform(true);
         setting.setSize(60, 60);
         setting.setOrigin(setting.getWidth() / 2, setting.getHeight() / 2);
@@ -218,10 +225,8 @@ public class Lobby implements Screen {
         label.setPosition(140, 600);
 
 
-//        TextButton startGame1 = new TextButton("Начать игру 1", setStyle(skin, 40));
-        ImageTextButton startGame1 = new ImageTextButton("Онлайн", imageTextButtonStyle("buton1.png", 40));
-//        startGame1.setPosition(454, 108);
-//        startGame1.setSize(300, 120);
+        final ImageTextButton startGame1 = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (1).png", "Онлайн", 40, Color.WHITE, true);
+
 
         startGame1.addListener(new ChangeListener() {
             @Override
@@ -237,7 +242,7 @@ public class Lobby implements Screen {
             }
         });
 
-        ImageTextButton startGame3 = new ImageTextButton("Уровни", imageTextButtonStyle("buton2.png", 40));
+        ImageTextButton startGame3 = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (2).png", "Уровни", 40, Color.WHITE, true);
 //        startGame3.setPosition(854, 720/2-startGame3.getHeight()/2);
         startGame3.addListener(new ChangeListener() {
             @Override
@@ -246,7 +251,7 @@ public class Lobby implements Screen {
             }
         });
 //        TextButton startGame4 = new TextButton("Начать игру 4", setStyle(skin, 40));
-        ImageTextButton startGame4 = new ImageTextButton("Bluetooth", imageTextButtonStyle("buton3.png", 40));
+        ImageTextButton startGame4 = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (3).png", "Bluetooth", 40, Color.WHITE, true);
 //        startGame4.setPosition(854, 108);
         startGame4.addListener(new ChangeListener() {
             @Override
@@ -268,11 +273,11 @@ public class Lobby implements Screen {
 //        stage.addActor(dialog);
 
 
-        final Table scrollTable = new Table();
-        scrollTable.add(startGame1).size(420, 100).padBottom(20).row();
-        scrollTable.add(startGame3).size(420, 100).padBottom(20).row();
-        scrollTable.add(startGame4).size(420, 100).padBottom(20).row();
-        scrollTable.setPosition(1000, 720 / 2 - scrollTable.getHeight() / 2);
+        scrollTableGames = new Table();
+        scrollTableGames.add(startGame1).size(420, 100).padBottom(20).row();
+        scrollTableGames.add(startGame3).size(420, 100).padBottom(20).row();
+        scrollTableGames.add(startGame4).size(420, 100).padBottom(20).row();
+        scrollTableGames.setPosition(1000, 720 / 2 - scrollTableGames.getHeight() / 2);
 //        final ScrollPane scroller = new ScrollPane(scrollTable);
 
 //        scroller.setScale(0.1f);
@@ -286,7 +291,7 @@ public class Lobby implements Screen {
 
         stage.addActor(tableS);
         stage.addActor(label);
-        stage.addActor(scrollTable);
+        stage.addActor(scrollTableGames);
         stage.addActor(table);
         stage.addActor(setting);
         stage.addActor(settingLabel);
@@ -294,13 +299,12 @@ public class Lobby implements Screen {
         choosingskins = new Choosingskins();
         resetName = new ResetName();
         selectLevel = new SelectLevel();
-
-
     }
 
     public void settings(Drawable drawable) {
         table.setBackground(drawable);
         if (show) {
+            scrollTableGames.setVisible(true);
             table.clear();
             table.setBounds(1810, 0, 550, 720);
             table.setVisible(false);
@@ -320,6 +324,7 @@ public class Lobby implements Screen {
             actionLabelSetting.setDuration(0.05f);
             settingLabel.addAction(actionLabelSetting);
         } else {
+            scrollTableGames.setVisible(false);
             MoveByAction action = new MoveByAction();
             action.setAmount(-350, 0);
             action.setDuration(0.2f);
@@ -337,7 +342,8 @@ public class Lobby implements Screen {
 
             table.clear();
             table.setVisible(true);
-            ImageTextButton button = new ImageTextButton("Имя", imageTextButtonStyle("button1.png", 35));
+            button = ImageTextButtonHandler.INSTANCE.createButtonWay("butS (1).png", "Имя", 35, Color.WHITE, true);
+            button2 = ImageTextButtonHandler.INSTANCE.createButtonWay("butS (2).png", "Скин", 35, Color.WHITE, true);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -345,7 +351,6 @@ public class Lobby implements Screen {
                 }
             });
 
-            ImageTextButton button2 = new ImageTextButton("Скин", imageTextButtonStyle("button2.png", 35));
             button2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -376,40 +381,41 @@ public class Lobby implements Screen {
         return style;
     }
 
-    public ImageTextButton.ImageTextButtonStyle imageTextButtonStyle(String way, int size) {
-        Texture myTexture = new Texture(Gdx.files.internal(way));//buttonBer
-        TextureRegion myTextureRegion = new TextureRegion(myTexture);
-        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-        ImageTextButton.ImageTextButtonStyle style = new ImageTextButton.ImageTextButtonStyle();
-        style.up = myTexRegionDrawable;
-        style.down = myTexRegionDrawable;
-        style.checked = myTexRegionDrawable;
-        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
-        return style;
-    }
+//    public ImageTextButton.ImageTextButtonStyle imageTextButtonStyle(String way, int size) {
+//        Texture myTexture = new Texture(Gdx.files.internal(way));//buttonBer
+//        TextureRegion myTextureRegion = new TextureRegion(myTexture);
+//        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+//        ImageTextButton.ImageTextButtonStyle style = new ImageTextButton.ImageTextButtonStyle();
+//        style.up = myTexRegionDrawable;
+//        style.down = myTexRegionDrawable;
+//        style.checked = myTexRegionDrawable;
+//        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
+//        return style;
+//    }
 
-    public ImageTextButton.ImageTextButtonStyle imageTextButtonStyle(Sprite texture, int size) {
-        TextureRegion myTextureRegion = new TextureRegion(texture);
-        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-        ImageTextButton.ImageTextButtonStyle style = new ImageTextButton.ImageTextButtonStyle();
-        style.up = myTexRegionDrawable;
-        style.down = myTexRegionDrawable;
-        style.checked = myTexRegionDrawable;
-        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
-        return style;
-    }
+//    public ImageTextButton.ImageTextButtonStyle imageTextButtonStyle(Sprite texture, int size) {
+//        TextureRegion myTextureRegion = new TextureRegion(texture);
+//        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
+//        ImageTextButton.ImageTextButtonStyle style = new ImageTextButton.ImageTextButtonStyle();
+//        style.up = myTexRegionDrawable;
+//        style.down = myTexRegionDrawable;
+//        style.checked = myTexRegionDrawable;
+//        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
+//        return style;
+//    }
 
 
     public class Choosingskins {
-        TextButton buttonBack2;
+        ImageTextButton buttonBack2;
         //        TextButton button2;
         Table resetNameTable2;
 
 
         public Choosingskins() {
             resetNameTable2 = new Table();
-            buttonBack2 = new TextButton("назад", setStyle(skin, 60));
+            buttonBack2 = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
             buttonBack2.setPosition(60, 70);
+            buttonBack2.setSize(250, 100);
 //            button2 = new TextButton("Сохранить", setStyle(skin, 60));
 //            button2.setPosition(300, 70);
 
@@ -423,7 +429,7 @@ public class Lobby implements Screen {
             resetNameTable2.setVisible(false);
 
             resetNameTable2.setBounds(0, 0, 1280, 720);
-            Texture tex = new Texture("resetname.jpg");
+            Texture tex = new Texture("bacT.png");
             TextureRegion t = new TextureRegion(tex);
             Drawable drawable = new TextureRegionDrawable(t);
             resetNameTable2.setBackground(drawable);
@@ -431,8 +437,7 @@ public class Lobby implements Screen {
             buttonBack2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    resetNameTable2.setVisible(false);
-                    buttonBack2.setVisible(false);
+                    remove();
 //                    button2.setVisible(false);
                 }
             });
@@ -488,18 +493,26 @@ public class Lobby implements Screen {
         }
 
         public void show() {
+            scrollTableGames.setVisible(false);
             buttonBack2.setVisible(true);
 //            button2.setVisible(true);
             resetNameTable2.setVisible(true);
 //            buttonM1.setVisible(true);
 //            buttonM2.setVisible(true);
 //            buttonM3.setVisible(true);
+            setting.setVisible(false);
+            button.setVisible(false);
+            button2.setVisible(false);
         }
 
         public void remove() {
+            scrollTableGames.setVisible(true);
             buttonBack2.setVisible(false);
 //            button2.setVisible(false);
             resetNameTable2.setVisible(false);
+            setting.setVisible(true);
+            button.setVisible(true);
+            button2.setVisible(true);
 //            buttonM1.setVisible(false);
 //            buttonM2.setVisible(false);
 //            buttonM3.setVisible(false);
@@ -509,11 +522,12 @@ public class Lobby implements Screen {
 
     public class ResetName {
         Table resetNameTable;
+        Group group;
 
         public ResetName() {
             resetNameTable = new Table();
             resetNameTable.setBounds(0, 0, 1280, 720);
-            Texture tex = new Texture("resetname.jpg");
+            Texture tex = new Texture("bacT.png");
             TextureRegion t = new TextureRegion(tex);
             Drawable drawable = new TextureRegionDrawable(t);
             resetNameTable.setBackground(drawable);
@@ -525,10 +539,11 @@ public class Lobby implements Screen {
             textField = new TextField("", style);
             textField.setMessageText("Новое имя");
             textField.setMaxLength(8);
-
-            TextButton button = new TextButton("Сохранить", setStyle(skin, 30));
+            textField.setAlignment(Align.center);
             final TextField finalTextField = textField;
-            button.addListener(new ChangeListener() {
+            ImageTextButton buttonSave = ImageTextButtonHandler.INSTANCE.createButtonWay("saveButton.png", "", 60, Color.WHITE, false);
+
+            buttonSave.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     remove();
@@ -536,45 +551,53 @@ public class Lobby implements Screen {
                     namePlayer = finalTextField.getText();
                 }
             });
-            TextButton buttonBack = new TextButton("назад", setStyle(skin, 30));
-            final TextField finalTextField1 = textField;
+            ImageTextButton buttonBack = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
+            buttonBack.setPosition(60, 70);
+            buttonBack.setSize(250, 100);
             buttonBack.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     remove();
                 }
             });
-            resetNameTable.add(textField).size(300, 65).padBottom(50f).row();
-            resetNameTable.add(button).padBottom(50f).row();
-            resetNameTable.add(buttonBack).row();
-            resetNameTable.setVisible(false);
-            stage.addActor(resetNameTable);
+            resetNameTable.add(textField).align(Align.center).size(300, 60);
+            resetNameTable.add(buttonSave).size(100, 100).row();
+            group = new Group();
+            group.addActor(resetNameTable);
+            group.addActor(buttonBack);
+            group.setVisible(false);
+            stage.addActor(group);
         }
 
         public void show() {
-            resetNameTable.setVisible(true);
+            group.setVisible(true);
+            scrollTableGames.setVisible(false);
+            setting.setVisible(false);
+            button.setVisible(false);
+            button2.setVisible(false);
         }
 
         public void remove() {
-//            resetNameTable.setVisible(false);
+            setting.setVisible(true);
+            button.setVisible(true);
+            button2.setVisible(true);
+            scrollTableGames.setVisible(true);
             final AlphaAction alphaAction = new AlphaAction();
             alphaAction.setAlpha(0.5f);
             alphaAction.setDuration(0.1f);
-//            resetNameTable.addAction(alphaAction);
             RunnableAction run = new RunnableAction();
             run.setRunnable(new Runnable() {
                 @Override
                 public void run() {
                     if (alphaAction.isComplete()) {
-                        resetNameTable.setVisible(false);
+                        group.setVisible(false);
                         AlphaAction alphaAction = new AlphaAction();
                         alphaAction.setAlpha(1);
-                        resetNameTable.addAction(alphaAction);
+                        group.addAction(alphaAction);
                     }
-
                 }
             });
-            resetNameTable.addAction(new SequenceAction(alphaAction, run));
+            group.addAction(new SequenceAction(alphaAction, run));
         }
 
     }
@@ -599,19 +622,19 @@ public class Lobby implements Screen {
 //        table.setFillParent(true);
             table2.add(scroller).fill().expand();
             table2.setBounds(380, 60, 500, 500);
-            ImageTextButton startGame2 = new ImageTextButton("Классичекая", imageTextButtonStyle("buton2.png", 40));
+            ImageTextButton startGame2 = ImageTextButtonHandler.INSTANCE.createButtonWay("buton2.png", "Классичекая", 40, Color.WHITE, false);
             startGame2.setPosition(54, 108);
             startGame2.setSize(300, 120);
             startGame2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new Game2_Screen(game));
+                    game.setScreen(new Сlassic_Game_Screen(game));
                 }
             });
             scrollTable.add(startGame2).size(420, 100).padBottom(20);
             scrollTable.row();
             for (int i = 0; i < 5; i++) {
-                TextButton button = new TextButton(i + 1 + " уровень", setStyle(skin, 40));
+                ImageTextButton button = ImageTextButtonHandler.INSTANCE.createButtonWay("buton2.png", i + 1 + " уровень", 40, Color.WHITE, false);
                 final int finalI = i;
                 button.addListener(new ChangeListener() {
                     @Override
@@ -621,7 +644,7 @@ public class Lobby implements Screen {
                         table2.setVisible(false);
                         labelLevel.setVisible(false);
                         closeLevel.setVisible(false);
-                        game.setScreen(new Game3_Screen(game, finalI));
+                        game.setScreen(new Levels_Game_Screen(game, finalI));
                     }
                 });
                 scrollTable.add(button).size(420, 100).padBottom(20);
@@ -629,7 +652,7 @@ public class Lobby implements Screen {
             }
             labelLevel = LabelHandler.INSTANCE.createLabel("Выберите уровень", 30, Color.BLACK);
             labelLevel.setPosition(485, 630);
-            closeLevel = new ImageTextButton("", imageTextButtonStyle("close.png", 15));
+            closeLevel = ImageTextButtonHandler.INSTANCE.createButtonWay("close.png", "", 15, Color.WHITE, false);
             closeLevel.setPosition(800, 626);
             closeLevel.setSize(50, 50);
             closeLevel.addListener(new ChangeListener() {
@@ -690,7 +713,7 @@ public class Lobby implements Screen {
             image = new Image(level);
             image.setSize(500, 700);
             image.setPosition(380, 0);
-            closeLevel = new ImageTextButton("", imageTextButtonStyle("close.png", 15));
+            closeLevel = ImageTextButtonHandler.INSTANCE.createButtonWay("close.png", "", 15, Color.WHITE, false);
             closeLevel.setPosition(800, 626);
             closeLevel.setSize(50, 50);
             closeLevel.addListener(new ChangeListener() {
@@ -713,9 +736,9 @@ public class Lobby implements Screen {
             tableScrollSkin.add(scroller).fill().expand();
             tableScrollSkin.setBounds(380, 180, 500, 300);
 
-            skins1S = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_head"), 60));
-            skins2S = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_body"), 60));
-            skins3S = new ImageTextButton("", imageTextButtonStyle(Asset.instance().getSprite("snake_tail"), 60));
+            skins1S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_head"), "", 60, Color.WHITE);
+            skins2S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_body"), "", 60, Color.WHITE);
+            skins3S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_tail"), "", 60, Color.WHITE);
             skins1S.setSize(90, 90);
             skins1S.setPosition(720, 450);
             skins2S.setSize(90, 90);
@@ -723,9 +746,9 @@ public class Lobby implements Screen {
             skins3S.setSize(90, 90);
             skins3S.setPosition(460, 450);
 
-            skins1G = new ImageTextButton("", imageTextButtonStyle("snakehead.png", 60));
-            skins2G = new ImageTextButton("", imageTextButtonStyle("snakebody.png", 60));
-            skins3G = new ImageTextButton("", imageTextButtonStyle("snakebody.png", 60));
+            skins1G = ImageTextButtonHandler.INSTANCE.createButtonWay("snakehead.png", "", 60, Color.WHITE, false);
+            skins2G = ImageTextButtonHandler.INSTANCE.createButtonWay("snakebody.png", "", 60, Color.WHITE, false);
+            skins3G = ImageTextButtonHandler.INSTANCE.createButtonWay("snakebody.png", "", 60, Color.WHITE, false);
             skins1G.setSize(90, 90);
             skins1G.setPosition(720, 320);
             skins2G.setSize(90, 90);
@@ -733,9 +756,9 @@ public class Lobby implements Screen {
             skins3G.setSize(90, 90);
             skins3G.setPosition(460, 320);
 
-            skins1B = new ImageTextButton("", imageTextButtonStyle("headB.png", 60));
-            skins2B = new ImageTextButton("", imageTextButtonStyle("bodyB.png", 60));
-            skins3B = new ImageTextButton("", imageTextButtonStyle("bodyB.png", 60));
+            skins1B = ImageTextButtonHandler.INSTANCE.createButtonWay("headB.png", "", 60, Color.WHITE, false);
+            skins2B = ImageTextButtonHandler.INSTANCE.createButtonWay("bodyB.png", "", 60, Color.WHITE, false);
+            skins3B = ImageTextButtonHandler.INSTANCE.createButtonWay("bodyB.png", "", 60, Color.WHITE, false);
 
 
             textButton = new TextButton("Добавить свой", setStyle(skin, 40));
@@ -786,7 +809,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle(Asset.instance().getSprite("snake_tail"), 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_tail"), 60));
                     b.sprite = Asset.instance().getSprite("snake_tail");
                 }
             });
@@ -796,7 +819,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle(Asset.instance().getSprite("snake_body"), 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_body"), 60));
                     b.sprite = Asset.instance().getSprite("snake_body");
                 }
             });
@@ -806,7 +829,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle(Asset.instance().getSprite("snake_head"), 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_head"), 60));
                     b.sprite = Asset.instance().getSprite("snake_head");
                 }
             });
@@ -816,7 +839,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("snakebody.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snakebody.png", 60));
                     b.sprite = new Sprite(new Texture("snakebody.png"));
                 }
             });
@@ -826,7 +849,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("snakebody.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snakebody.png", 60));
                     b.sprite = new Sprite(new Texture("snakebody.png"));
                 }
             });
@@ -836,7 +859,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("snakehead.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snakehead.png", 60));
                     b.sprite = new Sprite(new Texture("snakehead.png"));
                 }
             });
@@ -846,7 +869,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("bodyB.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("bodyB.png", 60));
                     b.sprite = new Sprite(new Texture("bodyB.png"));
                 }
             });
@@ -856,7 +879,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("bodyB.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("bodyB.png", 60));
                     b.sprite = new Sprite(new Texture("bodyB.png"));
                 }
             });
@@ -866,7 +889,7 @@ public class Lobby implements Screen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(imageTextButtonStyle("headB.png", 60));
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("headB.png", 60));
                     b.sprite = new Sprite(new Texture("headB.png"));
                 }
             });
@@ -905,5 +928,4 @@ public class Lobby implements Screen {
             this.sprite = sprite;
         }
     }
-
 }
