@@ -19,7 +19,7 @@ public class game extends Game {
 
     Lobby lobby;
 
-    Game1_Screen game1_screen;
+    Online_Game_Screen game1_screen;
 
     Image image;
     Texture texture;

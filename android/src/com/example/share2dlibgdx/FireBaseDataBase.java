@@ -25,6 +25,8 @@ public class FireBaseDataBase {
     int cPg = -1;
     boolean isOnline = false;
     String uniqueKey;
+    boolean isExistsGame = true;
+
 
     public void Create() {
         //        firebaseDatabase = FirebaseDatabase.getInstance("https://share-3c976-default-rtdb.firebaseio.com/");
@@ -38,7 +40,7 @@ public class FireBaseDataBase {
 //        System.out.println(uniqueKey);
     }
 
-    public Player requestData(String nameGame, String namePlayer, Snake share) {
+    public Player requestData(String nameGame) {
         ref2 = firebaseDatabase.getReference("Games").child(nameGame);
         v = new ValueEventListener() {
             @Override
@@ -259,7 +261,6 @@ public class FireBaseDataBase {
                 } catch (Exception e) {
 
                 }
-
             }
 
             @Override
@@ -269,9 +270,6 @@ public class FireBaseDataBase {
 
         };
         ref2.addValueEventListener(v);
-
-//        ref2.removeEventListener(v);
-
         if (players != null) {
             return players;
         }
@@ -356,10 +354,6 @@ public class FireBaseDataBase {
         return cPg;
     }
 
-    public Player test() {
-        return players;
-    }
-
     public void dispose() {
         ref.removeEventListener(v);
     }
@@ -372,7 +366,7 @@ public class FireBaseDataBase {
         return isOnline;
     }
 
-    public void isOnline2(String nameGame, String namePlayer) {
+    public void isOnline2(String nameGame) {
         DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
 
@@ -411,14 +405,11 @@ public class FireBaseDataBase {
 
     }
 
-
-    boolean isExistsGame = true;
-
     public void setExistsGame(boolean existsGame) {
         isExistsGame = existsGame;
     }
 
-    public void isExistsGame(String nGame, String namePlayer2) {
+    public void isExistsGame(String nGame) {
         v = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -441,9 +432,5 @@ public class FireBaseDataBase {
 
     public boolean isExistsGame2() {
         return isExistsGame;
-    }
-
-    public void isNamePlayer(String namePlayer) {
-
     }
 }

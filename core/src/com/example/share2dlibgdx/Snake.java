@@ -126,21 +126,12 @@ public class Snake {
 
         for (int i = 0; i < cells.size() - 1; i++) {
             Sprite sprite = getBodyType4(i);
-
-
             sprite.setOrigin(cells.get(i).sizeX / 2, cells.get(i).sizeY / 2);
             sprite.rotate(cells.get(i).rotate);
             sprite.setBounds(cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
             sprite.draw(batch);
             sprite.setRotation(0);
         }
-
-
-//            batch.draw(sprite, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
-
-//            batch.draw(getBodyType2(i), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
-
-//        System.out.println(cells.size());
     }
 
     public void ShareInit(float delta) {

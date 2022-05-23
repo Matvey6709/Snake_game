@@ -7,14 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.ArrayList;
 
-import handler.FontSizeHandler;
+import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
 
@@ -26,7 +25,7 @@ public class PointUi {
     ArrayList<ImageButton> imageButtonsApples;
     Group group;
     Group group2;
-    TextButton end;
+    ImageTextButton end;
     int testLevel2;
     int testLevel1;
     String testNamePlayer2;
@@ -49,21 +48,21 @@ public class PointUi {
     }
 
     public Label WinPlay() {
-        WinLabel = LabelHandler.INSTANCE.createLabel("", 100, Color.BLACK);
+        WinLabel = LabelHandler.INSTANCE.createLabel("", 100, Color.WHITE);
         WinLabel.setX(350);
         WinLabel.setY(1280 / 2);
         return WinLabel;
     }
 
     public Label FirstPointUi() {
-        label = LabelHandler.INSTANCE.createLabel("namePlayer", 60, Color.BLACK);
+        label = LabelHandler.INSTANCE.createLabel("namePlayer", 60, Color.WHITE);
         label.setX(0);
         label.setY(720 - 100);
         return label;
     }
 
     public Label SecondPointUi() {
-        label2 = LabelHandler.INSTANCE.createLabel("namePlayersss", 60, Color.BLACK);
+        label2 = LabelHandler.INSTANCE.createLabel("namePlayersss", 60, Color.WHITE);
         label2.setX(0);
         label2.setY(720 - 200);
         return label2;
@@ -103,16 +102,9 @@ public class PointUi {
         return group2;
     }
 
-    public TextButton endButton() {
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        end = new TextButton("End", skin);
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.font = FontSizeHandler.INSTANCE.getFont(40, Color.WHITE);
-        ;
-        style.checked = end.getStyle().checked;
-        style.up = end.getStyle().up;
-        style.down = end.getStyle().down;
-        end.setStyle(style);
+    public ImageTextButton endButton() {
+
+        end = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
         end.setSize(-400, -120);
         end.setPosition(-640, -720 / 2 - 350);
         return end;

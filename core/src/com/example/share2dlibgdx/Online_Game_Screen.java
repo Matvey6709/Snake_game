@@ -22,12 +22,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.example.share2dlibgdx.ui.Joystick3;
 import com.example.share2dlibgdx.ui.JoystickArrows;
 
-import java.util.Locale;
-
 import datamanager.ServerUpdate;
 import handler.LabelHandler;
 
-public class Game1_Screen implements Screen {
+public class Online_Game_Screen implements Screen {
 
     final game game;
     //    OrthographicCamera camera;
@@ -67,8 +65,9 @@ public class Game1_Screen implements Screen {
 
     private Sprite[][] cells;
     JoystickArrows joystickArrows;
+    Texture bacG;
 
-    public Game1_Screen(final game gam, String namePlayer, final String namePlayerUn, final String nameGame, boolean wait, boolean check) {
+    public Online_Game_Screen(final game gam, String namePlayer, final String namePlayerUn, final String nameGame, boolean wait, boolean check) {
         game = gam;
         this.wait = wait;
         this.check = check;
@@ -81,7 +80,7 @@ public class Game1_Screen implements Screen {
         fitViewport = new FitViewport(1280, 720, camera);
 
         stage = new Stage(fitViewport);
-        label = LabelHandler.INSTANCE.createLabel("Looking for an opponent", 50, Color.WHITE);
+        label = LabelHandler.INSTANCE.createLabel("Поиск соперника", 50, Color.WHITE);
         label.setPosition(160, 50);
         stage.addActor(pointUi.FirstPointUi());
         stage.addActor(joystick);
@@ -146,6 +145,7 @@ public class Game1_Screen implements Screen {
                 speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 0.5f);
             }
         });
+        bacG = new Texture("bacT.png");
     }
 
 
@@ -197,7 +197,6 @@ public class Game1_Screen implements Screen {
                         stage.addActor(pointUi.apples2());
                         stage.addActor(pointUi.WinPlay());
                         stage.addActor(pointUi.endButton());
-                        stage.addActor(pointUi.Timer());
                         pointUi.end.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
@@ -217,13 +216,13 @@ public class Game1_Screen implements Screen {
                         game.loaded.toast("Ваш противник вышел из игры");
                         game.setScreen(game.lobby);
                     }
-                    seconder(1);
 
-                    for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
-                        for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
-                            game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
-                        }
-                    }
+//                    for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
+//                        for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
+//                            game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
+//                        }
+//                    }
+                    game.batch.draw(bacG, 0, 0, 1280, 720);
 
                     bread.render();
                     snake.render(Gdx.graphics.getDeltaTime());
@@ -324,7 +323,6 @@ public class Game1_Screen implements Screen {
                         stage.addActor(pointUi.apples2());
                         stage.addActor(pointUi.WinPlay());
                         stage.addActor(pointUi.endButton());
-                        stage.addActor(pointUi.Timer());
                         stage.addActor(speedButton);
 
                         pointUi.end.addListener(new ChangeListener() {
@@ -408,13 +406,13 @@ public class Game1_Screen implements Screen {
                         }
                     }
 
-                    seconder(1);
 
-                    for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
-                        for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
-                            game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * 33, colGrass * 33, 33, 33);
-                        }
-                    }
+//                    for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
+//                        for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
+//                            game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * 33, colGrass * 33, 33, 33);
+//                        }
+//                    }
+                    game.batch.draw(bacG, 0, 0, 1280, 720);
 
                     bread.render();
                     snake.render2(Gdx.graphics.getDeltaTime());
@@ -499,12 +497,12 @@ public class Game1_Screen implements Screen {
                     if (snake.level >= 8) {
                         pointUi.WhoWin(snake.NamePlayer);
                         end = true;
-                        pointUi.end.setSize(400, 120);
+                        pointUi.end.setSize(250, 100);
                         pointUi.end.setPosition(360 - 360 / snake.NamePlayer.length(), 240);
                     } else if (serverUpdate.getLevel() >= 8 && serverUpdate.getNamePlayer() != null) {
                         pointUi.WhoWin(serverUpdate.getNamePlayer());
                         end = true;
-                        pointUi.end.setSize(200, 120);
+                        pointUi.end.setSize(250, 100);
                         pointUi.end.setPosition(360 - 360 / snake.NamePlayer.length(), 240);
 
                     }
@@ -576,7 +574,7 @@ public class Game1_Screen implements Screen {
         joystick.dispose();
         grass.dispose();
         cur.dispose();
-
+        bacG.dispose();
     }
 
 
@@ -600,15 +598,15 @@ public class Game1_Screen implements Screen {
 
     int time;
 
-    public void seconder(float delta) {
-        time += delta;
-        int hours = time / 3600;
-        int minutes = (time % 3600) / 60;
-        int secs = time % 60;
-//        player.setStr(minutes*5+".0 0.0");
-        String time2 = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
-        pointUi.timer.setText(time2);
-    }
+//    public void seconder(float delta) {
+//        time += delta;
+//        int hours = time / 3600;
+//        int minutes = (time % 3600) / 60;
+//        int secs = time % 60;
+////        player.setStr(minutes*5+".0 0.0");
+//        String time2 = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
+//        pointUi.timer.setText(time2);
+//    }
 
     private String randomGrass(int row, int col) {
         if (col % 2 == 0) {

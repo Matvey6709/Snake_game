@@ -19,11 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import handler.CheckBoxHandler;
 import handler.FontSizeHandler;
 import handler.LabelHandler;
 
@@ -93,7 +91,7 @@ public class LeaderboardBluetooth implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.bluetoothLoaded.listen();
-                game.setScreen(new Game4_Screen(game, true));
+                game.setScreen(new Bluetooth_Game_Screen(game, true));
             }
         });
 
@@ -112,7 +110,7 @@ public class LeaderboardBluetooth implements Screen {
                         public void changed(ChangeEvent event, Actor actor) {
                             game.loaded.dispose();
                             game.bluetoothLoaded.itemB(finalI);
-                            game.setScreen(new Game4_Screen(game, false));
+                            game.setScreen(new Bluetooth_Game_Screen(game, false));
                         }
                     });
                     scrollTable.add(button).size(420, 100).padBottom(20);
@@ -134,31 +132,31 @@ public class LeaderboardBluetooth implements Screen {
         table.add(scroller).fill().expand();
         table.setBounds(0, 50, 450, 400);
 
-        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("Другой мод", skin, 8, Color.BLACK);
-        checkBox.setPosition(1100, 100);
-        checkBox.setTransform(true);
-        checkBox.getImage().setScaling(Scaling.fill);
-        checkBox.setSize(50, 50);
-        checkBox.getImageCell().size(50, 50);
-        checkBox.getImage().setSize(50, 50);
-        checkBox.getLabel().setFontScale(3f, 3f);
-        checkBox.addCaptureListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!check) {
-                    check = true;
-                } else {
-                    check = false;
-                }
-            }
-        });
+//        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("Другой мод", skin, 8, Color.BLACK);
+//        checkBox.setPosition(1100, 100);
+//        checkBox.setTransform(true);
+//        checkBox.getImage().setScaling(Scaling.fill);
+//        checkBox.setSize(50, 50);
+//        checkBox.getImageCell().size(50, 50);
+//        checkBox.getImage().setSize(50, 50);
+//        checkBox.getLabel().setFontScale(3f, 3f);
+//        checkBox.addCaptureListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                if (!check) {
+//                    check = true;
+//                } else {
+//                    check = false;
+//                }
+//            }
+//        });
 
         this.stage.addActor(table);
         this.stage.addActor(text);
         this.stage.addActor(newGame);
         this.stage.addActor(listen);
         this.stage.addActor(back);
-        this.stage.addActor(checkBox);
+//        this.stage.addActor(checkBox);
 
 
         Gdx.input.setInputProcessor(this.stage);
@@ -248,6 +246,7 @@ public class LeaderboardBluetooth implements Screen {
 
     @Override
     public void hide() {
+
     }
 
     @Override

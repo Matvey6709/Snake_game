@@ -57,7 +57,7 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public Player requestData(String nameGame, String namePlayer, Snake share) {
-                return base.requestData(nameGame, namePlayer, share);
+                return base.requestData(nameGame);
             }
 
             @Override
@@ -108,7 +108,7 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public void isOnline2(String nameGame, String namePlayer) {
-                base.isOnline2(nameGame, namePlayer);
+                base.isOnline2(nameGame);
             }
 
             @Override
@@ -123,7 +123,7 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public void isExistsGame(String nGame, String namePlayer2) {
-                base.isExistsGame(nGame, namePlayer2);
+                base.isExistsGame(nGame);
             }
 
             @Override
