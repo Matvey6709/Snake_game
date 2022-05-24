@@ -40,10 +40,15 @@ public class Asset {
     }
 
     public void loadAsset() {
-        loadFont();
-        loadSounds();
-        loadImages();
-        assetManager.finishLoading();
+        try {
+            loadFont();
+            loadSounds();
+            loadImages();
+            assetManager.finishLoading();
+        } catch (Exception e) {
+
+        }
+
     }
 
     private void loadFont() {

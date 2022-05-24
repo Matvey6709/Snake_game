@@ -11,18 +11,10 @@ public class Levels_Game_Screen extends Сlassic_Game_Screen {
     int level;
 
     public Levels_Game_Screen(game game, int level) {
-        super(game);
+        super(game, false);
         this.level = level;
-        System.out.println(level);
-
-    }
-
-    @Override
-    public void show() {
-        super.show();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         mapGames = new MapGames(1, game);
-        game.lobby.m2.sprite.setAlpha(1);
         switch (level) {
             case 0:
                 for (int i = 0; i < 720 / 33 * 1.5; i++) {
@@ -75,7 +67,15 @@ public class Levels_Game_Screen extends Сlassic_Game_Screen {
 
 
         touch = new Touch(snake);
+
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        game.lobby.m2.sprite.setAlpha(1);
         game.loaded.dialog("Задача", "Вы должны набрать 20 очков", "Хорошо");
+        snake.transfer.tr = -1;
     }
 
     boolean game3;
@@ -117,5 +117,6 @@ public class Levels_Game_Screen extends Сlassic_Game_Screen {
     public void dispose() {
         super.dispose();
         mapGames.dispose();
+        skin.dispose();
     }
 }

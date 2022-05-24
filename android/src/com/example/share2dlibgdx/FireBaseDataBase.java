@@ -355,11 +355,21 @@ public class FireBaseDataBase {
     }
 
     public void dispose() {
-        ref.removeEventListener(v);
+        try {
+            ref.removeEventListener(v);
+        } catch (Exception e) {
+
+        }
+
     }
 
     public void dispose2() {
-        ref2.removeEventListener(v);
+        try {
+            ref2.removeEventListener(v);
+        } catch (Exception e) {
+
+        }
+
     }
 
     public boolean isOnline() {

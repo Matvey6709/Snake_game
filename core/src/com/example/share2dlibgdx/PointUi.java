@@ -132,13 +132,21 @@ public class PointUi {
         }
         if (testLevel2 < level2) {
             testLevel2 = level2;
-            group.getChild(8 - level2).clear();
+            group.getChild(8 - level2).setVisible(false);
+            group.getChild(8).setVisible(false);
+            group.getChild(7).setVisible(false);
 
+//            for (int i = 0; i < level2; i++) {
+//                group.getChild(8-i).setVisible(false);
+//            }
         }
 
         if (testLevel1 < level1) {
             testLevel1 = level1;
-            group2.getChild(8 - level1).clear();
+//            group2.getChild(8 - level1).setVisible(false);
+            group2.getChild(8 - level2).setVisible(false);
+            group2.getChild(8).setVisible(false);
+            group2.getChild(7).setVisible(false);
 
         }
     }

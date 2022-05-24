@@ -42,7 +42,7 @@ import handler.FontSizeHandler;
 import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
-public class Lobby implements Screen {
+public class Lobby extends BaseScreen {
     Table table;
     OrthographicCamera camera;
     boolean show = false;
@@ -84,8 +84,13 @@ public class Lobby implements Screen {
     ImageTextButton button;
     ImageTextButton button2;
 
+    Сlassic_Game_Screen сlassic_game_screen;
+    Levels_Game_Screen levels_game_screen;
+    Leaderboard leaderboard;
+
     public Lobby(final game gam) {
         game = gam;
+
         level = new Texture("options.png");
         t = new Texture("bacLo.png");
         backgroundTexture = new TextureRegion(t, 0, 0, 1280, 720);
@@ -110,6 +115,10 @@ public class Lobby implements Screen {
         body = new Texture("body.png");
 
         game.bluetoothLoaded.BluetoothService();
+
+        leaderboard = new Leaderboard(game, new Random().nextInt(900) + 100 + "" + System.currentTimeMillis(), namePlayer);
+        сlassic_game_screen = new Сlassic_Game_Screen(game, false);
+        levels_game_screen = new Levels_Game_Screen(game, 0);
     }
 
 
@@ -163,7 +172,6 @@ public class Lobby implements Screen {
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
 
     }
 
@@ -235,7 +243,8 @@ public class Lobby implements Screen {
 //                    if (namePlayer.equals("Default")) {
 //                    String namePlayerU = new Random().nextInt(900) + 100 + "" + System.currentTimeMillis();
 //                    }
-                    game.setScreen(new Leaderboard(game, new Random().nextInt(900) + 100 + "" + System.currentTimeMillis(), namePlayer));
+                    System.gc();
+                    game.setScreen(leaderboard);
                 } else {
                     game.loaded.toast("Включите интернет");
                 }
@@ -258,6 +267,9 @@ public class Lobby implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 try {
                     if (game.bluetoothLoaded.isEnabled()) {
+                        leaderboard.namePlayer = namePlayer;
+                        leaderboard.namePlayerUn = new Random().nextInt(900) + 100 + "" + System.currentTimeMillis();
+                        System.gc();
                         game.setScreen(new LeaderboardBluetooth(game));
                     } else {
                         game.bluetoothLoaded.enableBl();
@@ -628,7 +640,7 @@ public class Lobby implements Screen {
             startGame2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new Сlassic_Game_Screen(game));
+                    game.setScreen(сlassic_game_screen);
                 }
             });
             scrollTable.add(startGame2).size(420, 100).padBottom(20);
@@ -644,7 +656,8 @@ public class Lobby implements Screen {
                         table2.setVisible(false);
                         labelLevel.setVisible(false);
                         closeLevel.setVisible(false);
-                        game.setScreen(new Levels_Game_Screen(game, finalI));
+                        levels_game_screen.level = finalI;
+                        game.setScreen(levels_game_screen);
                     }
                 });
                 scrollTable.add(button).size(420, 100).padBottom(20);

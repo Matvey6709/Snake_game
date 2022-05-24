@@ -1,7 +1,6 @@
 package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,7 +28,7 @@ import handler.FontSizeHandler;
 import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
-public class Leaderboard implements Screen {
+public class Leaderboard extends BaseScreen {
     private Stage stage;
 
     Viewport fitViewport;
@@ -54,20 +53,19 @@ public class Leaderboard implements Screen {
     String mod = "";
     Texture bacT;
 
+
     public Leaderboard(final game gam, final String namePlayerUn, final String namePlayer) {
         this.game = gam;
         this.namePlayer = namePlayer;
         this.namePlayerUn = namePlayerUn;
-
         gameWidth = Gdx.graphics.getWidth();
         gameHeight = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
         fitViewport = new FitViewport(1280, 720, camera);
 //        fitViewport = new ExtendViewport(1280, 720, 1280, 720, camera);
-
         this.stage = new Stage(fitViewport);
-
+        stage.getViewport().setCamera(camera);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
 //
@@ -121,6 +119,7 @@ public class Leaderboard implements Screen {
                 if (check) {
                     mod = "!!";
                 }
+                System.gc();
                 game.setScreen(new Online_Game_Screen(game, namePlayer, namePlayerUn, mod + (new Random().nextInt(900000) + 100000 + "" + System.currentTimeMillis()), true, check));
                 mod = "";
             }
@@ -164,35 +163,36 @@ public class Leaderboard implements Screen {
         this.stage.addActor(back);
         this.stage.addActor(checkBox);
 
-
-        Gdx.input.setInputProcessor(this.stage);
-
-        this.stage.getViewport().setCamera(camera);
-
         bacT = new Texture("bacT.png");
+        Gdx.input.setInputProcessor(this.stage);
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(this.stage);
+        game.loaded.checkStartPlay();
+        helpVariable = 0;
+        scrollTable.clear();
+        checkBox.setChecked(false);
     }
 
     boolean y = false;
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.3f, 0, 1, 1);
+        Gdx.gl.glClearColor(0f, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        camera.update();
+        fitViewport.apply();
         game.batch.begin();
         game.batch.draw(bacT, 0, 0, 1280, 720);
         game.batch.end();
         if (!game.loaded.isOnline() && !y) {
             y = true;
             game.loaded.toast("Нет подключения к интрнету");
-            game.setScreen(new Lobby(game));
+            game.setScreen(game.lobby);
             try {
                 game.loaded.dispose();
                 game.loaded.dispose2();
@@ -203,11 +203,9 @@ public class Leaderboard implements Screen {
         if (game.loaded.isOnline() && y) {
             y = false;
         }
-        fitViewport.apply();
         try {
             roms = game.loaded.checkStartPlay2().replace("null", "").split(" ");
             if (roms.length > helpVariable) {
-                scrollTable.clear();
                 for (int i = 0; i < roms.length; i++) {
                     ImageTextButton button = new ImageTextButton(roms[i], imageTextButton("buttonBer.png", 25));
                     final int finalI = i;

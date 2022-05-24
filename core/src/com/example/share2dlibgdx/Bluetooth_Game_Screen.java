@@ -17,12 +17,47 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
 
 
     public Bluetooth_Game_Screen(final game game, boolean create) {
-        super(game);
+        super(game, true);
+        o = true;
         this.create = create;
         update = new ServerUpdate();
         update.testBl(game.batch, false, game);
         animationBluetooth = new AnimationBluetooth(game.batch);
         keyMy = MathUtils.random(1, 60);
+
+        back.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                SoundPlayer.stopMusic(Asset.MEMO_SOUND);
+                game.bluetoothLoaded.send("-stop-" + keyMy);
+//                game.bluetoothLoaded.stopBl();
+                game.bluetoothLoaded.stopT();
+                game.setScreen(game.lobby);
+            }
+        });
+        snake.cells.clear();
+        snake.increase(3);
+        snake.level = 1;
+        if (create) {
+            for (int j = 0; j < snake.cells.size(); j++) {
+                snake.cells.get(j).x = 99;
+                snake.cells.get(j).y = 363;
+            }
+        } else {
+            for (int j = 0; j < snake.cells.size(); j++) {
+                snake.cells.get(j).x = 1221;
+                snake.cells.get(j).y = 363;
+            }
+        }
+        pointUi = new PointUi();
+
+        stage.addActor(pointUi.FirstPointUi());
+        stage.addActor(pointUi.SecondPointUi());
+        stage.addActor(pointUi.apples());
+        stage.addActor(pointUi.apples2());
+        stage.addActor(pointUi.WinPlay());
+        stage.addActor(v);
+        snake.transfer.tr = 0;
 
     }
 
@@ -153,41 +188,7 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
 
     @Override
     public void show() {
-        o = true;
         super.show();
-        back.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                SoundPlayer.stopMusic(Asset.MEMO_SOUND);
-                game.bluetoothLoaded.send("-stop-" + keyMy);
-//                game.bluetoothLoaded.stopBl();
-                game.bluetoothLoaded.stopT();
-                game.setScreen(game.lobby);
-            }
-        });
-        snake.cells.clear();
-        snake.increase(3);
-        snake.level = 1;
-        if (create) {
-            for (int j = 0; j < snake.cells.size(); j++) {
-                snake.cells.get(j).x = 99;
-                snake.cells.get(j).y = 363;
-            }
-        } else {
-            for (int j = 0; j < snake.cells.size(); j++) {
-                snake.cells.get(j).x = 1221;
-                snake.cells.get(j).y = 363;
-            }
-        }
-        pointUi = new PointUi();
-
-        stage.addActor(pointUi.FirstPointUi());
-        stage.addActor(pointUi.SecondPointUi());
-        stage.addActor(pointUi.apples());
-        stage.addActor(pointUi.apples2());
-        stage.addActor(pointUi.WinPlay());
-        stage.addActor(v);
-        snake.transfer.tr = 0;
 
     }
 

@@ -55,9 +55,9 @@ public class game extends Game {
 
     @Override
     public void dispose() {
+        System.out.println("dispose");
+        lobby.dispose();
         batch.dispose();
-
-        super.dispose();
         Asset.instance().dispose();
     }
 
