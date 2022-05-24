@@ -1,7 +1,9 @@
 package com.example.share2dlibgdx;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -245,6 +247,21 @@ public class AndroidLauncher extends AndroidApplication {
             @Override
             public void stopT() {
                 bluetoothService.stopT();
+            }
+
+            @Override
+            public void restartGame() {
+                Intent mStartActivity = new Intent(context, AndroidLauncher.class);
+                int mPendingIntentId = 123456;
+                PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//                mgr.set(AlarmManager.RTC, 0, mPendingIntent);
+                try {
+                    mPendingIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
             }
         };
 

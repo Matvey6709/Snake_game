@@ -26,4 +26,6 @@ public interface InterfaceBluetoothLoaded {
     boolean enable();
 
     void stopT();
+
+    void restartGame();
 }

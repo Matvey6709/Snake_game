@@ -1,7 +1,6 @@
 package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,7 +24,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import handler.FontSizeHandler;
 import handler.LabelHandler;
 
-public class LeaderboardBluetooth implements Screen {
+public class LeaderboardBluetooth extends BaseScreen {
 
     private Stage stage;
 

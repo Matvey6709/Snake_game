@@ -1,7 +1,6 @@
 package com.example.share2dlibgdx;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,7 +21,7 @@ import handler.FontSizeHandler;
 import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
-public class Сlassic_Game_Screen implements Screen {
+public class Сlassic_Game_Screen extends BaseScreen {
     public Snake snake;
     Bread bread;
     Touch touch;
@@ -45,13 +44,9 @@ public class Сlassic_Game_Screen implements Screen {
     int spawnY = 363;
     TextButton v;
 
-    public Сlassic_Game_Screen(game game) {
+    public Сlassic_Game_Screen(final game game, boolean o) {
         this.game = game;
-
-    }
-
-    @Override
-    public void show() {
+        this.o = o;
         grass = new Texture(Gdx.files.internal("grass.png"));
         camera = new OrthographicCamera();
         fitViewport = new FitViewport(1280, 720, camera);
@@ -83,6 +78,7 @@ public class Сlassic_Game_Screen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
+                System.gc();
                 game.setScreen(game.lobby);
             }
         });
@@ -91,9 +87,6 @@ public class Сlassic_Game_Screen implements Screen {
         if (!o) {
             stage.addActor(label);
         }
-
-        Gdx.input.setInputProcessor(stage);
-
         joystickArrows.UP.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -134,8 +127,15 @@ public class Сlassic_Game_Screen implements Screen {
                 snake.cells.get(j).y = spawnY;//363
             }
         }
-        gameOver();
+    }
 
+    @Override
+    public void show() {
+
+
+        Gdx.input.setInputProcessor(stage);
+        gameOver();
+        snake.transfer.tr = -1;
     }
 
     public TextButton.TextButtonStyle setStyle(Skin skin, int size) {
@@ -221,10 +221,12 @@ public class Сlassic_Game_Screen implements Screen {
 
     @Override
     public void dispose() {
+        game.batch.dispose();
         grass.dispose();
         snake.dispose();
         bacG.dispose();
         bread.dispose();
+        System.out.println("dispose");
     }
 
     public void initMeal() {

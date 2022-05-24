@@ -66,6 +66,7 @@ public class Online_Game_Screen implements Screen {
     private Sprite[][] cells;
     JoystickArrows joystickArrows;
     Texture bacG;
+    Skin skin;
 
     public Online_Game_Screen(final game gam, String namePlayer, final String namePlayerUn, final String nameGame, boolean wait, boolean check) {
         game = gam;
@@ -132,7 +133,7 @@ public class Online_Game_Screen implements Screen {
         }
         serverUpdate.test(game.batch, create);
         joystickArrows = new JoystickArrows(100, 100, 10);
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
         speedButton = new TextButton("run", game.lobby.setStyle(skin, 60));
         speedButton.setPosition(1000, 100);
         speedButton.setSize(200, 120);
@@ -166,7 +167,7 @@ public class Online_Game_Screen implements Screen {
         if (!game.loaded.isOnline() && !y) {
             y = true;
             game.loaded.toast("Нет подключения к интрнету");
-            game.setScreen(new Lobby(game));
+            game.bluetoothLoaded.restartGame();
             try {
                 game.loaded.dispose();
                 game.loaded.dispose2();
@@ -202,7 +203,7 @@ public class Online_Game_Screen implements Screen {
                             public void changed(ChangeEvent event, Actor actor) {
                                 game.loaded.delete(snake.NameGame);
                                 end();
-                                game.setScreen(game.lobby);
+                                game.bluetoothLoaded.restartGame();
                             }
                         });
                     }
@@ -214,7 +215,8 @@ public class Online_Game_Screen implements Screen {
                         } catch (Exception e) {
                         }
                         game.loaded.toast("Ваш противник вышел из игры");
-                        game.setScreen(game.lobby);
+                        game.bluetoothLoaded.restartGame();
+                        game.bluetoothLoaded.restartGame();
                     }
 
 //                    for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
@@ -295,12 +297,12 @@ public class Online_Game_Screen implements Screen {
                     if (snake.level >= 8) {
                         pointUi.WhoWin(snake.NamePlayer);
                         end = true;
-                        pointUi.end.setSize(400, 120);
-                        pointUi.end.setPosition(640, Gdx.graphics.getHeight() / 2 - 350);
+                        pointUi.end.setSize(250, 100);
+                        pointUi.end.setPosition(360, Gdx.graphics.getHeight() / 2 - 350);
                     } else if (serverUpdate.getLevel() >= 8 && serverUpdate.getNamePlayer() != null) {
                         pointUi.WhoWin(serverUpdate.getNamePlayer());
                         end = true;
-                        pointUi.end.setSize(200, 120);
+                        pointUi.end.setSize(250, 100);
                         pointUi.end.setPosition(360 - 360 / snake.NamePlayer.length(), 240);
 
                     }
@@ -331,7 +333,8 @@ public class Online_Game_Screen implements Screen {
                                 game.loaded.delete(snake.NameGame);
                                 game.loaded.setExistsGame(true);
                                 end();
-                                game.setScreen(game.lobby);
+//                                game.setScreen(game.lobby);
+                                game.bluetoothLoaded.restartGame();
                             }
                         });
                         stage.addActor(joystickArrows.joystick());
@@ -397,13 +400,13 @@ public class Online_Game_Screen implements Screen {
                                 snake.cells.get(j).y = 363;
                             }
                         }
-                        cells = new Sprite[Gdx.graphics.getWidth() / 33][Gdx.graphics.getHeight() / 33];
-                        for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
-                            for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
-                                Sprite cell = Asset.instance().getSprite(randomGrass(rowGrass, colGrass));
-                                cells[rowGrass][colGrass] = cell;
-                            }
-                        }
+//                        cells = new Sprite[Gdx.graphics.getWidth() / 33][Gdx.graphics.getHeight() / 33];
+//                        for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
+//                            for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
+//                                Sprite cell = Asset.instance().getSprite(randomGrass(rowGrass, colGrass));
+//                                cells[rowGrass][colGrass] = cell;
+//                            }
+//                        }
                     }
 
 
@@ -425,7 +428,7 @@ public class Online_Game_Screen implements Screen {
                         } catch (Exception e) {
                         }
                         game.loaded.toast("Ваш противник вышел из игры");
-                        game.setScreen(game.lobby);
+                        game.bluetoothLoaded.restartGame();
                     }
 
                     if (timeSet > snake.speed) {
@@ -555,7 +558,7 @@ public class Online_Game_Screen implements Screen {
 
     @Override
     public void resume() {
-        game.setScreen(new Lobby(game));
+        game.bluetoothLoaded.restartGame();
         game.loaded.toast("Вы вышли из игры, поэтому игра закончилась");
     }
 
@@ -575,6 +578,7 @@ public class Online_Game_Screen implements Screen {
         grass.dispose();
         cur.dispose();
         bacG.dispose();
+        skin.dispose();
     }
 
 
