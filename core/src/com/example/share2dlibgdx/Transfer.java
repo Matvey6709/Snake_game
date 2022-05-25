@@ -4,24 +4,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.example.share2dlibgdx.ui.Joystick3;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Transfer {
     public int tr = -1;
-    ArrayList<Cell> cells = new ArrayList<>();
+    LinkedList<Cell> cells;
     DeterminantSize size = new DeterminantSize();
     int speed = 33;
     Joystick3 joystick3;
     Snake snake;
 
-    public Transfer(ArrayList<Cell> cells, Joystick3 joystick3) {
+    public Transfer(LinkedList<Cell> cells, Joystick3 joystick3) {
         this.cells = cells;
         this.joystick3 = joystick3;
         speed = 33;
         tr = 0;
     }
 
-    public Transfer(ArrayList<Cell> cells, Snake snake) {
+    public Transfer(LinkedList<Cell> cells, Snake snake) {
         this.cells = cells;
         this.snake = snake;
         speed = snake.sizeX;

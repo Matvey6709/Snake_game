@@ -90,8 +90,8 @@ public class Leaderboard extends BaseScreen {
 //        scroller.setSmoothScrolling(true);
 //        scroller.setPosition(500, 0);
 
-        Label text = LabelHandler.INSTANCE.createLabel("Выберите комнату \nили \nсоздайте свою ", 50, Color.WHITE);
-        text.setPosition(30, 540);
+        Label text = LabelHandler.INSTANCE.createLabel("Выберите комнату или создайте свою", 40, Color.WHITE);
+        text.setPosition(30, 620);
 
 //        Texture myTexture = new Texture(Gdx.files.internal("7.png"));
 //        TextureRegion myTextureRegion = new TextureRegion(myTexture);
@@ -184,7 +184,7 @@ public class Leaderboard extends BaseScreen {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        camera.update();
+
         fitViewport.apply();
         game.batch.begin();
         game.batch.draw(bacT, 0, 0, 1280, 720);

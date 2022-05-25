@@ -48,7 +48,7 @@ public class Lobby extends BaseScreen {
     boolean show = false;
     TextureRegion backgroundTexture;
     Skin skin;
-    String namePlayer = "Игрок";
+    public String namePlayer = "Игрок";
     Label label;
 
     Viewport fitViewport;
@@ -68,9 +68,9 @@ public class Lobby extends BaseScreen {
     ArrayList<Texture> skins;
     ArrayList<BIndex> imageTextButtons;
     SelectSkin selectSkin;
-    SnakeSkin m1;
-    SnakeSkin m2;
-    SnakeSkin m3;
+    public SnakeSkin m1;
+    public SnakeSkin m2;
+    public SnakeSkin m3;
     ImageTextButton buttonM1;
     ImageTextButton buttonM2;
     ImageTextButton buttonM3;
@@ -107,15 +107,17 @@ public class Lobby extends BaseScreen {
         m3 = new SnakeSkin(buttonM3, Asset.instance().getSprite("snake_head"));
         m2 = new SnakeSkin(buttonM2, Asset.instance().getSprite("snake_body"));
         m1 = new SnakeSkin(buttonM1, Asset.instance().getSprite("snake_tail"));
+        namePlayer = game.loaded.get("namePlayer", "Игрок");
         Screen();
         Gdx.input.setInputProcessor(stage);
         game.loaded.create();
+
 
         head = new Texture("head.png");
         body = new Texture("body.png");
 
         game.bluetoothLoaded.BluetoothService();
-
+        SoundPlayer.init();
         leaderboard = new Leaderboard(game, new Random().nextInt(900) + 100 + "" + System.currentTimeMillis(), namePlayer);
         сlassic_game_screen = new Сlassic_Game_Screen(game, false);
         levels_game_screen = new Levels_Game_Screen(game, 0);
@@ -180,6 +182,7 @@ public class Lobby extends BaseScreen {
         Gdx.input.setInputProcessor(stage);
         game.loaded.create();
         game.loaded.setExistsGame(true);
+        game.lobby.m2.sprite.setAlpha(1);
     }
 
 
@@ -194,10 +197,12 @@ public class Lobby extends BaseScreen {
 
     @Override
     public void resume() {
+
     }
 
     @Override
     public void hide() {
+
     }
 
     @Override
@@ -561,6 +566,7 @@ public class Lobby extends BaseScreen {
                     remove();
                     label.setText(finalTextField.getText());
                     namePlayer = finalTextField.getText();
+                    game.loaded.save("namePlayer", namePlayer);
                 }
             });
             ImageTextButton buttonBack = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
@@ -645,7 +651,7 @@ public class Lobby extends BaseScreen {
             });
             scrollTable.add(startGame2).size(420, 100).padBottom(20);
             scrollTable.row();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 ImageTextButton button = ImageTextButtonHandler.INSTANCE.createButtonWay("buton2.png", i + 1 + " уровень", 40, Color.WHITE, false);
                 final int finalI = i;
                 button.addListener(new ChangeListener() {

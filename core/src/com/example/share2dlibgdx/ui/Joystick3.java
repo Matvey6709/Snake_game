@@ -159,13 +159,13 @@ public class Joystick3 extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(circle, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        batch.setColor(1, 0, 0, 1);
+//        batch.setColor(1, 0, 0, 1);
         if (isJoystickDown) {
             batch.draw(curJoystick, this.getX() + rad - CUR_RADIUS + curX, this.getY() + rad - CUR_RADIUS + curY, 2 * CUR_RADIUS, 2 * CUR_RADIUS);
         } else {
             batch.draw(curJoystick, this.getX() + rad - CUR_RADIUS, this.getY() + rad - CUR_RADIUS, 2 * CUR_RADIUS, 2 * CUR_RADIUS);
         }
-        batch.setColor(1, 1, 0, 1);
+//        batch.setColor(1, 1, 0, 1);
     }
 
     public void dispose(){
