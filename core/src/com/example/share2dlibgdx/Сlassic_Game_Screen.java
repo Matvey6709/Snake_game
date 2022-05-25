@@ -119,7 +119,6 @@ public class Сlassic_Game_Screen extends BaseScreen {
                 }
             }
         });
-        initMusic();
         bacG = new Texture("bacT.png");
         if (!o) {
             for (int j = 0; j < snake.cells.size(); j++) {
@@ -131,9 +130,8 @@ public class Сlassic_Game_Screen extends BaseScreen {
 
     @Override
     public void show() {
-
-
         Gdx.input.setInputProcessor(stage);
+        initMusic();
         gameOver();
         snake.transfer.tr = -1;
     }
@@ -147,7 +145,6 @@ public class Сlassic_Game_Screen extends BaseScreen {
     }
 
     private void initMusic() {
-        SoundPlayer.init();
         SoundPlayer.playMusic(Asset.MEMO_SOUND, true);
     }
 
@@ -196,7 +193,11 @@ public class Сlassic_Game_Screen extends BaseScreen {
         stage.act(Gdx.graphics.getDeltaTime());
 
         game.batch.begin();
-        bread.render2();
+        if (o) {
+            bread.render();
+        } else {
+            bread.render2();
+        }
         game.batch.end();
     }
 
@@ -232,8 +233,11 @@ public class Сlassic_Game_Screen extends BaseScreen {
     public void initMeal() {
         if (touch.touchBred()) {
             SoundPlayer.playSound(Asset.EAT_FOOD_SOUND, false);
-            label.setText("Points: " + snake.level);
-            bread.resetBreadTexture();
+            label.setText("Очки: " + snake.level);
+            if (!o) {
+                bread.resetBreadTexture();
+            }
+
             bread.spawn2();
             snake.addLevel();
         }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import handler.FontSizeHandler;
+import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
 public class LeaderboardBluetooth extends BaseScreen {
@@ -48,6 +49,9 @@ public class LeaderboardBluetooth extends BaseScreen {
     CheckBox checkBox;
     boolean check;
     String mod = "";
+    Texture bacT;
+    Texture level;
+    HelpText helpText1;
 
     public LeaderboardBluetooth(final game gam) {
         this.game = gam;
@@ -64,15 +68,12 @@ public class LeaderboardBluetooth extends BaseScreen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        Label text = LabelHandler.INSTANCE.createLabel("Выберите устройство \nили \nсоздайте свою ", 50, Color.WHITE);
-        text.setPosition(30, 540);
+        Label text = LabelHandler.INSTANCE.createLabel("Выберите устройство на котором слушают\nили создайте свой слушатель", 30, Color.WHITE);
+        text.setPosition(30, 620);
 
-        Texture myTexture = new Texture(Gdx.files.internal("7.png"));
-        TextureRegion myTextureRegion = new TextureRegion(myTexture);
-        TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-        ImageButton back = new ImageButton(myTexRegionDrawable);
-        back.setPosition(1090, 600);
-        back.setSize(120, 120);
+        ImageTextButton back = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
+        back.setPosition(1000, 600);
+        back.setSize(250, 100);
         back.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -83,7 +84,7 @@ public class LeaderboardBluetooth extends BaseScreen {
 
         game.loaded.checkStartPlay();
 
-        ImageTextButton newGame = new ImageTextButton("Создать сервер", imageTextButton("BlakButton.png", 35));
+        ImageTextButton newGame = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (3).png", "Слушать", 35, Color.WHITE, true);
         newGame.setSize(400, 100);
         newGame.setPosition(800, 160);
         newGame.addListener(new ChangeListener() {
@@ -94,7 +95,7 @@ public class LeaderboardBluetooth extends BaseScreen {
             }
         });
 
-        ImageTextButton listen = new ImageTextButton("Доступные устройства", imageTextButton("BlakButton.png", 35));
+        ImageTextButton listen = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (3).png", "Устройства", 35, Color.WHITE, true);
         listen.setSize(400, 100);
         listen.setPosition(800, 360);
         listen.addListener(new ChangeListener() {
@@ -121,41 +122,24 @@ public class LeaderboardBluetooth extends BaseScreen {
 
         scrollTable = new Table();
         final ScrollPane scroller = new ScrollPane(scrollTable);
-//        scroller.setSmoothScrolling(true);
-//        scroller.setTransform(true);
         scroller.setScale(1f);
         scroller.setBounds(0, 0, 450, 450);
 
         final Table table = new Table();
-//        table.setFillParent(true);
         table.add(scroller).fill().expand();
         table.setBounds(0, 50, 450, 400);
 
-//        checkBox = CheckBoxHandler.INSTANCE.createCheckBox("Другой мод", skin, 8, Color.BLACK);
-//        checkBox.setPosition(1100, 100);
-//        checkBox.setTransform(true);
-//        checkBox.getImage().setScaling(Scaling.fill);
-//        checkBox.setSize(50, 50);
-//        checkBox.getImageCell().size(50, 50);
-//        checkBox.getImage().setSize(50, 50);
-//        checkBox.getLabel().setFontScale(3f, 3f);
-//        checkBox.addCaptureListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                if (!check) {
-//                    check = true;
-//                } else {
-//                    check = false;
-//                }
-//            }
-//        });
+        final ImageTextButton helpText = ImageTextButtonHandler.INSTANCE.createButtonWay("helpText.png", "", 35, Color.WHITE, true);
+        helpText.setSize(140, 120);
+        helpText.setPosition(800, 590);
+
 
         this.stage.addActor(table);
         this.stage.addActor(text);
         this.stage.addActor(newGame);
         this.stage.addActor(listen);
         this.stage.addActor(back);
-//        this.stage.addActor(checkBox);
+        this.stage.addActor(helpText);
 
 
         Gdx.input.setInputProcessor(this.stage);
@@ -175,6 +159,14 @@ public class LeaderboardBluetooth extends BaseScreen {
 //            scrollTable.row();
 //        }
 
+        bacT = new Texture("bacT.png");
+        helpText1 = new HelpText();
+        helpText.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                helpText1.show();
+            }
+        });
     }
 
     @Override
@@ -186,45 +178,19 @@ public class LeaderboardBluetooth extends BaseScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.3f, 0, 1, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        camera.update();
-
         fitViewport.apply();
+        game.batch.begin();
+        game.batch.draw(bacT, 0, 0, 1280, 720);
+        game.batch.end();
+
         if (!game.bluetoothLoaded.isEnabled()) {
             game.setScreen(game.lobby);
             game.loaded.toast("Вы выключили bluetooth");
             game.bluetoothLoaded.stopT();
         }
-//        try {
-//            roms = game.loaded.checkStartPlay2().replace("null", "").split(" ");
-//            if (roms.length > helpVariable) {
-//                scrollTable.clear();
-//                for (int i = 0; i < roms.length; i++) {
-//                    ImageTextButton button = new ImageTextButton(roms[i], imageTextButton("buttonBer.png", 25));
-//                    final int finalI = i;
-//                    button.addListener(new ChangeListener() {
-//                        @Override
-//                        public void changed(ChangeEvent event, Actor actor) {
-//                            game.loaded.dispose();
-//                            if (roms[finalI].contains("!!")) {
-//                                check = true;
-//                            }
-//                            game.setScreen(new Game1_Screen(game, namePlayer, namePlayerUn, roms[finalI], false, check));
-//                        }
-//                    });
-//                    scrollTable.add(button).size(420, 100).padBottom(20);
-//                    scrollTable.row();
-//                }
-//                helpVariable = roms.length;
-//            }
-//
-//
-//        } catch (Exception e) {
-//
-//        }
 
         this.stage.act();
         this.stage.draw();
@@ -252,6 +218,8 @@ public class LeaderboardBluetooth extends BaseScreen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        bacT.dispose();
+        level.dispose();
     }
 
     public ImageTextButton.ImageTextButtonStyle imageTextButton(String way, int size) {
@@ -274,5 +242,59 @@ public class LeaderboardBluetooth extends BaseScreen {
         style.down = end.getStyle().down;
 
         return style;
+    }
+
+    public class HelpText {
+        Image image;
+        ImageTextButton closeLevel;
+        Label label;
+        Label labelTitle;
+
+
+        public HelpText() {
+            level = new Texture("options.png");
+            image = new Image(level);
+            image.setSize(500, 700);
+            image.setPosition(380, 0);
+            closeLevel = ImageTextButtonHandler.INSTANCE.createButtonWay("close.png", "", 15, Color.WHITE, false);
+            closeLevel.setPosition(800, 626);
+            closeLevel.setSize(50, 50);
+            closeLevel.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+
+                }
+            });
+            label = LabelHandler.INSTANCE.createLabel("Чтобы поиграть с другом по Bluetooth,\nсначала одному из вас нужно\nнажать кнопку \"Слушать\", " +
+                    "после,\nдругому, выбрать из предложенного\nсписка сопряжённых устройств,\nнужный телефон.", 25, Color.BLACK);
+            label.setPosition(395, 300);
+
+            labelTitle = LabelHandler.INSTANCE.createLabel("Инструкция", 40, Color.BLACK);
+            labelTitle.setPosition(510, 620);
+
+            stage.addActor(image);
+            stage.addActor(closeLevel);
+            stage.addActor(label);
+            stage.addActor(labelTitle);
+            image.setVisible(false);
+            closeLevel.setVisible(false);
+            label.setVisible(false);
+            labelTitle.setVisible(false);
+        }
+
+        public void show() {
+            image.setVisible(true);
+            closeLevel.setVisible(true);
+            label.setVisible(true);
+            labelTitle.setVisible(true);
+        }
+
+        public void remove() {
+            image.setVisible(false);
+            closeLevel.setVisible(false);
+            label.setVisible(false);
+            labelTitle.setVisible(false);
+        }
     }
 }

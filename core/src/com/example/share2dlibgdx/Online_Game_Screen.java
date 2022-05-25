@@ -12,10 +12,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -53,7 +51,7 @@ public class Online_Game_Screen implements Screen {
     Texture cur;
     Viewport fitViewport;
     Label label;
-    TextButton speedButton;
+//    TextButton speedButton;
 
     private static final int FRAME_COLS = 6, FRAME_ROWS = 5;
 
@@ -97,12 +95,14 @@ public class Online_Game_Screen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
         size = new DeterminantSize();
-        snake = new Snake(game.batch, joystick, size.getWidthGame(33), size.getHeightGame(33));
+        System.out.println(game.lobby.m1.sprite.getHeight());
+        System.out.println("game.lobby.m1.sprite.getHeight()");
+        snake = new Snake(game.batch, joystick, size.getWidthGame(33), size.getHeightGame(33), game.lobby.m1.sprite, game.lobby.m2.sprite, game.lobby.m3.sprite);
+
         snake.NamePlayer = namePlayer;
         snake.NameGame = nameGame;
         snake.speed = .40f;
-        System.out.println(snake.speed);
-        bread = new Bread(game.batch, size.getWidthGame(100) / 2);
+        bread = new Bread(game.batch, 33);
         bread.spawn();
         touch = new Touch(snake, bread);
         serverUpdate = new ServerUpdate();
@@ -134,19 +134,20 @@ public class Online_Game_Screen implements Screen {
         serverUpdate.test(game.batch, create);
         joystickArrows = new JoystickArrows(100, 100, 10);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        speedButton = new TextButton("run", game.lobby.setStyle(skin, 60));
-        speedButton.setPosition(1000, 100);
-        speedButton.setSize(200, 120);
-        speedButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                stopSpeed = 0;
-                snake.speed = .15f;
-                speedButton.setTouchable(Touchable.disabled);
-                speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 0.5f);
-            }
-        });
+//        speedButton = new TextButton("run", game.lobby.setStyle(skin, 60));
+//        speedButton.setPosition(1000, 100);
+//        speedButton.setSize(200, 120);
+//        speedButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                stopSpeed = 0;
+//                snake.speed = .15f;
+//                speedButton.setTouchable(Touchable.disabled);
+//                speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 0.5f);
+//            }
+//        });
         bacG = new Texture("bacT.png");
+        SoundPlayer.playMusic(Asset.MEMO_SOUND, true);
     }
 
 
@@ -203,6 +204,7 @@ public class Online_Game_Screen implements Screen {
                             public void changed(ChangeEvent event, Actor actor) {
                                 game.loaded.delete(snake.NameGame);
                                 end();
+                                SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                                 game.bluetoothLoaded.restartGame();
                             }
                         });
@@ -215,17 +217,15 @@ public class Online_Game_Screen implements Screen {
                         } catch (Exception e) {
                         }
                         game.loaded.toast("Ваш противник вышел из игры");
-                        game.bluetoothLoaded.restartGame();
+                        SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                         game.bluetoothLoaded.restartGame();
                     }
-
 //                    for (int x = 0; x < Gdx.graphics.getWidth() / grass.getWidth(); x++) {
 //                        for (int y = 0; y < Gdx.graphics.getHeight() / grass.getHeight(); y++) {
 //                            game.batch.draw(grass, grass.getWidth() * x, grass.getHeight() * y);
 //                        }
 //                    }
                     game.batch.draw(bacG, 0, 0, 1280, 720);
-
                     bread.render();
                     snake.render(Gdx.graphics.getDeltaTime());
                     if (timeSet > .40) {
@@ -241,7 +241,6 @@ public class Online_Game_Screen implements Screen {
                         serverUpdate.render(game.loaded.requestData2(), snake);
 
                     }
-
                     timeSet += Gdx.graphics.getDeltaTime();
                     serverUpdate.render3();
                     init();
@@ -325,7 +324,7 @@ public class Online_Game_Screen implements Screen {
                         stage.addActor(pointUi.apples2());
                         stage.addActor(pointUi.WinPlay());
                         stage.addActor(pointUi.endButton());
-                        stage.addActor(speedButton);
+//                        stage.addActor(speedButton);
 
                         pointUi.end.addListener(new ChangeListener() {
                             @Override
@@ -333,7 +332,7 @@ public class Online_Game_Screen implements Screen {
                                 game.loaded.delete(snake.NameGame);
                                 game.loaded.setExistsGame(true);
                                 end();
-//                                game.setScreen(game.lobby);
+                                SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                                 game.bluetoothLoaded.restartGame();
                             }
                         });
@@ -409,12 +408,6 @@ public class Online_Game_Screen implements Screen {
 //                        }
                     }
 
-
-//                    for (int rowGrass = 0; rowGrass < cells.length; rowGrass++) {
-//                        for (int colGrass = 0; colGrass < cells[rowGrass].length; colGrass++) {
-//                            game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * 33, colGrass * 33, 33, 33);
-//                        }
-//                    }
                     game.batch.draw(bacG, 0, 0, 1280, 720);
 
                     bread.render();
@@ -428,6 +421,7 @@ public class Online_Game_Screen implements Screen {
                         } catch (Exception e) {
                         }
                         game.loaded.toast("Ваш противник вышел из игры");
+                        SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                         game.bluetoothLoaded.restartGame();
                     }
 
@@ -525,19 +519,24 @@ public class Online_Game_Screen implements Screen {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        stopSpeed += delta;
-        if (stopSpeed > 30) {
-            speedButton.setTouchable(Touchable.enabled);
-            speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 1f);
-        }
-        if (stopSpeed > 4) {
-            snake.speed = .4f;
-        }
+//        stopSpeed += delta;
+//        if (stopSpeed > 30) {
+//            speedButton.setTouchable(Touchable.enabled);
+//            speedButton.getColor().set(speedButton.getColor().r, speedButton.getColor().g, speedButton.getColor().b, 1f);
+//        }
+//        if (stopSpeed > 4) {
+//            snake.speed = .4f;
+//        }
 
 
         game.batch.end();
         stage.draw();
         stage.act(stateTime);
+        if (!wait) {
+            game.batch.begin();
+            bread.render();
+            game.batch.end();
+        }
     }
 
     @Override
@@ -558,8 +557,10 @@ public class Online_Game_Screen implements Screen {
 
     @Override
     public void resume() {
-        game.bluetoothLoaded.restartGame();
         game.loaded.toast("Вы вышли из игры, поэтому игра закончилась");
+        SoundPlayer.stopMusic(Asset.MEMO_SOUND);
+        game.bluetoothLoaded.restartGame();
+
     }
 
     @Override
@@ -595,6 +596,7 @@ public class Online_Game_Screen implements Screen {
         if (touch.touchBred()) {
             bread.spawn();
             snake.addLevel();
+            SoundPlayer.playSound(Asset.EAT_FOOD_SOUND, false);
             game.loaded.put(snake.NameGame, snake.vector2);
             game.loaded.putMeal(snake.NameGame, snake.NamePlayer, snake.level + "", bread.x, bread.y);
         }

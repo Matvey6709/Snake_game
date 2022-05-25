@@ -51,6 +51,8 @@ public interface InterfaceDataLoaded {
 
     void dialog(String title, String message, String textPositiveButton);
 
-    void resetApp();
+    void save(String key, String value);
+
+    String get(String key, String def);
 
 }

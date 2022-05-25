@@ -71,7 +71,7 @@ public class PointUi {
     public Group apples() {
         group = new Group();
         for (int i = 0; i < 8; i++) {
-            Texture myTexture = new Texture(Gdx.files.internal("apple.png"));
+            Texture myTexture = new Texture(Gdx.files.internal("appleBlue.png"));
             TextureRegion myTextureRegion = new TextureRegion(myTexture);
             TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
             ImageButton imageButton = new ImageButton(myTexRegionDrawable);
@@ -133,9 +133,12 @@ public class PointUi {
         if (testLevel2 < level2) {
             testLevel2 = level2;
             group.getChild(8 - level2).setVisible(false);
-            group.getChild(8).setVisible(false);
             group.getChild(7).setVisible(false);
+            try {
+                group.getChild(8 - level2 + 1).setVisible(false);
+            } catch (Exception e) {
 
+            }
 //            for (int i = 0; i < level2; i++) {
 //                group.getChild(8-i).setVisible(false);
 //            }
@@ -144,9 +147,14 @@ public class PointUi {
         if (testLevel1 < level1) {
             testLevel1 = level1;
 //            group2.getChild(8 - level1).setVisible(false);
-            group2.getChild(8 - level2).setVisible(false);
-            group2.getChild(8).setVisible(false);
+            group2.getChild(8 - level1).setVisible(false);
             group2.getChild(7).setVisible(false);
+            try {
+                group2.getChild(8 - level1 + 1).setVisible(false);
+            } catch (Exception e) {
+
+            }
+
 
         }
     }

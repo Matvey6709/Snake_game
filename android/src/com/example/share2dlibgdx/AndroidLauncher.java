@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -49,7 +50,8 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         loaded = new InterfaceDataLoaded() {
             @Override
             public void create() {
@@ -183,9 +185,17 @@ public class AndroidLauncher extends AndroidApplication {
             }
 
             @Override
-            public void resetApp() {
-
+            public void save(String key, String value) {
+                editor.putString(key, value);
+                editor.apply();
             }
+
+            @Override
+            public String get(String key, String def) {
+                return sharedPreferences.getString(key, def);
+            }
+
+
         };
 
         bluetoothLoaded = new InterfaceBluetoothLoaded() {
@@ -298,7 +308,6 @@ public class AndroidLauncher extends AndroidApplication {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            System.out.println(bitmap.getWidth());
             if (bitmap.getWidth() > 1600 || bitmap.getHeight() > 1600) {
                 bitmap = Bitmap.createScaledBitmap(bitmap, 1600,
                         1600, false);

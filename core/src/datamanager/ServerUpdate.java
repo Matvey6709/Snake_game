@@ -2,7 +2,6 @@ package datamanager;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.example.share2dlibgdx.Asset;
 import com.example.share2dlibgdx.Cell;
 import com.example.share2dlibgdx.DeterminantSize;
 import com.example.share2dlibgdx.Snake;
@@ -24,6 +23,8 @@ public class ServerUpdate {
     float x2;
     float y2;
     int keyEnemy = -1;
+    Texture headY;
+    Texture bodyY;
 
 
     public void test(SpriteBatch batch, boolean create) {
@@ -38,7 +39,8 @@ public class ServerUpdate {
         texture = new Texture("BlueS2.png");
         //
         blueApple = new Texture("appleBlue.png");
-
+        headY = new Texture("headY.png");
+        bodyY = new Texture("bodyE.png");
     }
 
     game game;
@@ -56,7 +58,8 @@ public class ServerUpdate {
         texture = new Texture("BlueS2.png");
         //
         blueApple = new Texture("appleBlue.png");
-
+        headY = new Texture("headY.png");
+        bodyY = new Texture("bodyE.png");
     }
 
     public void render(Player players, Snake share) {
@@ -164,21 +167,21 @@ public class ServerUpdate {
     }
 
     public void render2() {
-
+        batch.draw(blueApple, appleX, appleY, 33, 33);
         for (int i = 0; i < cells.size() - 1; i++) {
-            batch.draw(Asset.instance().getSprite(getBodyType(i)), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
+            batch.draw(getBodyType2(i), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
 
-        batch.draw(blueApple, appleX, appleY, 100 / 2, 100 / 2);
+
     }
 
     public void render3() {
-
+        batch.draw(blueApple, appleX, appleY, 33, 33);
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
 
-        batch.draw(blueApple, appleX, appleY, 100 / 2, 100 / 2);
+
     }
 
     public void addLevel() {
@@ -191,6 +194,8 @@ public class ServerUpdate {
         texture.dispose();
         batch.dispose();
         blueApple.dispose();
+        headY.dispose();
+        bodyY.dispose();
     }
 
     public int getLevel() {
@@ -219,6 +224,11 @@ public class ServerUpdate {
         if (index == cells.size()) return "snake_body";
         if (index == 0) return "snake_head";
         else return "snake_tail";
+    }
+
+    private Texture getBodyType2(int index) {
+        if (index == 0) return headY;
+        else return bodyY;
     }
 
     public int getKeyEnemy() {

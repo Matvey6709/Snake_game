@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.example.share2dlibgdx.ui.Joystick3;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Snake {
     public Transfer transfer;
     public SpriteBatch batch;
-    ArrayList<Cell> cells = new ArrayList<>();
+    LinkedList<Cell> cells = new LinkedList<>();
     float timeSet;
     int level = 1;
     Joystick3 joystick3;
@@ -25,13 +25,16 @@ public class Snake {
     Texture snaketailMy;
     game game;
     float speed = .40f;
+    Sprite m1, m2, m3;
 
-
-    public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY) {
+    public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY, Sprite m1, Sprite m2, Sprite m3) {
         this.batch = batch;
         this.joystick3 = joystick3;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.m1 = m1;
+        this.m2 = m2;
+        this.m3 = m3;
         increase(level);
         transfer = new Transfer(cells, joystick3);
         texture = new Texture("redS.png");
@@ -59,16 +62,16 @@ public class Snake {
         }
     }
 
-    private Texture getBodyType2(int index) {
-        if (index == cells.size()) return snakebody;
-        if (index == 0) return snakehead;
-        else return snakebody;
-    }
 
     private Sprite getBodyType3(int index) {
-        if (index == cells.size() - 1) return new Sprite(snakebodyMy);
-        if (index == 0) return new Sprite(snakeheadMy);
-        else return new Sprite(snakebodyMy);
+        if (index == cells.size() - 2) {
+            return m1;
+        }
+        if (index == 0) {
+            return m3;
+        } else {
+            return m2;
+        }
     }
 
     public Snake(SpriteBatch batch, int sizeX, int sizeY) {
@@ -114,10 +117,14 @@ public class Snake {
         ShareInit2(delta);
         timeSet += delta;
         for (int i = 0; i < cells.size() - 1; i++) {
-            batch.draw(Asset.instance().getSprite(getBodyType(i)), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
-//            batch.draw(getBodyType2(i), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
+//            batch.draw(Asset.instance().getSprite(getBodyType(i)), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
+            Sprite sprite = getBodyType3(i);
+            sprite.setOrigin(cells.get(i).sizeX / 2, cells.get(i).sizeY / 2);
+            sprite.rotate(cells.get(i).rotate);
+            sprite.setBounds(cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
+            sprite.draw(batch);
+            sprite.setRotation(0);
         }
-//        System.out.println(cells.size());
     }
 
     public void render3(float delta) {
