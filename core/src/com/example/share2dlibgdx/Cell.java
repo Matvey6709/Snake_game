@@ -1,13 +1,7 @@
 package com.example.share2dlibgdx;
 
 public class Cell {
-    public float x;
-    public float y;
-    public float sizeX;
-    public float sizeY;
-
-
-    //    public Texture texture;
+    public float x, y, sizeX, sizeY;
     public float rotate;
 
 
@@ -16,7 +10,6 @@ public class Cell {
         this.y = y;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-//        texture = new Texture("badlogic.jpg");
     }
 
     public Cell(float x, float y, float sizeX, float sizeY, int rotate) {
@@ -24,7 +17,6 @@ public class Cell {
         this.y = y;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-//        texture = new Texture("badlogic.jpg");
     }
 
     public float getX() {
