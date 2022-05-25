@@ -8,23 +8,17 @@ import com.example.share2dlibgdx.ui.Joystick3;
 import java.util.LinkedList;
 
 public class Snake {
+    game game;
+
     public Transfer transfer;
     public SpriteBatch batch;
     LinkedList<Cell> cells = new LinkedList<>();
-    float timeSet;
-    int level = 1;
     Joystick3 joystick3;
-    int sizeX;
-    int sizeY;
-    Texture texture;
+    int sizeX, sizeY, level = 1;
     public boolean youFirst = false;
-    Texture snakebody;
-    Texture snakehead;
-    Texture snakeheadMy;
-    Texture snakebodyMy;
-    Texture snaketailMy;
-    game game;
-    float speed = .40f;
+    Texture snakebody, snakehead, snakeheadMy, snakebodyMy, snaketailMy, texture;
+
+    float speed = .40f, timeSet;
     Sprite m1, m2, m3;
 
     public Snake(SpriteBatch batch, Joystick3 joystick3, int sizeX, int sizeY, Sprite m1, Sprite m2, Sprite m3) {

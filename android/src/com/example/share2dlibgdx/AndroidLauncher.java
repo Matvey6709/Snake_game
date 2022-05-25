@@ -294,7 +294,6 @@ public class AndroidLauncher extends AndroidApplication {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //Detects request codes
         if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             String d = data.getData().toString();
             Uri selectedImage = Uri.parse(d);
@@ -302,10 +301,8 @@ public class AndroidLauncher extends AndroidApplication {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             if (bitmap.getWidth() > 1600 || bitmap.getHeight() > 1600) {
@@ -329,50 +326,5 @@ public class AndroidLauncher extends AndroidApplication {
         }
     }
 
-//        Toast.makeText(this, "Чтобы избежать ошибок, придумайте разные имена игроков", Toast.LENGTH_LONG).show();
-//        btAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (btAdapter == null) {
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Not compatible")
-//                    .setMessage("Your phone does not support Bluetooth")
-//                    .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-////                            System.exit(0);
-//                        }
-//                    })
-//                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                    .show();
-//        }
-
-
-//        deviceItemList = new ArrayList<DeviceItem>();
-//
-//        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-//        System.out.println(pairedDevices.size());
-//        if (pairedDevices.size() > 0) {
-//            for (BluetoothDevice device : pairedDevices) {
-//                DeviceItem newDevice= new DeviceItem(device.getName(), device.getAddress(),"false");
-//                deviceItemList.add(newDevice);
-//
-//            }
-//        }
-//        System.out.println(deviceItemList.get(1).getDeviceName());
-//        device = btAdapter.getRemoteDevice(deviceItemList.get(1).getAddress());
-//        try {
-//            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
-//            Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-//            tmp = (BluetoothSocket) m.invoke(device, 1);
-//        } catch (IOException e) {
-////            Log.e(TAG, "create() failed", e);
-//            System.out.println("НЕЕЕЕЕЕТ");
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//        mmSocket = tmp;
-//        System.out.println(mmSocket.isConnected());
 }
 

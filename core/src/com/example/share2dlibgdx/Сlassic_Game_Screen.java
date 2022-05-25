@@ -22,26 +22,26 @@ import handler.ImageTextButtonHandler;
 import handler.LabelHandler;
 
 public class Сlassic_Game_Screen extends BaseScreen {
+
+    game game;
     public Snake snake;
     Bread bread;
     Touch touch;
-    Texture grass;
+
     Viewport fitViewport;
     Label label;
     Stage stage;
-    game game;
     OrthographicCamera camera;
     JoystickArrows joystickArrows;
-    int gameOver = 0;
+    ImageTextButton back;
 
     private Cell[][] cells;
-    int size = 33;
     float speed = 0.4f;
-    ImageTextButton back;
-    Texture bacG;
-    boolean o = false;
-    int spawnX = 660;
-    int spawnY = 363;
+
+    Texture bacG, grass;
+
+    boolean o;
+    int spawnX = 660, spawnY = 363, size = 33;
     TextButton v;
 
     public Сlassic_Game_Screen(final game game, boolean o) {
@@ -122,8 +122,8 @@ public class Сlassic_Game_Screen extends BaseScreen {
         bacG = new Texture("bacT.png");
         if (!o) {
             for (int j = 0; j < snake.cells.size(); j++) {
-                snake.cells.get(j).x = spawnX;//660
-                snake.cells.get(j).y = spawnY;//363
+                snake.cells.get(j).x = spawnX;
+                snake.cells.get(j).y = spawnY;
             }
         }
     }
@@ -227,7 +227,6 @@ public class Сlassic_Game_Screen extends BaseScreen {
         snake.dispose();
         bacG.dispose();
         bread.dispose();
-        System.out.println("dispose");
     }
 
     public void initMeal() {
@@ -254,16 +253,6 @@ public class Сlassic_Game_Screen extends BaseScreen {
         return "grass_02";
     }
 
-    public TextButton.TextButtonStyle setStyle(Skin skin, TextButton end, int size) {
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.font = FontSizeHandler.INSTANCE.getFont(size, Color.WHITE);
-        style.checked = end.getStyle().checked;
-        style.up = end.getStyle().up;
-        style.down = end.getStyle().down;
-
-        return style;
-    }
-
     public void gameOver() {
         snake.cells.clear();
         snake.increase(3);
@@ -271,8 +260,8 @@ public class Сlassic_Game_Screen extends BaseScreen {
 
         label.setText("Очки: 0");
         for (int j = 0; j < snake.cells.size(); j++) {
-            snake.cells.get(j).x = spawnX;//660
-            snake.cells.get(j).y = spawnY;//363
+            snake.cells.get(j).x = spawnX;
+            snake.cells.get(j).y = spawnY;
         }
     }
 }
