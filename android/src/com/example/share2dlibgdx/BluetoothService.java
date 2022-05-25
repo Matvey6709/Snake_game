@@ -14,12 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothService {
-
-    //    Button listen,send, listDevices;
-//    ListView listView;
-//    TextView msg_box,status;
-//    EditText writeMsg;
-//
     BluetoothAdapter bluetoothAdapter;
 
     SendReceive sendReceive;
@@ -81,40 +75,6 @@ public class BluetoothService {
         String string = String.valueOf(msg);
         sendReceive.write(string.getBytes());
     }
-
-
-//    Handler handler=new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message msg) {
-//
-//            switch (msg.what)
-//            {
-//                case STATE_LISTENING:
-////                    status.setText("Listening");
-//                    System.out.println("Listening");
-//                    break;
-//                case STATE_CONNECTING:
-////                    status.setText("Connecting");
-//                    System.out.println("Connecting");
-//                    break;
-//                case STATE_CONNECTED:
-////                    status.setText("Connected");
-//                    System.out.println("Connected");
-//                    break;
-//                case STATE_CONNECTION_FAILED:
-////                    status.setText("Connection Failed");
-//                    System.out.println("Connection Failed");
-//                    break;
-//                case STATE_MESSAGE_RECEIVED:
-//                    byte[] readBuff= (byte[]) msg.obj;
-//                    String tempMsg=new String(readBuff,0,msg.arg1);
-////                    msg_box.setText(tempMsg);
-//                    System.out.println(tempMsg);
-//                    break;
-//            }
-//            return true;
-//        }
-//    });
 
     private class ServerClass extends Thread {
         private BluetoothServerSocket serverSocket;
@@ -228,6 +188,7 @@ public class BluetoothService {
             inputStream = tempIn;
             outputStream = tempOut;
         }
+
         public void run() {
             if (!isInterrupted()) {
                 byte[] buffer = new byte[1024];
@@ -246,6 +207,7 @@ public class BluetoothService {
                 }
             }
         }
+
         public void write(byte[] bytes) {
             if (!isInterrupted()) {
                 try {

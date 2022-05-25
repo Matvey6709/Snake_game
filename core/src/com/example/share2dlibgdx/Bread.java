@@ -7,14 +7,11 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.Random;
 
 public class Bread {
-    int x;
-    int y;
-    int size;
+    int x, y, size, foodType;
     Random random;
     Texture texture;
     SpriteBatch batch;
     DeterminantSize determinantSize;
-    int foodType;
     private String[] foodTypes = {
             "green_icing_green_sprinkles", "blue_icing", "chocolate_icing", "chocolate_icing_chocolate_drizzle", "dark_red_icing",
             "orange_icing_chocolate_shaving", "pink_icing_sprinkles", "orange_icing_chocolate_shaving", "pink_icing_sprinkles",
@@ -32,10 +29,7 @@ public class Bread {
 
     public void spawn() {
         x = 100 + random.nextInt(1180 - 100 + 1);
-//        int number = 30 + random.nextInt(1280 - 30 + 1);
         y = 100 + random.nextInt(620 - 100 + 1);
-//        System.out.println(x);
-//        System.out.println(y);
     }
 
     public void spawn2() {

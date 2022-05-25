@@ -9,12 +9,13 @@ import datamanager.ServerUpdate;
 
 public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
     ServerUpdate update;
-    String gg = "";
-    float timeB;
     AnimationBluetooth animationBluetooth;
-    boolean create;
     PointUi pointUi;
 
+    String gg = "";
+    float timeB, stopGames;
+    int startGame = 0, keyMy;
+    boolean end = false, create;
 
     public Bluetooth_Game_Screen(final game game, boolean create) {
         super(game, true);
@@ -27,19 +28,11 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
 
     }
 
-    int startGame = 0;
-    float stopGames;
-    int keyMy;
-    int keyEnemy;
-    float once;
-    boolean end = false;
-
 
     @Override
     public void render(float delta) {
         super.render(delta);
         if (startGame > 3) {
-//            super.render(delta);
         } else {
             animationBluetooth.render();
             stopGames += delta;
@@ -162,7 +155,6 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.bluetoothLoaded.send("-stop-" + keyMy);
-//                game.bluetoothLoaded.stopBl();
                 game.bluetoothLoaded.stopT();
                 game.bluetoothLoaded.restartGame();
             }

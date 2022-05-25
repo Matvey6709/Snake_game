@@ -13,18 +13,10 @@ public class ServerUpdate {
     public LinkedList<Cell> cells;
     Player players;
     DeterminantSize size;
-    public int level = 1;
     public String namePlayer = "";
     SpriteBatch batch;
-    Texture texture;
-    Texture blueApple;
-    int appleX;
-    int appleY;
-    float x2;
-    float y2;
-    int keyEnemy = -1;
-    Texture headY;
-    Texture bodyY;
+    public int appleX, appleY, keyEnemy = -1, level = 1;
+    Texture headY, bodyY, texture, blueApple;
 
 
     public void test(SpriteBatch batch, boolean create) {
@@ -37,7 +29,6 @@ public class ServerUpdate {
 
 
         texture = new Texture("BlueS2.png");
-        //
         blueApple = new Texture("appleBlue.png");
         headY = new Texture("headY.png");
         bodyY = new Texture("bodyE.png");
@@ -56,7 +47,6 @@ public class ServerUpdate {
 
 
         texture = new Texture("BlueS2.png");
-        //
         blueApple = new Texture("appleBlue.png");
         headY = new Texture("headY.png");
         bodyY = new Texture("bodyE.png");
@@ -75,32 +65,8 @@ public class ServerUpdate {
                     cells.get(i).x = Float.parseFloat(corXY[i]);
                     cells.get(i).y = Float.parseFloat(corXY[i + 1]);
                 }
-//                if (cells.get(0).x != Float.parseFloat(corXY[0]) || cells.get(0).y != Float.parseFloat(corXY[1])) {
-////                    for (int i = cells.size() - 1; i > 0; i--) {
-////                        Cell nextBody = cells.get(i - 1);
-////                        Cell body = cells.get(i);
-////                        body.x = nextBody.getX();
-////                        body.y = nextBody.getY();
-////                    }
-//                } else {
-////                    for (int i = cells.size() - 1; i > 0; i--) {
-////                        cells.get(i).x = -50;
-////                        cells.get(i).y = -50;
-////                    }
-//                }
-
-//                cells.get(0).x = Float.parseFloat(corXY[0]);
-//                cells.get(0).y = Float.parseFloat(corXY[1]);
-
-
-//                if (level < Integer.parseInt(players.getLevel()) && players != null) {
-//                    addLevel();
-//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
-//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
-//                }
             }
         } catch (Exception e) {
-//            e.printStackTrace();
         }
     }
 
@@ -137,32 +103,8 @@ public class ServerUpdate {
                     cells.remove(cells.size() - 1);
                     cells.remove(cells.size() - 1);
                 }
-//                if (cells.get(0).x != Float.parseFloat(corXY[0]) || cells.get(0).y != Float.parseFloat(corXY[1])) {
-////                    for (int i = cells.size() - 1; i > 0; i--) {
-////                        Cell nextBody = cells.get(i - 1);
-////                        Cell body = cells.get(i);
-////                        body.x = nextBody.getX();
-////                        body.y = nextBody.getY();
-////                    }
-//                } else {
-////                    for (int i = cells.size() - 1; i > 0; i--) {
-////                        cells.get(i).x = -50;
-////                        cells.get(i).y = -50;
-////                    }
-//                }
-
-//                cells.get(0).x = Float.parseFloat(corXY[0]);
-//                cells.get(0).y = Float.parseFloat(corXY[1]);
-
-
-//                if (level < Integer.parseInt(players.getLevel()) && players != null) {
-//                    addLevel();
-//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
-//                    cells.add(new Cell(0, 0, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
-//                }
             }
         } catch (Exception e) {
-//            e.printStackTrace();
         }
     }
 
