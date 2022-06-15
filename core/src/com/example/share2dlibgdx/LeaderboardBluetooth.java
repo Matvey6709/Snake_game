@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
@@ -115,7 +116,7 @@ public class LeaderboardBluetooth extends BaseScreen {
                         ol = 1;
                         button.setText((button.getText() + "").replaceAll("-G=-", ""));
                     }
-                    if (!button.getText().equals("Устройства рядом")) {
+                    if (!(button.getText() + "").contains("Устройства рядом")) {
                         final int finalOl = ol;
                         button.addListener(new ChangeListener() {
                             @Override
@@ -131,6 +132,8 @@ public class LeaderboardBluetooth extends BaseScreen {
                                 game.setScreen(bluetooth_game_screen);
                             }
                         });
+                    } else {
+                        button.setTouchable(Touchable.disabled);
                     }
                     scrollTable.add(button).size(420, 100).padBottom(20);
                     scrollTable.row();
