@@ -3,13 +3,19 @@ package com.example.share2dlibgdx;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,6 +23,11 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
@@ -33,6 +44,8 @@ import datamanager.InterfaceBluetoothLoaded;
 import datamanager.InterfaceDataLoaded;
 import datamanager.Player;
 
+//import android.support.constraint.ConstraintLayout;
+
 public class AndroidLauncher extends AndroidApplication {
 
     FireBaseDataBase base;
@@ -43,7 +56,8 @@ public class AndroidLauncher extends AndroidApplication {
     Texture tex;
     InterfaceBluetoothLoaded bluetoothLoaded;
     BluetoothService bluetoothService;
-
+    DialogС dialogС;
+    ArrayList<BluetoothDevice> devices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +195,17 @@ public class AndroidLauncher extends AndroidApplication {
                                 .show();
                     }
                 });
+            }
 
+            @Override
+            public void dialogC(String nameDevice) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialogС = new DialogС(context, nameDevice);
+                        dialogС.show();
+                    }
+                });
             }
 
             @Override
@@ -195,22 +219,49 @@ public class AndroidLauncher extends AndroidApplication {
                 return sharedPreferences.getString(key, def);
             }
 
-
+            @Override
+            public boolean getClose() {
+                return dialogС.close;
+            }
         };
 
         bluetoothLoaded = new InterfaceBluetoothLoaded() {
             @Override
             public void BluetoothService() {
                 bluetoothService = new BluetoothService();
+                bluetoothService.bluetoothAdapter.startDiscovery();
+                devices = new ArrayList<>();
             }
 
             @Override
             public ArrayList<String> getListDevice() {
-                return bluetoothService.getListDevice();
+                ArrayList<String> d = bluetoothService.getListDevice();
+                d.add("Устройства рядом");
+                for (int i = 0; i < devices.size(); i++) {
+                    d.add("-G=-" + devices.get(i).getName());
+                    bluetoothService.btArray.add(devices.get(i));
+                }
+                return d;
+            }
+
+            @Override
+            public ArrayList<String> getListDeviceLocate() {
+                ArrayList<String> d = new ArrayList<>();
+                for (int i = 0; i < devices.size(); i++) {
+                    d.add(devices.get(i).getName());
+                    bluetoothService.btArray.add(devices.get(i));
+                }
+                return d;
+            }
+
+            @Override
+            public String btArray(int i) {
+                return bluetoothService.btArray.get(i).getName();
             }
 
             @Override
             public void listen() {
+                Permissions.enableDiscoveribility(context);
                 bluetoothService.listen();
             }
 
@@ -273,7 +324,28 @@ public class AndroidLauncher extends AndroidApplication {
                 }
                 System.exit(0);
             }
+
+            @Override
+            public String getMyNameDevice() {
+                return bluetoothService.bluetoothAdapter.getName();
+            }
+
+            @Override
+            public String getStatus() {
+                return bluetoothService.getStatus();
+            }
         };
+
+        Permissions.verifyLocationPermissions(this);
+
+//        QuickstartSample quickstartSample = new QuickstartSample();
+//        try {
+//            quickstartSample.translate();
+//        } catch (GeneralSecurityException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         initialize(new game(loaded, bluetoothLoaded), config);
     }
@@ -326,5 +398,106 @@ public class AndroidLauncher extends AndroidApplication {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter f = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, f);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                devices.add(device);
+                //                handler.post(() -> Toast.makeText(context, device.getName(), Toast.LENGTH_LONG).show());
+//                System.out.println("ACTION_FOUND");
+
+            }
+        }
+    };
+
+    private class TestThread extends Thread {
+        int num;
+
+        public TestThread() {
+
+        }
+
+        private volatile boolean run = true;
+
+        public void run() {
+            System.out.println("FF");
+            while (run) {
+                num++;
+
+                if (num >= 6000) {
+                    System.out.println("GG2");
+                    run = false;
+                }
+            }
+        }
+    }
+
+    public class DialogС {
+        Dialog dialog;
+        AlertDialog alert;
+        AlertDialog.Builder alertDialog;
+        String title;
+        String textButtonP;
+        String textButtonN;
+        String nameDevice;
+        boolean close = true;
+
+        public DialogС(Context context, String nameDevice) {
+            this.nameDevice = nameDevice;
+            alertDialog = new AlertDialog.Builder(context);
+//            View view = LayoutInflater.from(context).inflate(R.layout.dialog, (FrameLayout) findViewById(R.id.dialogC));
+////            alertDialog.setView(view);
+//            alert = alertDialog.create();
+//            alert.setView(view);
+//            alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog = new Dialog(context);
+            View view2 = LayoutInflater.from(context).inflate(R.layout.dialog, (FrameLayout) findViewById(R.id.dialogC));
+            ((TextView) view2.findViewById(R.id.text)).setText("Игрок " + nameDevice + " хочет поиграть с вами по Bluetooth");
+
+            view2.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    close = false;
+                    dialog.dismiss();
+                }
+            });
+
+            view2.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    close = false;
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(view2);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
+            close = true;
+        }
+
+        public void show() {
+            dialog.show();
+        }
+
+    }
 }
 

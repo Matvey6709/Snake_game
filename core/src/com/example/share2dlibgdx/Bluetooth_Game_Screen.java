@@ -16,16 +16,26 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
     float timeB, stopGames;
     int startGame = 0, keyMy;
     boolean end = false, create;
+//    Bonus bonus;
 
     public Bluetooth_Game_Screen(final game game, boolean create) {
         super(game, true);
         o = true;
         this.create = create;
         update = new ServerUpdate();
-        update.testBl(game.batch, false, game);
+        update.testBl(game.batch, game);
         animationBluetooth = new AnimationBluetooth(game.batch);
         keyMy = MathUtils.random(1, 60);
 
+        pointUi = new PointUi();
+
+        stage.addActor(pointUi.FirstPointUi());
+        stage.addActor(pointUi.SecondPointUi());
+        stage.addActor(pointUi.apples());
+        stage.addActor(pointUi.apples2());
+        stage.addActor(pointUi.WinPlay());
+        stage.addActor(v);
+//        bonus = new Bonus(game.batch);
     }
 
 
@@ -39,7 +49,8 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
             if (stopGames > 15) {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.setScreen(game.lobby);
-                game.bluetoothLoaded.restartGame();
+                System.gc();
+//                game.bluetoothLoaded.restartGame();
                 game.loaded.toast("У противника слабый bluetooth, вы подключились к тому, кто ещё не создал сервер или не кто не хочет подключаться к вам");
                 game.bluetoothLoaded.stopT();
             }
@@ -67,6 +78,9 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
                 update.renderBl(player, snake);
                 pointUi.render(game.batch, snake.level, update.getLevel(), snake.NamePlayer, update.getNamePlayer2());
             }
+            game.batch.begin();
+//            bonus.render(snake, update.cells.get(0).x, update.cells.get(0).y);
+            game.batch.end();
             switch (touch.touchScreen()) {
                 case 1:
                     snake.cells.get(0).x = 0;
@@ -120,14 +134,17 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.loaded.toast("Ваш противник вышел из игры");
                 game.bluetoothLoaded.stopT();
-                game.bluetoothLoaded.restartGame();
+                System.gc();
+                game.setScreen(game.lobby);
+//                game.bluetoothLoaded.restartGame();
             }
         } else if (startGame > 3) {
             stopGames += delta;
             if (stopGames > 10) {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.bluetoothLoaded.stopT();
-                game.bluetoothLoaded.restartGame();
+//                game.bluetoothLoaded.restartGame();
+                game.setScreen(game.lobby);
             }
         }
         if (startGame > 3) {
@@ -138,12 +155,15 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
         if (!game.bluetoothLoaded.isEnabled()) {
             game.loaded.toast("Вы выключили bluetooth");
             game.bluetoothLoaded.stopT();
-            game.bluetoothLoaded.restartGame();
+            System.gc();
+//            game.bluetoothLoaded.restartGame();
+            game.setScreen(game.lobby);
         }
 
         if (end) {
             snake.transfer.tr = -1;
         }
+
     }
 
     @Override
@@ -156,9 +176,12 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
                 SoundPlayer.stopMusic(Asset.MEMO_SOUND);
                 game.bluetoothLoaded.send("-stop-" + keyMy);
                 game.bluetoothLoaded.stopT();
-                game.bluetoothLoaded.restartGame();
+//                game.bluetoothLoaded.restartGame();
+                System.gc();
+                game.setScreen(game.lobby);
             }
         });
+        update.testBl(game.batch, game);
         snake.cells.clear();
         snake.increase(3);
         snake.level = 1;
@@ -174,20 +197,21 @@ public class Bluetooth_Game_Screen extends Сlassic_Game_Screen {
                 snake.cells.get(j).y = 363;
             }
         }
-        pointUi = new PointUi();
 
-        stage.addActor(pointUi.FirstPointUi());
-        stage.addActor(pointUi.SecondPointUi());
-        stage.addActor(pointUi.apples());
-        stage.addActor(pointUi.apples2());
-        stage.addActor(pointUi.WinPlay());
-        stage.addActor(v);
+        pointUi.WinLabel.setText("");
+        pointUi.resetApples();
         snake.transfer.tr = 0;
-
+        startGame = 0;
+        keyMy = MathUtils.random(1, 60);
+        end = false;
+        timeB = 0;
+        stopGames = 0;
     }
 
     @Override
     public void dispose() {
+        super.dispose();
+        stage.dispose();
         animationBluetooth.dispose();
         update.dispose();
     }

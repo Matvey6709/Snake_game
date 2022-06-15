@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
@@ -38,16 +37,17 @@ public class Сlassic_Game_Screen extends BaseScreen {
     private Cell[][] cells;
     float speed = 0.4f;
 
-    Texture bacG, grass;
+//    Texture bacG, grass;
 
     boolean o;
     int spawnX = 660, spawnY = 363, size = 33;
     TextButton v;
+    float resetB;
 
     public Сlassic_Game_Screen(final game game, boolean o) {
         this.game = game;
         this.o = o;
-        grass = new Texture(Gdx.files.internal("grass.png"));
+//        grass = new Texture(Gdx.files.internal("grass.png"));
         camera = new OrthographicCamera();
         fitViewport = new FitViewport(1280, 720, camera);
 
@@ -119,7 +119,7 @@ public class Сlassic_Game_Screen extends BaseScreen {
                 }
             }
         });
-        bacG = new Texture("bacT.png");
+//        bacG = new Texture("bacT.png");
         if (!o) {
             for (int j = 0; j < snake.cells.size(); j++) {
                 snake.cells.get(j).x = spawnX;
@@ -162,17 +162,19 @@ public class Сlassic_Game_Screen extends BaseScreen {
 //                game.batch.draw(Asset.instance().getSprite(randomGrass(rowGrass, colGrass)), rowGrass * size, colGrass * size, size, size);
 //            }
 //        }
-        game.batch.draw(bacG, 0, 0);
+        game.batch.draw(TexturesClass.i.bacG, 0, 0);
 
 
         snake.render3(Gdx.graphics.getDeltaTime());
         initMeal();
 
-        if (!o) {
+        resetB += delta;
+        if (!o && resetB > 3) {
             if (touch.touchScreen() != 0) {
                 gameOver();
             }
-            for (int i = 1; i < snake.cells.size(); i++) {
+            for (int i = 2; i < snake.cells.size(); i++) {
+                resetB = 0;
                 boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
                 boolean f = touch.touchPlayer(snake.cells.get(i).x, snake.cells.get(i).y, bread.x, bread.y);
                 if (f) {
@@ -222,10 +224,11 @@ public class Сlassic_Game_Screen extends BaseScreen {
 
     @Override
     public void dispose() {
+        stage.dispose();
         game.batch.dispose();
-        grass.dispose();
+        TexturesClass.i.grass.dispose();
         snake.dispose();
-        bacG.dispose();
+        TexturesClass.i.bacG.dispose();
         bread.dispose();
     }
 
@@ -239,6 +242,10 @@ public class Сlassic_Game_Screen extends BaseScreen {
 
             bread.spawn2();
             snake.addLevel();
+            if (o) {
+                snake.addLevel2();
+                snake.addLevel2();
+            }
         }
     }
 

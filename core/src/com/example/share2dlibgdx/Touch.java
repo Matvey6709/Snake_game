@@ -11,8 +11,19 @@ public class Touch {
         this.bread = bread;
     }
 
+    public Touch() {
+    }
+
     public Touch(Snake snake) {
         this.snake = snake;
+    }
+
+    public boolean touchBonus(float bonusX, float bonusY, float snakeX, float snakeY, float snake2X, float snake2Y, float size) {
+        if (snakeX + size > bonusX && snakeX < bonusX + size && snakeY + size > bonusY && snakeY < bonusY + size
+                || snake2X + size > bonusX && snake2X < bonusX + size && snake2Y + size > bonusY && snake2Y < bonusY + size) {
+            return true;
+        }
+        return false;
     }
 
     public boolean touchBox(Snake snake, float boxX, float boxY) {

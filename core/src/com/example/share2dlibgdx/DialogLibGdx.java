@@ -5,17 +5,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import handler.LabelHandler;
 
-public class Dialog extends com.badlogic.gdx.scenes.scene2d.ui.Dialog {
+public class DialogLibGdx extends com.badlogic.gdx.scenes.scene2d.ui.Dialog {
 
-    public Dialog(String title, Skin skin) {
+    public DialogLibGdx(String title, Skin skin) {
         super(title, skin);
     }
 
-    public Dialog(String title, Skin skin, String windowStyleName) {
+    public DialogLibGdx(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
     }
 
-    public Dialog(String title, WindowStyle windowStyle) {
+    public DialogLibGdx(String title, WindowStyle windowStyle) {
         super(title, windowStyle);
     }
 

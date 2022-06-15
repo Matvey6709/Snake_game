@@ -3,9 +3,15 @@ package datamanager;
 import java.util.ArrayList;
 
 public interface InterfaceBluetoothLoaded {
+
     void BluetoothService();
 
     ArrayList<String> getListDevice();
+
+    ArrayList<String> getListDeviceLocate();
+
+    String btArray(int i);
+
 
     void listen();
 
@@ -28,4 +34,8 @@ public interface InterfaceBluetoothLoaded {
     void stopT();
 
     void restartGame();
+
+    String getMyNameDevice();
+
+    String getStatus();
 }

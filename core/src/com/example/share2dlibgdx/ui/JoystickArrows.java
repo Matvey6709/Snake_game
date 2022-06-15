@@ -1,11 +1,10 @@
 package com.example.share2dlibgdx.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.example.share2dlibgdx.TexturesClass;
 
 public class JoystickArrows {
     Group group;
@@ -16,8 +15,8 @@ public class JoystickArrows {
         this.size = size;
         this.x = x;
         this.y = y;
-        Texture myTexture = new Texture(Gdx.files.internal("arrowLeft.png"));
-        TextureRegion myTextureRegion = new TextureRegion(myTexture);
+//        Texture myTexture = new Texture(Gdx.files.internal("arrowLeft.png"));
+        TextureRegion myTextureRegion = new TextureRegion(TexturesClass.i.myTexture1);
         TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
 
         LEFT = new ImageButton(myTexRegionDrawable);
@@ -25,8 +24,8 @@ public class JoystickArrows {
         LEFT.setSize(200, 80);
 
 
-        myTexture = new Texture(Gdx.files.internal("arrowRight.png"));
-        myTextureRegion = new TextureRegion(myTexture);
+//        myTexture = new Texture(Gdx.files.internal("arrowRight.png"));
+        myTextureRegion = new TextureRegion(TexturesClass.i.myTexture2);
         myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
 
         RIGHT = new ImageButton(myTexRegionDrawable);
@@ -34,16 +33,16 @@ public class JoystickArrows {
         RIGHT.setSize(200, 80);
 
 
-        myTexture = new Texture(Gdx.files.internal("arrowUp.png"));
-        myTextureRegion = new TextureRegion(myTexture);
+//        myTexture = new Texture(Gdx.files.internal("arrowUp.png"));
+        myTextureRegion = new TextureRegion(TexturesClass.i.myTexture3);
         myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
         UP = new ImageButton(myTexRegionDrawable);
         UP.setPosition(250, 300);
         UP.setSize(200, 80);
 
 
-        myTexture = new Texture(Gdx.files.internal("arrowDown.png"));
-        myTextureRegion = new TextureRegion(myTexture);
+//        myTexture = new Texture(Gdx.files.internal("arrowDown.png"));
+        myTextureRegion = new TextureRegion(TexturesClass.i.myTexture4);
         myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
 
         DOWN = new ImageButton(myTexRegionDrawable);

@@ -65,7 +65,6 @@ public class Levels_Game_Screen extends Сlassic_Game_Screen {
                 break;
         }
 
-
         touch = new Touch(snake);
 
     }

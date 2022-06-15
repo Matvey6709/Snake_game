@@ -87,6 +87,7 @@ public class Lobby extends BaseScreen {
     Сlassic_Game_Screen сlassic_game_screen;
     Levels_Game_Screen levels_game_screen;
     Leaderboard leaderboard;
+    LeaderboardBluetooth leaderboardBluetooth;
 
     public Lobby(final game gam) {
         game = gam;
@@ -116,11 +117,12 @@ public class Lobby extends BaseScreen {
         head = new Texture("head.png");
         body = new Texture("body.png");
 
-        game.bluetoothLoaded.BluetoothService();
+
         SoundPlayer.init();
         leaderboard = new Leaderboard(game, new Random().nextInt(900) + 100 + "" + System.currentTimeMillis(), namePlayer);
         сlassic_game_screen = new Сlassic_Game_Screen(game, false);
         levels_game_screen = new Levels_Game_Screen(game, 0);
+        leaderboardBluetooth = new LeaderboardBluetooth(game);
     }
 
 
@@ -128,7 +130,6 @@ public class Lobby extends BaseScreen {
     boolean photo = false;
 
     int l;
-
 
     @Override
     public void render(float delta) {
@@ -183,6 +184,7 @@ public class Lobby extends BaseScreen {
         game.loaded.create();
         game.loaded.setExistsGame(true);
         game.lobby.m2.sprite.setAlpha(1);
+//        game.loaded.dialogC("Redmy 9");
     }
 
 
@@ -275,7 +277,7 @@ public class Lobby extends BaseScreen {
                         leaderboard.namePlayer = namePlayer;
                         leaderboard.namePlayerUn = new Random().nextInt(900) + 100 + "" + System.currentTimeMillis();
                         System.gc();
-                        game.setScreen(new LeaderboardBluetooth(game));
+                        game.setScreen(leaderboardBluetooth);
                     } else {
                         game.bluetoothLoaded.enableBl();
                     }
@@ -910,6 +912,46 @@ public class Lobby extends BaseScreen {
                     tableScrollSkin.setVisible(false);
                     b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("headB.png", 60));
                     b.sprite = new Sprite(new Texture("headB.png"));
+                }
+            });
+            addListItem("cB.png", "cB.png", "hB.png");
+        }
+
+        public void addListItem(final String path1, final String path2, final String path3) {
+            ImageTextButton item1 = ImageTextButtonHandler.INSTANCE.createButtonWay(path1, "", 60, Color.WHITE, false);
+            scrollTable2.add(item1).size(100, 100).padBottom(20).padRight(10);
+            ImageTextButton item2 = ImageTextButtonHandler.INSTANCE.createButtonWay(path2, "", 60, Color.WHITE, false);
+            scrollTable2.add(item2).size(100, 100).padBottom(20).padBottom(20).padRight(10);
+            ImageTextButton item3 = ImageTextButtonHandler.INSTANCE.createButtonWay(path3, "", 60, Color.WHITE, false);
+            scrollTable2.add(item3).size(100, 100).padBottom(20).row();
+            item1.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(path1, 60));
+                    b.sprite = new Sprite(new Texture(path1));
+                }
+            });
+            item2.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(path2, 60));
+                    b.sprite = new Sprite(new Texture(path2));
+                }
+            });
+            item3.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    remove();
+                    textButton.setVisible(false);
+                    tableScrollSkin.setVisible(false);
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(path3, 60));
+                    b.sprite = new Sprite(new Texture(path3));
                 }
             });
         }

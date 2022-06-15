@@ -52,6 +52,9 @@ public class LeaderboardBluetooth extends BaseScreen {
     Texture bacT;
     Texture level;
     HelpText helpText1;
+    Label text;
+    Bluetooth_Game_Screen bluetooth_game_screen;
+    boolean y;
 
     public LeaderboardBluetooth(final game gam) {
         this.game = gam;
@@ -68,7 +71,7 @@ public class LeaderboardBluetooth extends BaseScreen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        Label text = LabelHandler.INSTANCE.createLabel("Выберите устройство на котором слушают\nили создайте свой слушатель", 30, Color.WHITE);
+        text = LabelHandler.INSTANCE.createLabel("Выберите устройство на котором слушают\nили создайте свой слушатель", 30, Color.WHITE);
         text.setPosition(30, 620);
 
         ImageTextButton back = ImageTextButtonHandler.INSTANCE.createButtonWay("back.png", "", 60, Color.WHITE, false);
@@ -83,7 +86,7 @@ public class LeaderboardBluetooth extends BaseScreen {
         });
 
         game.loaded.checkStartPlay();
-
+        bluetooth_game_screen = new Bluetooth_Game_Screen(game, true);
         ImageTextButton newGame = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (3).png", "Слушать", 35, Color.WHITE, true);
         newGame.setSize(400, 100);
         newGame.setPosition(800, 160);
@@ -91,7 +94,8 @@ public class LeaderboardBluetooth extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.bluetoothLoaded.listen();
-                game.setScreen(new Bluetooth_Game_Screen(game, true));
+                bluetooth_game_screen.create = true;
+                game.setScreen(bluetooth_game_screen);
             }
         });
 
@@ -102,20 +106,60 @@ public class LeaderboardBluetooth extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 scrollTable.clear();
+
                 for (int i = 0; i < game.bluetoothLoaded.getListDevice().size(); i++) {
+                    int ol = 0;
                     ImageTextButton button = new ImageTextButton(game.bluetoothLoaded.getListDevice().get(i), imageTextButton("buttonBer.png", 25));
                     final int finalI = i;
-                    button.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            game.loaded.dispose();
-                            game.bluetoothLoaded.itemB(finalI);
-                            game.setScreen(new Bluetooth_Game_Screen(game, false));
-                        }
-                    });
+                    if ((button.getText() + "").indexOf("-G=-") != -1) {
+                        ol = 1;
+                        button.setText((button.getText() + "").replaceAll("-G=-", ""));
+                    }
+                    if (!button.getText().equals("Устройства рядом")) {
+                        final int finalOl = ol;
+                        button.addListener(new ChangeListener() {
+                            @Override
+                            public void changed(ChangeEvent event, Actor actor) {
+//                            game.loaded.dispose();
+                                game.loaded.toast("Отправляем запрос, " + game.bluetoothLoaded.getMyNameDevice());
+
+                                game.bluetoothLoaded.itemB(finalI - finalOl);
+
+                                o = false;
+//                            game.bluetoothLoaded.send("permission " + game.bluetoothLoaded.getMyNameDevice());
+                                bluetooth_game_screen.create = false;
+                                game.setScreen(bluetooth_game_screen);
+                            }
+                        });
+                    }
                     scrollTable.add(button).size(420, 100).padBottom(20);
                     scrollTable.row();
                 }
+//                scrollTable.add(new ImageTextButton("Устройства поблизости", imageTextButton("buttonBer.png", 25))).size(420, 100).padBottom(20);
+//                scrollTable.row();
+//                for (int i = 0; i < game.bluetoothLoaded.getListDeviceLocate().size(); i++) {
+//                    ImageTextButton button = new ImageTextButton(game.bluetoothLoaded.getListDeviceLocate().get(i), imageTextButton("buttonBer.png", 25));
+//                    final int finalI = i;
+//                    button.addListener(new ChangeListener() {
+//                        @Override
+//                        public void changed(ChangeEvent event, Actor actor) {
+////                            game.loaded.dispose();
+//                            game.loaded.toast("Отправляем запрос, " + game.bluetoothLoaded.getMyNameDevice());
+//                            game.bluetoothLoaded.itemB(finalI+game.bluetoothLoaded.getListDevice().size());
+////                            for (int j = 0; j < game.bluetoothLoaded.getListDevice().size() + game.bluetoothLoaded.getListDeviceLocate().size(); j++) {
+////
+////                            }
+////                            game.loaded.toast(game.bluetoothLoaded.btArray(finalI+game.bluetoothLoaded.getListDevice().size()-1));
+////                            System.out.println(game.bluetoothLoaded.btArray(finalI+game.bluetoothLoaded.getListDevice().size()-1));
+//                            o = false;
+////                            game.bluetoothLoaded.send("permission " + game.bluetoothLoaded.getMyNameDevice());
+//                            bluetooth_game_screen.create = false;
+//                            game.setScreen(bluetooth_game_screen);
+//                        }
+//                    });
+//                    scrollTable.add(button).size(420, 100).padBottom(20);
+//                    scrollTable.row();
+//                }
             }
         });
 
@@ -167,14 +211,18 @@ public class LeaderboardBluetooth extends BaseScreen {
                 helpText1.show();
             }
         });
+
+//        game.bluetoothLoaded.stopT();
+//        game.bluetoothLoaded.listen();
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(this.stage);
     }
 
     String gg = "";
+    boolean o = true;
 
     @Override
     public void render(float delta) {
@@ -194,6 +242,13 @@ public class LeaderboardBluetooth extends BaseScreen {
 
         this.stage.act();
         this.stage.draw();
+        if (game.bluetoothLoaded.getS() && !o) {
+            o = true;
+            game.bluetoothLoaded.send("permission " + game.bluetoothLoaded.getMyNameDevice());
+            game.bluetoothLoaded.stopT();
+//            game.bluetoothLoaded.listen();
+        }
+        text.setText(game.bluetoothLoaded.getStatus());
     }
 
     @Override

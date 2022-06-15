@@ -51,8 +51,11 @@ public interface InterfaceDataLoaded {
 
     void dialog(String title, String message, String textPositiveButton);
 
+    void dialogC(String nameDevice);
+
     void save(String key, String value);
 
     String get(String key, String def);
 
+    boolean getClose();
 }
