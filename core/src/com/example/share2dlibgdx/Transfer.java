@@ -28,60 +28,44 @@ public class Transfer {
     }
 
     public void trInit() {
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && tr != 3) {
             tr = 0;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && tr != 2) {
             tr = 1;
+
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && tr != 1) {
             tr = 2;
+
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && tr != 0) {
             tr = 3;
+
         }
     }
 
     public void trBody() {
+        for (int i = cells.size() - 1; i > 0; i--) {
+            Cell nextBody = cells.get(i - 1);
+            Cell body = cells.get(i);
+            body.x = nextBody.getX();
+            body.y = nextBody.getY();
+            body.rotate = nextBody.rotate;
+        }
+
         switch (tr) {
             case 1:
-                for (int i = cells.size() - 1; i > 0; i--) {
-                    Cell nextBody = cells.get(i - 1);
-                    Cell body = cells.get(i);
-                    body.x = nextBody.getX();
-                    body.y = nextBody.getY();
-                    body.rotate = nextBody.rotate;
-                }
                 cells.get(0).x += speed;
                 cells.get(0).rotate = 0;
                 break;
             case 0:
-                for (int i = cells.size() - 1; i > 0; i--) {
-                    Cell nextBody = cells.get(i - 1);
-                    Cell body = cells.get(i);
-                    body.x = nextBody.getX();
-                    body.y = nextBody.getY();
-                    body.rotate = nextBody.rotate;
-                }
                 cells.get(0).rotate = 90;
                 cells.get(0).y += speed;
                 break;
             case 3:
-                for (int i = cells.size() - 1; i > 0; i--) {
-                    Cell nextBody = cells.get(i - 1);
-                    Cell body = cells.get(i);
-                    body.x = nextBody.getX();
-                    body.y = nextBody.getY();
-                    body.rotate = nextBody.rotate;
-                }
                 cells.get(0).y -= speed;
                 cells.get(0).rotate = 270;
                 break;
             case 2:
-                for (int i = cells.size() - 1; i > 0; i--) {
-                    Cell nextBody = cells.get(i - 1);
-                    Cell body = cells.get(i);
-                    body.x = nextBody.getX();
-                    body.y = nextBody.getY();
-                    body.rotate = nextBody.rotate;
-                }
                 cells.get(0).x -= speed;
                 cells.get(0).rotate = 180;
                 break;
@@ -102,4 +86,5 @@ public class Transfer {
             cells.get(0).y += joystick3.getValueY() * 10 * size.getKY();
         }
     }
+
 }

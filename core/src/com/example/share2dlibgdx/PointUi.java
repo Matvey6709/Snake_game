@@ -1,8 +1,6 @@
 package com.example.share2dlibgdx;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -71,8 +69,7 @@ public class PointUi {
     public Group apples() {
         group = new Group();
         for (int i = 0; i < 8; i++) {
-            Texture myTexture = new Texture(Gdx.files.internal("appleBlue.png"));
-            TextureRegion myTextureRegion = new TextureRegion(myTexture);
+            TextureRegion myTextureRegion = new TextureRegion(TexturesClass.myTextureB);
             TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
             ImageButton imageButton = new ImageButton(myTexRegionDrawable);
             imageButton.setX(350 + (i * 60));
@@ -88,8 +85,7 @@ public class PointUi {
     public Group apples2() {
         group2 = new Group();
         for (int i = 0; i < 8; i++) {
-            Texture myTexture = new Texture(Gdx.files.internal("apple.png"));
-            TextureRegion myTextureRegion = new TextureRegion(myTexture);
+            TextureRegion myTextureRegion = new TextureRegion(TexturesClass.myTexture);
             TextureRegionDrawable myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
             ImageButton imageButton = new ImageButton(myTexRegionDrawable);
             imageButton.setX(350 + (i * 60));
@@ -159,8 +155,16 @@ public class PointUi {
         }
     }
 
-    public void WhoWin(String namePlayer) {
+    public void resetApples() {
+        testLevel1 = 0;
+        testLevel2 = 0;
+        for (int i = 0; i < 7; i++) {
+            group.getChild(i).setVisible(true);
+            group2.getChild(i).setVisible(true);
+        }
+    }
 
+    public void WhoWin(String namePlayer) {
         WinLabel.setX(360 - 360 / namePlayer.length());
         WinLabel.setY(440);
         WinLabel.setText("Win: " + namePlayer);

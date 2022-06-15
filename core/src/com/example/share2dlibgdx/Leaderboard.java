@@ -156,12 +156,23 @@ public class Leaderboard extends BaseScreen {
                 game.loaded.toast("Вы переключили режим Онлайн игры");
             }
         });
+        ImageTextButton loading = ImageTextButtonHandler.INSTANCE.createButtonWay("loading.png", "", 35, Color.WHITE, false);
+        loading.setSize(100, 100);
+        loading.setPosition(30, 500);
+        loading.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                helpVariable = 0;
+                scrollTable.clear();
+            }
+        });
 
         this.stage.addActor(table);
         this.stage.addActor(text);
         this.stage.addActor(newGame);
         this.stage.addActor(back);
         this.stage.addActor(checkBox);
+        this.stage.addActor(loading);
 
         bacT = new Texture("bacT.png");
         Gdx.input.setInputProcessor(this.stage);
@@ -223,6 +234,10 @@ public class Leaderboard extends BaseScreen {
                     scrollTable.row();
                 }
                 helpVariable = roms.length;
+            }
+            if (roms.length < helpVariable) {
+                helpVariable = 0;
+                scrollTable.clear();
             }
 
 

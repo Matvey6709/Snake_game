@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.example.share2dlibgdx.Cell;
 import com.example.share2dlibgdx.DeterminantSize;
 import com.example.share2dlibgdx.Snake;
+import com.example.share2dlibgdx.TexturesClass;
 import com.example.share2dlibgdx.game;
 
 import java.util.LinkedList;
@@ -16,7 +17,7 @@ public class ServerUpdate {
     public String namePlayer = "";
     SpriteBatch batch;
     public int appleX, appleY, keyEnemy = -1, level = 1;
-    Texture headY, bodyY, texture, blueApple;
+//    Texture headY, bodyY, texture, blueApple;
 
 
     public void test(SpriteBatch batch, boolean create) {
@@ -28,28 +29,29 @@ public class ServerUpdate {
         }
 
 
-        texture = new Texture("BlueS2.png");
-        blueApple = new Texture("appleBlue.png");
-        headY = new Texture("headY.png");
-        bodyY = new Texture("bodyE.png");
+//        texture = new Texture("BlueS2.png");
+//        blueApple = new Texture("appleBlue.png");
+//        headY = new Texture("headY.png");
+//        bodyY = new Texture("bodyE.png");
     }
 
     game game;
 
-    public void testBl(SpriteBatch batch, boolean create, game game) {
+    public void testBl(SpriteBatch batch, game game) {
         this.batch = batch;
         this.game = game;
         cells = new LinkedList<>();
         size = new DeterminantSize();
+        level = 1;
         for (int i = 0; i < 4; i++) {
             cells.add(new Cell(-100, -100, size.getWidthGame(100) / 3, size.getHeightGame(100) / 3));
         }
 
 
-        texture = new Texture("BlueS2.png");
-        blueApple = new Texture("appleBlue.png");
-        headY = new Texture("headY.png");
-        bodyY = new Texture("bodyE.png");
+//        texture = new Texture("BlueS2.png");
+//        blueApple = new Texture("appleBlue.png");
+//        headY = new Texture("headY.png");
+//        bodyY = new Texture("bodyE.png");
     }
 
     public void render(Player players, Snake share) {
@@ -109,7 +111,7 @@ public class ServerUpdate {
     }
 
     public void render2() {
-        batch.draw(blueApple, appleX, appleY, 33, 33);
+        batch.draw(TexturesClass.i.blueApple, appleX, appleY, 33, 33);
         for (int i = 0; i < cells.size() - 1; i++) {
             batch.draw(getBodyType2(i), cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
@@ -118,9 +120,9 @@ public class ServerUpdate {
     }
 
     public void render3() {
-        batch.draw(blueApple, appleX, appleY, 33, 33);
+        batch.draw(TexturesClass.i.blueApple, appleX, appleY, 33, 33);
         for (int i = 0; i < cells.size() - 1; i++) {
-            batch.draw(texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
+            batch.draw(TexturesClass.i.texture, cells.get(i).x, cells.get(i).y, cells.get(i).sizeX, cells.get(i).sizeY);
         }
 
 
@@ -133,11 +135,11 @@ public class ServerUpdate {
 
 
     public void dispose() {
-        texture.dispose();
+        TexturesClass.i.texture.dispose();
         batch.dispose();
-        blueApple.dispose();
-        headY.dispose();
-        bodyY.dispose();
+        TexturesClass.i.blueApple.dispose();
+        TexturesClass.i.headY.dispose();
+        TexturesClass.i.bodyY.dispose();
     }
 
     public int getLevel() {
@@ -169,8 +171,8 @@ public class ServerUpdate {
     }
 
     private Texture getBodyType2(int index) {
-        if (index == 0) return headY;
-        else return bodyY;
+        if (index == 0) return TexturesClass.i.headY;
+        else return TexturesClass.i.bodyY;
     }
 
     public int getKeyEnemy() {

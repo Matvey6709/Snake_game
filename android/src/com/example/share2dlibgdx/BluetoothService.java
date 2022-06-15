@@ -23,13 +23,12 @@ public class BluetoothService {
     static final int STATE_CONNECTED = 3;
     static final int STATE_CONNECTION_FAILED = 4;
     static final int STATE_MESSAGE_RECEIVED = 5;
-
-    int REQUEST_ENABLE_BLUETOOTH = 1;
+    static final int STATE_CONNECTION_NONE = 6;
 
     private static final String APP_NAME = "BTChat";
     private static final UUID MY_UUID = UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66");
-
-    BluetoothDevice[] btArray;
+    //"0000112f-0000-1000-8000-00805f9b34fb"
+    ArrayList<BluetoothDevice> btArray;
 
     public BluetoothService() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -39,12 +38,12 @@ public class BluetoothService {
 
         Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
         ArrayList<String> strings = new ArrayList<>();
-        btArray = new BluetoothDevice[bt.size()];
+        btArray = new ArrayList<>();
         int index = 0;
 
         if (bt.size() > 0) {
             for (BluetoothDevice device : bt) {
-                btArray[index] = device;
+                btArray.add(device);
                 strings.add(device.getName());
                 index++;
             }
@@ -52,32 +51,44 @@ public class BluetoothService {
         return strings;
     }
 
+
     ServerClass serverClass;
 
     public void listen() {
-        serverClass = new ServerClass();
-        serverClass.start();
+        if (serverClass == null) {
+            serverClass = new ServerClass();
+            serverClass.start();
+        }
+
+        status = STATE_LISTENING;
     }
 
     ClientClass clientClass;
 
     public void itemB(int i) {
         try {
-            clientClass = new ClientClass(btArray[i]);
+
+            clientClass = new ClientClass(btArray.get(i));
             clientClass.start();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }
 
     public void send(String msg) {
-        String string = String.valueOf(msg);
-        sendReceive.write(string.getBytes());
+        try {
+            String string = String.valueOf(msg);
+            sendReceive.write(string.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private class ServerClass extends Thread {
         private BluetoothServerSocket serverSocket;
+        private volatile boolean run = true;
 
         public ServerClass() {
             try {
@@ -91,7 +102,7 @@ public class BluetoothService {
             if (!isInterrupted()) {
                 BluetoothSocket socket = null;
                 System.out.println("ServerClass");
-                while (socket == null) {
+                while (socket == null || run) {
                     try {
                         Message message = Message.obtain();
                         message.what = STATE_CONNECTING;
@@ -101,28 +112,51 @@ public class BluetoothService {
                         socket = serverSocket.accept();
                     } catch (IOException e) {
                         e.printStackTrace();
+                        try {
+                            socket.close();
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
                         Message message = Message.obtain();
                         message.what = STATE_CONNECTION_FAILED;
                         System.out.println("FAILED");
                         status = STATE_CONNECTION_FAILED;
 //                    handler.sendMessage(message);
-                    }
-
-                    if (socket != null) {
-                        Message message = Message.obtain();
-                        message.what = STATE_CONNECTED;
-                        System.out.println("CONNECTED");
-                        status = STATE_CONNECTED;
-//                    handler.sendMessage(message);
-
-                        sendReceive = new SendReceive(socket);
-                        sendReceive.start();
-
                         break;
                     }
+                    try {
+                        if (socket != null) {
+                            Message message = Message.obtain();
+                            message.what = STATE_CONNECTED;
+                            System.out.println("CONNECTED");
+                            status = STATE_CONNECTED;
+//                    handler.sendMessage(message);
+
+                            sendReceive = new SendReceive(socket);
+                            sendReceive.start();
+                            try {
+                                serverSocket.close();
+                            } catch (Exception e) {
+
+                            }
+
+//                            socket.close();
+                            break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
+        }
 
+        public void cancel() {
+            try {
+                serverSocket.close();
+            } catch (Exception e) {
+                System.out.println("close() of connect socket failed");
+            }
         }
 
     }
@@ -133,9 +167,9 @@ public class BluetoothService {
 
         public ClientClass(BluetoothDevice device1) {
             device = device1;
-
             try {
                 socket = device.createRfcommSocketToServiceRecord(MY_UUID);
+//                socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] { int.class } ).invoke(device, 1);
                 System.out.println(device.getName());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -158,12 +192,26 @@ public class BluetoothService {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    try {
+                        socket.close();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                     Message message = Message.obtain();
                     message.what = STATE_CONNECTION_FAILED;
                     System.out.println("FAILED");
                     status = STATE_CONNECTION_FAILED;
+                    return;
 //                handler.sendMessage(message);
                 }
+            }
+        }
+
+        public void cancel() {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.out.println("close() of connect socket failed");
             }
         }
     }
@@ -172,6 +220,8 @@ public class BluetoothService {
         private final BluetoothSocket bluetoothSocket;
         private final InputStream inputStream;
         private final OutputStream outputStream;
+
+        private volatile boolean run = true;
 
         public SendReceive(BluetoothSocket socket) {
             bluetoothSocket = socket;
@@ -194,7 +244,7 @@ public class BluetoothService {
                 byte[] buffer = new byte[1024];
                 int bytes;
 
-                while (true) {
+                while (true || run) {
                     try {
                         bytes = inputStream.read(buffer);
 //                    handler.obtainMessage(STATE_MESSAGE_RECEIVED,bytes,-1,buffer).sendToTarget();
@@ -203,6 +253,7 @@ public class BluetoothService {
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                        break;
                     }
                 }
             }
@@ -217,6 +268,14 @@ public class BluetoothService {
                 }
             }
         }
+
+        public void cancel() {
+            try {
+                bluetoothSocket.close();
+            } catch (IOException e) {
+                System.out.println("close() of connect socket failed");
+            }
+        }
     }
 
     String ms = "";
@@ -227,6 +286,31 @@ public class BluetoothService {
             return true;
         }
         return false;
+    }
+
+    public String getStatus() {
+        String s = "";
+        switch (status) {
+            case STATE_LISTENING:
+                s = "STATE_LISTENING";
+                break;
+            case STATE_CONNECTING:
+                s = "STATE_CONNECTING";
+                break;
+            case STATE_CONNECTED:
+                s = "STATE_CONNECTED";
+                break;
+            case STATE_CONNECTION_FAILED:
+                s = "STATE_CONNECTION_FAILED";
+                break;
+            case STATE_MESSAGE_RECEIVED:
+                s = "STATE_MESSAGE_RECEIVED";
+                break;
+            case STATE_CONNECTION_NONE:
+                s = "STATE_CONNECTION_NONE";
+                break;
+        }
+        return s;
     }
 
     public String getMs() {
@@ -246,12 +330,33 @@ public class BluetoothService {
     }
 
     public void stopT() {
+        ms = "";
         try {
-            serverClass.interrupt();
-            clientClass.interrupt();
-            sendReceive.interrupt();
-        } catch (Exception e) {
+//            Thread[] threads = new Thread[Thread.activeCount()];
+//            Thread.enumerate(threads);
+//            for (Thread t : threads) {
+//                    t.stop();
+//            }
+            if (serverClass != null) {
+//                serverClass.interrupt();
+                serverClass.cancel();
+                serverClass = null;
+            }
+            if (clientClass != null) {
+//                clientClass.interrupt();
+                clientClass.cancel();
+                clientClass = null;
+            }
+            if (sendReceive != null) {
+//                sendReceive.interrupt();
+                sendReceive.cancel();
+                sendReceive = null;
+            }
+            status = STATE_CONNECTION_NONE;
 
+        } catch (Exception e) {
+            System.out.println("FFF");
+            e.printStackTrace();
         }
     }
 }

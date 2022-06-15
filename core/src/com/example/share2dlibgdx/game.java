@@ -33,9 +33,15 @@ public class game extends Game {
     @Override
     public void create() {
         Asset.instance().loadAsset();
+        TexturesClass.i.init();
         batch = new SpriteBatch();
         lobby = new Lobby(this);
         loaded.create();
+        try {
+            bluetoothLoaded.BluetoothService();
+        } catch (Exception e) {
+            loaded.toast("У вашего устройство нет bluetooth");
+        }
         setScreen(lobby);
     }
 
@@ -45,6 +51,21 @@ public class game extends Game {
     @Override
     public void render() {
         super.render();
+        if (bluetoothLoaded.getS() && getScreen() instanceof LeaderboardBluetooth) {
+            if (bluetoothLoaded.getMs().indexOf("permission") != -1 && !f) {
+                f = true;
+                loaded.dialogC(bluetoothLoaded.getMs().substring(10));
+                bluetoothLoaded.stopT();
+//                bluetoothLoaded.listen();
+            } else if (f) {
+                try {
+                    f = loaded.getClose();
+                    System.out.println(f);
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 
 
