@@ -168,24 +168,34 @@ public class Сlassic_Game_Screen extends BaseScreen {
         snake.render3(Gdx.graphics.getDeltaTime());
         initMeal();
 
-        resetB += delta;
-        if (!o && resetB > 3) {
+//        resetB += delta;
+        if (!o) {
             if (touch.touchScreen() != 0) {
                 gameOver();
             }
-            for (int i = 2; i < snake.cells.size(); i++) {
-                resetB = 0;
+            for (int i = 1; i < snake.cells.size() - 1; i++) {
                 boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
-                boolean f = touch.touchPlayer(snake.cells.get(i).x, snake.cells.get(i).y, bread.x, bread.y);
-                if (f) {
-                    bread.spawn2();
-                }
                 if (g && snake.transfer.tr != -1) {
                     SoundPlayer.playSound(Asset.CRASH_SOUND, false);
                     gameOver();
+                    System.out.println(i);
                     break;
                 }
             }
+//            for (int i = 1; i < snake.cells.size(); i++) {
+//                resetB = 0;
+//                boolean g = touch.touchPlays(snake, snake.cells.get(i).x, snake.cells.get(i).y);
+//                boolean f = touch.touchPlayer(snake.cells.get(i).x, snake.cells.get(i).y, bread.x, bread.y);
+//                if (f) {
+//                    bread.spawn2();
+//                }
+//                if (g && snake.transfer.tr != -1) {
+//                    SoundPlayer.playSound(Asset.CRASH_SOUND, false);
+//                    gameOver();
+//                    System.out.println(i);
+//                    break;
+//                }
+//            }
         }
 
 
