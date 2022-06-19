@@ -73,7 +73,8 @@ public class Levels_Game_Screen extends Сlassic_Game_Screen {
     public void show() {
         super.show();
         game.lobby.m2.sprite.setAlpha(1);
-        game.loaded.dialog("Задача", "Вы должны набрать 20 очков", "Хорошо");
+//        game.loaded.dialog("Задача", "Вы должны набрать 20 очков", "Хорошо");
+        game.loaded.dialogC(20 + " предметов");
         snake.transfer.tr = -1;
         mapGames.boxes.clear();
         game3 = false;

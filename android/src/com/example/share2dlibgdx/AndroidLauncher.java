@@ -457,8 +457,8 @@ public class AndroidLauncher extends AndroidApplication {
         String nameDevice;
         boolean close = true;
 
-        public DialogС(Context context, String nameDevice) {
-            this.nameDevice = nameDevice;
+        public DialogС(Context context, String num) {
+            this.nameDevice = num;
             alertDialog = new AlertDialog.Builder(context);
 //            View view = LayoutInflater.from(context).inflate(R.layout.dialog, (FrameLayout) findViewById(R.id.dialogC));
 ////            alertDialog.setView(view);
@@ -468,9 +468,9 @@ public class AndroidLauncher extends AndroidApplication {
 //            alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog = new Dialog(context);
             View view2 = LayoutInflater.from(context).inflate(R.layout.dialog, (FrameLayout) findViewById(R.id.dialogC));
-            ((TextView) view2.findViewById(R.id.text)).setText("Игрок " + nameDevice + " хочет поиграть с вами по Bluetooth");
+            ((TextView) view2.findViewById(R.id.text)).setText("Ваша задача собрать " + num);
 
-            view2.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            view2.findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     close = false;
@@ -478,13 +478,6 @@ public class AndroidLauncher extends AndroidApplication {
                 }
             });
 
-            view2.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    close = false;
-                    dialog.dismiss();
-                }
-            });
 
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(view2);

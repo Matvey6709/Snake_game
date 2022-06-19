@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dialogC">
 
@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Предложение"
+        android:text="Задача"
         android:textSize="20dp"
         android:layout_marginTop="8dp"
         android:textColor="@color/ic_background_color"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Игрок .... хочет поиграть с вами по Bluetooth"
-        android:textSize="14dp"
+        android:textSize="18dp"
         android:layout_marginTop="55dp"
         android:textColor="@color/black"
         android:layout_gravity="center_horizontal" />
@@ -44,8 +44,9 @@
         android:layout_height="40dp"
         android:text="Присоединиться"
         android:textSize="15dp"
+        android:visibility="invisible"
         android:layout_marginTop="110dp"
-        android:layout_marginRight="-70dp"
+        android:layout_marginRight="-180dp"
         android:textColor="@color/ic_background_color"
         tools:ignore="MissingConstraints"
         android:layout_gravity="center_horizontal"
@@ -57,8 +58,21 @@
         android:layout_height="40dp"
         android:text="Отказаться"
         android:textSize="15dp"
+        android:visibility="invisible"
         android:layout_marginTop="110dp"
-        android:layout_marginRight="70dp"
+        android:layout_marginRight="180dp"
+        android:textColor="@color/ic_background_color"
+        tools:ignore="MissingConstraints"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/fields" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:text="Ок"
+        android:textSize="15dp"
+        android:layout_marginTop="110dp"
         android:textColor="@color/ic_background_color"
         tools:ignore="MissingConstraints"
         android:layout_gravity="center_horizontal"

@@ -236,9 +236,17 @@ public class Lobby extends BaseScreen {
         settingLabel = LabelHandler.INSTANCE.createLabel("Настройки", 40, GREY);
         settingLabel.setPosition(1280, 600);
 
-        label = LabelHandler.INSTANCE.createLabel(namePlayer, 40, GREY);
+        label = LabelHandler.INSTANCE.createLabel(" " + namePlayer + " ", 40, GREY);
         label.setPosition(140, 600);
+        label.getStyle().background = new Image(new Texture("Group 2.png")).getDrawable();
+        Image icon = new Image(new Texture("иконка.png"));
+        icon.setSize(100, 100);
+        icon.setPosition(90, 600);
+        Table profel = new Table();
 
+        profel.addActor(icon);
+        profel.addActor(label);
+        profel.setPosition(140, 600);
 
         final ImageTextButton startGame1 = ImageTextButtonHandler.INSTANCE.createButtonWay("butL (1).png", "Онлайн", 40, Color.WHITE, true);
 
@@ -309,7 +317,9 @@ public class Lobby extends BaseScreen {
 
 
         stage.addActor(tableS);
-        stage.addActor(label);
+//        stage.addActor(label);
+//        stage.addActor(icon);
+        stage.addActor(profel);
         stage.addActor(scrollTableGames);
         stage.addActor(table);
         stage.addActor(setting);
