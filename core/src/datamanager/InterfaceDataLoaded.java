@@ -1,7 +1,7 @@
 package datamanager;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.example.share2dlibgdx.Snake;
+import com.n3studio.share2dlibgdx.Snake;
 
 public interface InterfaceDataLoaded {
 

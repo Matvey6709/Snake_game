@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:303977845581:android:6514ec7fefa208c76bdd04",
         "android_client_info": {
-          "package_name": "com.example.share2dlibgdx"
+          "package_name": "com.n3studio.share2dlibgdx"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "303977845581-1jpnf3g0plm7pfvuhtv79rrfpcoq869o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.share2dlibgdx",
+            "package_name": "com.n3studio.share2dlibgdx",
             "certificate_hash": "fef780654d72f3b774d69d6ee46c9e0e91840e37"
           }
         },
@@ -47,7 +47,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:303977845581:android:b2b64bf55b2fffb36bdd04",
         "android_client_info": {
-          "package_name": "com.example.testprojectgogleplay"
+          "package_name": "com.n3studio.testprojectgogleplay"
         }
       },
       "oauth_client": [
@@ -55,7 +55,7 @@
           "client_id": "303977845581-mfb4l6opkg9tm7qiseohub2nhc1vnc0s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.testprojectgogleplay",
+            "package_name": "com.n3studio.testprojectgogleplay",
             "certificate_hash": "fef780654d72f3b774d69d6ee46c9e0e91840e37"
           }
         },
