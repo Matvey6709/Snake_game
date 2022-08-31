@@ -4,8 +4,8 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules 'com.example.share2dlibgdx.GdxDefinition'
-    devModules 'com.example.share2dlibgdx.GdxDefinitionSuperdev'
+    modules 'com.n3studio.share2dlibgdx.GdxDefinition'
+    devModules 'com.n3studio.share2dlibgdx.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
     compiler {

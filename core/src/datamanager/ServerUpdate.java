@@ -2,11 +2,11 @@ package datamanager;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.example.share2dlibgdx.Cell;
-import com.example.share2dlibgdx.DeterminantSize;
-import com.example.share2dlibgdx.Snake;
-import com.example.share2dlibgdx.TexturesClass;
-import com.example.share2dlibgdx.game;
+import com.n3studio.share2dlibgdx.Cell;
+import com.n3studio.share2dlibgdx.DeterminantSize;
+import com.n3studio.share2dlibgdx.Snake;
+import com.n3studio.share2dlibgdx.TexturesClass;
+import com.n3studio.share2dlibgdx.game;
 
 import java.util.LinkedList;
 
