@@ -42,6 +42,7 @@ public class game extends Game {
         } catch (Exception e) {
             loaded.toast("У вашего устройство нет bluetooth");
         }
+
         setScreen(lobby);
     }
 

@@ -7,7 +7,7 @@ public class TexturesClass {
     public static TexturesClass i = new TexturesClass();
     public static Texture bacG, grass, snakebody, snakehead, snakeheadMy, snakebodyMy, snaketailMy, textureS,
             circle, curJoystick, myTexture1, myTexture2, myTexture3, myTexture4, headY, bodyY, texture,
-            blueApple, myTexture, myTextureB, textureFast;
+            blueApple, myTexture, myTextureB, textureFast, snakehead_black, snakebody_black, snaketail_black, eat_pink;
     Texture textures[];
 
     public void init() {
@@ -19,6 +19,11 @@ public class TexturesClass {
         snakeheadMy = new Texture("snakeHeadMy.png");
         snakebodyMy = new Texture("snakeBodyMy.png");
         snaketailMy = new Texture("snakeTailMy.png");
+        snakehead_black = new Texture("snakehead_black.png");
+        snakebody_black = new Texture("snakebody_black.png");
+        snaketail_black = new Texture("snaketail_black.png");
+
+        eat_pink = new Texture("eat_pink.png");
 
         myTexture1 = new Texture(Gdx.files.internal("arrowLeft.png"));
         myTexture2 = new Texture(Gdx.files.internal("arrowRight.png"));
