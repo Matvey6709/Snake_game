@@ -1,5 +1,6 @@
- package com.n3studio.share2dlibgdx;
+package com.n3studio.share2dlibgdx;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,18 +28,26 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+//import com.yandex.mobile.ads.common.InitializationListener;
+//import com.yandex.mobile.ads.common.MobileAds;
+//import com.yandex.mobile.ads.common.InitializationListener;
+//import com.yandex.mobile.ads.common.MobileAds;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,7 +57,6 @@ import datamanager.InterfaceBluetoothLoaded;
 import datamanager.InterfaceDataLoaded;
 import datamanager.Player;
 
-//import android.support.constraint.ConstraintLayout;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -67,6 +76,7 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.game_snake);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -236,6 +246,16 @@ public class AndroidLauncher extends AndroidApplication {
             @Override
             public void BluetoothService() {
                 bluetoothService = new BluetoothService();
+                if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 bluetoothService.bluetoothAdapter.startDiscovery();
                 devices = new ArrayList<>();
             }
@@ -245,6 +265,16 @@ public class AndroidLauncher extends AndroidApplication {
                 ArrayList<String> d = bluetoothService.getListDevice();
                 d.add("Устройства рядом");
                 for (int i = 0; i < devices.size(); i++) {
+                    if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+
+                    }
                     d.add("-G=-" + devices.get(i).getName());
                     bluetoothService.btArray.add(devices.get(i));
                 }
@@ -292,6 +322,16 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public void enableBl() {
+                if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), ENABLE_REQUEST);
             }
 
@@ -327,6 +367,16 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public String getMyNameDevice() {
+                if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+
+                }
                 return bluetoothService.bluetoothAdapter.getName();
             }
 
@@ -342,7 +392,24 @@ public class AndroidLauncher extends AndroidApplication {
         };
 
         Permissions.verifyLocationPermissions(context);
-        initialize(new game(loaded, bluetoothLoaded), config);
+//        MobileAds.initialize(this, new InitializationListener() {
+//            @Override
+//            public void onInitializationCompleted() {
+////                Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
+//            }
+//        });
+        game game = new game(loaded, bluetoothLoaded);
+        View viewgame = initializeForView(game);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout layout = findViewById(R.id.mainlayout);
+        layout.addView(viewgame);
+//        MobileAds.initialize(this, new InitializationListener() {
+//            @Override
+//            public void onInitializationCompleted() {
+////                Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
+//            }
+//        });
+//        initialize(game, config);
     }
 
     private boolean isNetworkConnected() {

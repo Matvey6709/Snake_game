@@ -1,5 +1,9 @@
 package com.n3studio.share2dlibgdx;
 
+import static com.n3studio.share2dlibgdx.TexturesClass.snakebody_black;
+import static com.n3studio.share2dlibgdx.TexturesClass.snakehead_black;
+import static com.n3studio.share2dlibgdx.TexturesClass.snaketail_black;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -101,12 +105,15 @@ public class Lobby extends BaseScreen {
         stage.getViewport().setCamera(camera);
         imageTextButtons = new ArrayList<>();
         skins = new ArrayList();
-        buttonM3 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_head"), "", 60, Color.WHITE);
-        buttonM2 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_body"), "", 60, Color.WHITE);
-        buttonM1 = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_tail"), "", 60, Color.WHITE);
-        m3 = new SnakeSkin(buttonM3, Asset.instance().getSprite("snake_head"));
-        m2 = new SnakeSkin(buttonM2, Asset.instance().getSprite("snake_body"));
-        m1 = new SnakeSkin(buttonM1, Asset.instance().getSprite("snake_tail"));
+        buttonM3 = ImageTextButtonHandler.INSTANCE.createButtonSprite(new Sprite(TexturesClass.snakehead), "", 60, Color.WHITE);
+        buttonM2 = ImageTextButtonHandler.INSTANCE.createButtonSprite(new Sprite(TexturesClass.snakebody), "", 60, Color.WHITE);
+        buttonM1 = ImageTextButtonHandler.INSTANCE.createButtonSprite(new Sprite(TexturesClass.snakebody), "", 60, Color.WHITE);
+//        m3 = new SnakeSkin(buttonM3, Asset.instance().getSprite("snake_head"));
+//        m2 = new SnakeSkin(buttonM2, Asset.instance().getSprite("snake_body"));
+//        m1 = new SnakeSkin(buttonM1, Asset.instance().getSprite("snake_tail"));
+        m3 = new SnakeSkin(buttonM3, new Sprite(TexturesClass.snakehead));
+        m2 = new SnakeSkin(buttonM2, new Sprite(TexturesClass.snakebody));
+        m1 = new SnakeSkin(buttonM1, new Sprite(TexturesClass.snakebody));
         namePlayer = game.loaded.get("namePlayer", "Игрок");
         Screen();
         Gdx.input.setInputProcessor(stage);
@@ -797,9 +804,9 @@ public class Lobby extends BaseScreen {
             tableScrollSkin.add(scroller).fill().expand();
             tableScrollSkin.setBounds(380, 200, 500, 380);
 
-            skins1S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_head"), "", 60, Color.WHITE);
-            skins2S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_body"), "", 60, Color.WHITE);
-            skins3S = ImageTextButtonHandler.INSTANCE.createButtonSprite(Asset.instance().getSprite("snake_tail"), "", 60, Color.WHITE);
+            skins1S = ImageTextButtonHandler.INSTANCE.createButtonWay("snakehead_black.png", "", 60, Color.WHITE, false);
+            skins2S = ImageTextButtonHandler.INSTANCE.createButtonWay("snakebody_black.png", "", 60, Color.WHITE, false);
+            skins3S = ImageTextButtonHandler.INSTANCE.createButtonWay("snaketail_black.png", "", 60, Color.WHITE, false);
             skins1S.setSize(90, 90);
             skins1S.setPosition(720, 450);
             skins2S.setSize(90, 90);
@@ -870,8 +877,8 @@ public class Lobby extends BaseScreen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_tail"), 60));
-                    b.sprite = Asset.instance().getSprite("snake_tail");
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snaketail_black.png", 60));
+                    b.sprite = new Sprite(snaketail_black);
                 }
             });
             skins2S.addListener(new ChangeListener() {
@@ -880,8 +887,8 @@ public class Lobby extends BaseScreen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_body"), 60));
-                    b.sprite = Asset.instance().getSprite("snake_body");
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snakebody_black.png", 60));
+                    b.sprite = new Sprite(snakebody_black);
                 }
             });
             skins1S.addListener(new ChangeListener() {
@@ -890,8 +897,8 @@ public class Lobby extends BaseScreen {
                     remove();
                     textButton.setVisible(false);
                     tableScrollSkin.setVisible(false);
-                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle(Asset.instance().getSprite("snake_head"), 60));
-                    b.sprite = Asset.instance().getSprite("snake_head");
+                    b.button.setStyle(ImageTextButtonHandler.INSTANCE.imageTextButtonStyle("snakehead_black.png", 60));
+                    b.sprite = new Sprite(snakehead_black);;
                 }
             });
             skins3G.addListener(new ChangeListener() {

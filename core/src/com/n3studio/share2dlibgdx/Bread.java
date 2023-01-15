@@ -1,5 +1,7 @@
 package com.n3studio.share2dlibgdx;
 
+import static com.n3studio.share2dlibgdx.TexturesClass.eat_pink;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -45,11 +47,11 @@ public class Bread {
     }
 
     public void render2() {
-        batch.draw(Asset.instance().getSprite(foodTypes[foodType]), x, y, size, size);
+        batch.draw(eat_pink, x, y, size, size);
     }
 
     public void resetBreadTexture() {
-        foodType = MathUtils.random(foodTypes.length - 1);
+//        foodType = MathUtils.random(foodTypes.length - 1);
 
     }
 
