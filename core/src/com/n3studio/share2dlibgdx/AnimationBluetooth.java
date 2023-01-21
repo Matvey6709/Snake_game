@@ -1,5 +1,7 @@
 package com.n3studio.share2dlibgdx;
 
+import static com.n3studio.share2dlibgdx.TexturesClass.bluetoothImage;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,9 +59,9 @@ public class AnimationBluetooth {
         elapsed += Gdx.graphics.getDeltaTime();
         Gdx.gl.glClearColor(0, 0.1f, 0.22f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Texture currentFrame = animation.getKeyFrame(elapsed, true);
+//        Texture currentFrame = animation.getKeyFrame(elapsed, true);
         batch.begin();
-        batch.draw(currentFrame, 50, 50);
+        batch.draw(bluetoothImage, 10, 50);
         batch.end();
     }
 
@@ -67,5 +69,6 @@ public class AnimationBluetooth {
         for (int i = 0; i < com.n3studio.share2dlibgdx.TexturesClass.i.textures.length - 1; i++) {
             TexturesClass.i.textures[i].dispose();
         }
+        bluetoothImage.dispose();
     }
 }

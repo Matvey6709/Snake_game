@@ -98,6 +98,7 @@ public class LeaderboardBluetooth extends BaseScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.bluetoothLoaded.listen();
                 bluetooth_game_screen.create = true;
+                game.loaded.showevent_("Bluetooth_game_screen");
                 game.setScreen(bluetooth_game_screen);
             }
         });
@@ -225,6 +226,7 @@ public class LeaderboardBluetooth extends BaseScreen {
     public void show() {
         game.bluetoothLoaded.Matgic();
         Gdx.input.setInputProcessor(this.stage);
+
     }
 
     String gg = "";

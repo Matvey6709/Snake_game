@@ -1,0 +1,14 @@
+# Игра Змейка
+
+
+This game  uses the following packages and servises:
+
+1. development framework libgdx/libgdx
+libgdx/libgdx is licensed under the Apache License 2.0
+https://github.com/libgdx/libgdx/blob/master/LICENSE
+https://github.com/libgdx/libgdx
+www.libgdx.com/
+2. Сервисы Google Firebase
+https://firebase.google.com/
+https://www.firebase.com/terms/terms-of-service.html
+3. Сервисы Яндекс для аналитики и рекламы

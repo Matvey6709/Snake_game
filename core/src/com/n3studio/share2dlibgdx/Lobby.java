@@ -190,6 +190,7 @@ public class Lobby extends BaseScreen {
         game.loaded.create();
         game.loaded.setExistsGame(true);
         game.lobby.m2.sprite.setAlpha(1);
+        game.loaded.showevent_("Lobby");
 //        game.loaded.dialogC("Redmy 9");
     }
 
@@ -236,6 +237,7 @@ public class Lobby extends BaseScreen {
         setting.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.loaded.showevent_("Button_settings");
                 settings(drawable);
             }
         });
@@ -287,10 +289,12 @@ public class Lobby extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 try {
+                    game.bluetoothLoaded.checkBluetoothforAndroid12();
                     if (game.bluetoothLoaded.isEnabled()) {
                         leaderboard.namePlayer = namePlayer;
                         leaderboard.namePlayerUn = new Random().nextInt(900) + 100 + "" + System.currentTimeMillis();
                         System.gc();
+                        game.loaded.showevent_("Bluetooth_Lobby");
                         game.setScreen(leaderboardBluetooth);
                     } else {
                         game.bluetoothLoaded.enableBl();
@@ -382,6 +386,7 @@ public class Lobby extends BaseScreen {
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    game.loaded.showevent_("Button_resetName");
                     resetName.show();
                 }
             });
@@ -389,6 +394,7 @@ public class Lobby extends BaseScreen {
             button2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    game.loaded.showevent_("Button_choosingskins    ");
                     choosingskins.show();
                 }
             });
@@ -683,6 +689,7 @@ public class Lobby extends BaseScreen {
             startGame2.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    game.loaded.showevent_("сlassic_game_screen");
                     game.setScreen(сlassic_game_screen);
                 }
             });
@@ -696,6 +703,7 @@ public class Lobby extends BaseScreen {
                     public void changed(ChangeEvent event, Actor actor) {
                         remove();
                         levels_game_screen.level = finalI;
+                        game.loaded.showevent_("levels_game_screen");
                         game.setScreen(levels_game_screen);
                     }
                 });

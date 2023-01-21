@@ -28,10 +28,10 @@ android {
     }
     defaultConfig {
         applicationId "com.n3studio.share2dlibgdx"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
-        versionCode 6
-        versionName "1.005"
+        versionCode 8
+        versionName "1.009"
     }
     buildTypes {
         release {

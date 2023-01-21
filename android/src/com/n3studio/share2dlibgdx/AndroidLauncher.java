@@ -25,29 +25,44 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-//import com.yandex.mobile.ads.common.InitializationListener;
-//import com.yandex.mobile.ads.common.MobileAds;
-//import com.yandex.mobile.ads.common.InitializationListener;
-//import com.yandex.mobile.ads.common.MobileAds;
+import com.yandex.metrica.YandexMetrica;
+import com.yandex.metrica.YandexMetricaConfig;
+import com.yandex.mobile.ads.banner.AdSize;
+import com.yandex.mobile.ads.banner.BannerAdEventListener;
+import com.yandex.mobile.ads.banner.BannerAdView;
+import com.yandex.mobile.ads.common.AdRequest;
+import com.yandex.mobile.ads.common.AdRequestError;
+import com.yandex.mobile.ads.common.ImpressionData;
+import com.yandex.mobile.ads.common.InitializationListener;
+import com.yandex.mobile.ads.common.MobileAds;
+import com.yandex.mobile.ads.interstitial.InterstitialAd;
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -71,6 +86,9 @@ public class AndroidLauncher extends AndroidApplication {
     DialogС dialogС;
     ArrayList<BluetoothDevice> devices;
     ArrayList<Bitmap> bitmaps;
+    BannerAdView mBannerAdView;
+    ProgressBar timer;
+    private InterstitialAd mInterstitialAd;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -240,6 +258,14 @@ public class AndroidLauncher extends AndroidApplication {
             public boolean getClose() {
                 return dialogС.close;
             }
+
+            @Override
+            public void showevent_(String str) {
+                YandexMetrica.reportEvent(str, str);
+
+            }
+
+
         };
 
         bluetoothLoaded = new InterfaceBluetoothLoaded() {
@@ -264,20 +290,23 @@ public class AndroidLauncher extends AndroidApplication {
             public ArrayList<String> getListDevice() {
                 ArrayList<String> d = bluetoothService.getListDevice();
                 d.add("Устройства рядом");
-                for (int i = 0; i < devices.size(); i++) {
-                    if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
+                try{
+                    for (int i = 0; i < devices.size(); i++) {
+                        if (ActivityCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
 
+                        }
+                        d.add("-G=-" + devices.get(i).getName());
+                        bluetoothService.btArray.add(devices.get(i));
                     }
-                    d.add("-G=-" + devices.get(i).getName());
-                    bluetoothService.btArray.add(devices.get(i));
-                }
+                }catch (Exception e){}
+
                 return d;
             }
 
@@ -389,27 +418,24 @@ public class AndroidLauncher extends AndroidApplication {
             public void Matgic() {
 //                Permissions.verifyLocationPermissions(context);
             }
+
+            @Override
+            public void checkBluetoothforAndroid12() {
+                checkBluetoothforAndroid12_();
+            }
         };
 
         Permissions.verifyLocationPermissions(context);
-//        MobileAds.initialize(this, new InitializationListener() {
-//            @Override
-//            public void onInitializationCompleted() {
-////                Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
-//            }
-//        });
         game game = new game(loaded, bluetoothLoaded);
         View viewgame = initializeForView(game);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        LinearLayout layout = findViewById(R.id.mainlayout);
-        layout.addView(viewgame);
-//        MobileAds.initialize(this, new InitializationListener() {
-//            @Override
-//            public void onInitializationCompleted() {
-////                Log.d(YANDEX_MOBILE_ADS_TAG, "SDK initialized");
-//            }
-//        });
-//        initialize(game, config);
+        baner(viewgame);//or    initialize(game, config);
+//        videoAdd();
+
+        YandexMetricaConfig config2 = YandexMetricaConfig.newConfigBuilder("26ca94c9-cf64-441e-b1f6-a3264dbec52a").build();
+        // Initializing the AppMetrica SDK.
+        YandexMetrica.activate(getApplicationContext(), config2);
+        // Automatic tracking of user activity.
+        YandexMetrica.enableActivityAutoTracking(getApplication());
     }
 
     private boolean isNetworkConnected() {
@@ -545,35 +571,160 @@ public class AndroidLauncher extends AndroidApplication {
         return null;
     }
 
-    public void Magic() {
-//        Texture texture = new Texture("загруженное (1).png");
-//        if (!texture.getTextureData().isPrepared()) {
-//            texture.getTextureData().prepare();
-//        }
-//        Pixmap pixmap = texture.getTextureData().consumePixmap();
-//
-//        ByteBuffer byteBuffer = pixmap.getPixels();
-//        byte[] pixelDataByteArray = new byte[byteBuffer.remaining()];
-////        Bitmap bitmap = BitmapFactory.decodeByteArray(pixelDataByteArray, 0, pixelDataByteArray.length);
-//        System.out.println("GGGGGGGGGGGGGGGGGGGG");
-//        System.out.println(TexturesClass.snakebody.getHeight());
-//        System.out.println(pixelDataByteArray.length);
-//
-//        byteBuffer.get(pixelDataByteArray);
-//        Texture fromByteArray = new Texture(new Pixmap(pixelDataByteArray, 0, pixelDataByteArray.length));
-//        System.out.println(fromByteArray.getHeight());
-//        Bitmap bmp=null;
-//        try {
-//            bmp = BitmapFactory.decodeStream((InputStream)new URL("https://get.wallhere.com/photo/road-clouds-river-mountains-asphalt-marking-1069905.jpg").getContent());
-//        } catch (Exception e) {}
-//        System.out.println(bmp.getHeight());
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] byteArray = stream.toByteArray();
-//        bmp.recycle();
-//
-//        Bitmap bitmap= BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-//        System.out.println(bitmap.getHeight());
+    int count = 0;
+
+    public void TimerForAdd_() {
+        new CountDownTimer(25000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                System.out.println(millisUntilFinished);
+                if(millisUntilFinished < 25000){
+                    timer.setProgress(count);
+                    count += 5;
+                }
+            }
+
+            public void onFinish() {
+                timer.setVisibility(View.GONE);
+                count = 0;
+                mBannerAdView.destroy();
+            }
+
+        }.start();
     }
+
+    LinearLayout layout;
+    LinearLayout layout2;
+
+    public void baner(View viewgame) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layout = findViewById(R.id.mainlayout);
+        layout2 = findViewById(R.id.seconmainlayout);
+        MobileAds.initialize(this, new InitializationListener() {
+            @Override
+            public void onInitializationCompleted() {
+                Log.d("YANDEX_MOBILE_ADS_TAG", "SDK initialized");
+            }
+        });
+        mBannerAdView = new BannerAdView(this);
+        mBannerAdView.setAdUnitId("R-M-2151067-1");
+        mBannerAdView.setAdSize(AdSize.stickySize(500));
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        layout2.addView(mBannerAdView);
+        layout.addView(viewgame);
+        mBannerAdView.setBannerAdEventListener(new BannerAdEventListener() {
+            @Override
+            public void onAdLoaded() {
+                TimerForAdd_();
+                System.out.println("Работает6");
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+                System.out.println("Работает5");
+                timer.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onAdClicked() {
+                System.out.println("Работает4");
+            }
+
+            @Override
+            public void onLeftApplication() {
+                System.out.println("Работает3");
+            }
+
+            @Override
+            public void onReturnedToApplication() {
+                System.out.println("Работает2");
+            }
+
+            @Override
+            public void onImpression(@Nullable ImpressionData impressionData) {
+                System.out.println("Работает1");
+            }
+        });
+        mBannerAdView.loadAd(adRequest);
+
+        timer = findViewById(R.id.progressBar);
+//        TimerForAdd_();
+
+    }
+
+    public void videoAdd() {
+        mInterstitialAd = new InterstitialAd(AndroidLauncher.this);
+        mInterstitialAd.setAdUnitId("demo-interstitial-yandex");
+// Создание объекта таргетирования рекламы.
+        final AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Регистрация слушателя для отслеживания событий, происходящих в рекламе.
+        mInterstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+            @Override
+            public void onAdLoaded() {
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(AdRequestError adRequestError) {
+                Toast.makeText(AndroidLauncher.this, "Ошибка",
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAdShown() {
+
+            }
+
+            @Override
+            public void onAdDismissed() {
+
+            }
+
+            @Override
+            public void onAdClicked() {
+
+            }
+
+            @Override
+            public void onLeftApplication() {
+
+            }
+
+            @Override
+            public void onReturnedToApplication() {
+
+            }
+
+            @Override
+            public void onImpression(@Nullable ImpressionData impressionData) {
+
+            }
+        });
+
+        // Загрузка объявления.
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    boolean showadd = false;
+    public void showvideoAdd() {
+            showadd = true;
+        System.out.println("szdfggggggggggggggggggggg " + showadd);
+    }
+
+    public void checkBluetoothforAndroid12_(){
+        if (ContextCompat.checkSelfPermission(AndroidLauncher.this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            {
+                ActivityCompat.requestPermissions(AndroidLauncher.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+                return;
+            }
+        }
+    }
+
+
+
 }
 
