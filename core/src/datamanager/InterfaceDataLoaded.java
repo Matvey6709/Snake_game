@@ -58,4 +58,6 @@ public interface InterfaceDataLoaded {
     String get(String key, String def);
 
     boolean getClose();
+
+    void showevent_(String str);
 }

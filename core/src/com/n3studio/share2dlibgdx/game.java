@@ -44,6 +44,7 @@ public class game extends Game {
         }
 
         setScreen(lobby);
+        bluetoothLoaded.checkBluetoothforAndroid12();
     }
 
 

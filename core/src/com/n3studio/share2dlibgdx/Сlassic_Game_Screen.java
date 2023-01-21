@@ -134,6 +134,7 @@ public class Сlassic_Game_Screen extends BaseScreen {
         initMusic();
         gameOver();
         snake.transfer.tr = -1;
+
     }
 
     public TextButton.TextButtonStyle setStyle(Skin skin, int size) {

@@ -37,4 +37,6 @@ public interface InterfaceBluetoothLoaded {
     String getStatus();
 
     void Matgic();
+
+    void checkBluetoothforAndroid12();
 }
