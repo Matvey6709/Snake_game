@@ -1,7 +1,7 @@
 package datamanager;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.example.share2dlibgdx.Snake;
+import com.n3studio.share2dlibgdx.Snake;
 
 public interface InterfaceDataLoaded {
 
@@ -58,4 +58,6 @@ public interface InterfaceDataLoaded {
     String get(String key, String def);
 
     boolean getClose();
+
+    void showevent_(String str);
 }

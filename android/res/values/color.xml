@@ -3,4 +3,5 @@
     <color name="ic_background_color">#FFFFFFFF</color>
     <color name="blue">#2196F3</color>
     <color name="black">#050505</color>
+    <color name="white">#FFFFFF</color>
 </resources>

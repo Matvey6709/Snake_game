@@ -8,16 +8,13 @@ public interface InterfaceBluetoothLoaded {
 
     ArrayList<String> getListDevice();
 
-    ArrayList<String> getListDeviceLocate();
-
-    String btArray(int i);
-
-
     void listen();
 
     void itemB(int i);
 
     void send(String msg);
+
+    void sendImage(int i);
 
     String getMs();
 
@@ -38,4 +35,8 @@ public interface InterfaceBluetoothLoaded {
     String getMyNameDevice();
 
     String getStatus();
+
+    void Matgic();
+
+    void checkBluetoothforAndroid12();
 }

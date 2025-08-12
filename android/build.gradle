@@ -4,9 +4,13 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildToolsVersion "30.0.3"
-    compileSdkVersion 31
+    compileSdkVersion 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -23,11 +27,11 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.example.share2dlibgdx"
-        minSdkVersion 19
-        targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+        applicationId "com.n3studio.share2dlibgdx"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 8
+        versionName "1.009"
     }
     buildTypes {
         release {
@@ -93,7 +97,9 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.example.share2dlibgdx/com.example.share2dlibgdx.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.n3studio.share2dlibgdx/com.n3studio.share2dlibgdx.AndroidLauncher'
 }
+
+
 
 eclipse.project.name = appName + "-android"
